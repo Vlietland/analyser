@@ -1,0 +1,37 @@
+PDL checkt de geconverteerde invoer
+
+  doe van het begin tot het einde van de array wanneer er geen fout is
+    als        openhaakje  check wat na een openhaakje  kan komen
+    anders als minteken    check wat na een minteken    kan komen
+    anders als getal       check wat na een getal       kan komen
+    anders als sluithaakje check wat na een sluithaakje kan komen
+    anders als operatie    check wat na een operatie    kan komen
+
+
+check wat na een openhaakje  kan komen
+  als na het openhaakje niet het volgende komt
+    speciale actie,openhaakje,minteken,variabele,getal
+    dan is er een fout
+
+check wat na een minteken    kan komen
+  als na het minteken niet het volgende komt
+    speciale actie,openhaakje,variabele,getal
+    dan is er een fout
+
+check wat na een getal       kan komen
+  als na het getal niet het volgende komt
+    operatie,sluithaakje
+    dan is er een fout
+
+check wat na een sluithaakje kan komen
+  als na het sluithaakje niet het volgende komt
+    operatie,sluithaakje
+    dan is er een fout
+
+check wat na een operatie    kan komen
+  als na het operatie niet het volgende komt
+    speciale actie,openhaakje,minteken,variabele,getal
+    dan is er een fout
+
+( speciale actie = cos,sin,tan,arccos,arcsin,arctan,exp,lin,log,cosh,sinh,abs )
+( variabele      = x,y )

@@ -1,0 +1,19 @@
+/*=====================================================================*/
+/*                                                                     */
+/* PROGRAMMA NAAM:      De functie analyser     (prepare.ext)          */
+/* AUTEUR:              Resourser                                      */
+/* BESCHRIJVING:                                                       */
+/*   In deze H-file staan alle verwijzingen naar de modules die de     */
+/*   bewerkingen van het functieonderzoek voor hun rekening nemen      */
+/*                                                                     */
+/*                                                                     */
+/*                                                                     */
+/* DATUM:                  3 oktober 1996                              */
+/*=====================================================================*/
+
+extern int Analyseprepare(void);
+extern int Deltaphiprepare(void);
+extern int Zoomprepare(void);
+extern int Verplaatsprepare(void);
+extern int Zfactorprepare(void);
+extern int Configure(void);

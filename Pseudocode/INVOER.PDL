@@ -1,0 +1,20 @@
+PDL lees de toetsen en controleer invoer op fouten
+
+schakel alle tekens uit die niet geoorloofd zijn
+
+wanneer niet eindeinvoer
+
+  lees teken
+  bepaal het teken
+    teken --> niet return en niet backspace
+      controleer grenzen van de array
+      array bijwerken
+      scherm bijwerken
+
+    teken --> backspace
+      controller grenzen van de array
+      laatste teken van de array wissen
+      laatste teken op het scherm wissen
+
+    anders
+      eindeinvoer is waar    

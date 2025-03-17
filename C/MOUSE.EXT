@@ -1,0 +1,15 @@
+/*=====================================================================*/
+/*                                                                     */
+/* PROGRAMMA NAAM:   De functie analyser      (mouse.ext)              */
+/* AUTEUR:              Resourser                                      */
+/* BESCHRIJVING:                                                       */
+/*   In deze H-file staan alle verwijzingen naar de modules die de     */
+/*   met de muisdriver communiceren                                    */
+/*                                                                     */
+/*                                                                     */
+/*                                                                     */
+/* DATUM:                  3 oktober 1996                              */
+/*=====================================================================*/
+
+extern int      Getmousekeuze(void);
+extern intpoint Getdeltamouse(int *);

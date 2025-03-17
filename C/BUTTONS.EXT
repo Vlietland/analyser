@@ -1,0 +1,24 @@
+/*=====================================================================*/
+/*                                                                     */
+/* PROGRAMMA NAAM:       De knoppen  (Knoppen.ext)                     */
+/* AUTEUR:               Resourser                                     */
+/* BESCHRIJVING:                                                       */
+/*   In deze H-file staan alle verwijzingen naar de modules die de     */
+/*   knoppen op het scherm plaatsen                                    */
+/*                                                                     */
+/*                                                                     */
+/*                                                                     */
+/* DATUM:                  3 oktober 1996                              */
+/*=====================================================================*/
+
+
+
+extern void Createbutton(int Xpositie, int Ypositie, char []);
+extern void Buttonin(int Xpositie, int Ypositie);
+extern void Buttonout(int Xpositie, int Ypositie);
+extern void Create3Dfield(int Xbegin, int Ybegin, int Xeinde, int Yeinde,
+			  int Buttonkleur, int Buttonlicht, int Buttonschaduw);
+extern void Createcustombutton(int Xbegin, int Ybegin, int Xeinde, int Yeinde,
+			       int Buttonkleur, int Buttonlicht, int Buttonschaduw);
+extern void Createzoomfield(int Xbegin, int Ybegin, int Xeinde, int Yeinde,
+			    int Buttonkleur, int Buttonlicht, int Buttonschaduw, int speed);

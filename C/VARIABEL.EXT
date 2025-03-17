@@ -1,0 +1,22 @@
+/*=====================================================================*/
+/*                                                                     */
+/* PROGRAMMA NAAM:      Variabel.ext            (Variabel.ext)         */
+/* AUTEUR:              Resourser                                      */
+/* BESCHRIJVING:                                                       */
+/*   In deze EXT-file staan alle verwijzingen naar de modules die      */
+/*   het functieonderzoek en de presentatie beheren                    */
+/*                                                                     */
+/*                                                                     */
+/*                                                                     */
+/* DATUM:                 12 oktober 1996                              */
+/*=====================================================================*/
+
+extern void Analyse(intpoint);
+extern void Deltaphi(phipoint);
+extern void Verplaatsing(intpoint);
+extern void Zoom(int);
+extern void Zfactor(float);
+extern void Varinit(float, float, float, float, int, float, float, float);
+extern void FastD3schermpresentatie(void);
+extern void D3schermpresentatie(void);
+extern void FullD3schermpresentatie(void);

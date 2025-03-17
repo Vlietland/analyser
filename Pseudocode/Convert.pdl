@@ -1,0 +1,29 @@
+PDL converteert de invoer naar het tweede stadium
+
+  tussenvoegen van de maaltekens
+  tussenvoegen van de haakjes
+  een scheiding aanbrengen tussen een minteken en een verschiloperatie
+ 
+tussenvoegen van de maaltekens
+  controleer van het begin tot het einde van de array
+    bij de volgende situaties een maalteken tussenvoegen (x = teken1, y = teken2)
+      x = getal ; y = haakje
+      x = letter; y = haakje
+      x = getal ; y = letter
+      x = haakje; y = haakje
+      ( haakje = '(','[','{','<' )
+
+tussenvoegen van de haakjes
+  controleer van het begin tot het einde van de array
+    als        '[' haakje voorkomt omzetten naar een '('
+    anders alw '{' haakje voorkomt omzetten naar een '('
+    anders alw '<' haakje voorkomt omzetten naar een '('
+
+een scheiding aanbrengen tussen een minteken en een verschiloperatie
+  controleer van het begin tot het einde van de array
+    bij de volgende situaties een minteken herkenbaar maken (x = teken1, y = teken2, z = teken3)
+      als y = minteken ; z = cijfer
+        x = operatie
+        x = haakje
+        ( haakje = '(' )
+  	 ( het minteken herkenbaar maken wordt gedaan door het te veranderen in een '@' )

@@ -1,0 +1,92 @@
+PDL zet de formulelist om naar binair
+
+    array wissen
+
+    doe totdat (formulelistteken is 0)
+
+    {
+      case Formulelist(formuleteken)
+
+	openhaakje	Convertopenhaakje(formulenieuwplaats,machinenieuwplaats);
+	sluithaakje	Convertsluithaakje(formulenieuwplaats,machinenieuwplaats);
+	getal		Convertgetal(formulenieuwplaats,machinenieuwplaats);
+	variabele	Convertvariabele(formulenieuwplaats,machinenieuwplaats);
+	operatie	Convertoperatie(formulenieuwplaats,machinenieuwplaats);
+	speciaal	Convertspeciaal(formulenieuwplaats,machinenieuwplaats);
+    }
+
+
+Convertopenhaakje
+    {
+     Machinelist[machinenieuwplaats++] = openhaakjecode;
+     formulenieuwplaats++;
+    }
+
+Convertsluithaakje
+    {
+     Machinelist[machinenieuwplaats++] = sluithaakjecode;
+     formulenieuwplaats++;
+    }
+
+Convertgetal
+    {
+     int voorkomma = 0;
+     int achterkomma = 0;
+     int factor = 1;
+
+     zolang (Formulelist[nieuwformuleplaats] == asciicijfer)
+       {
+	nieuwformuleplaats++
+	voorkomma = voorkomma * 10
+	voorkomma = voorkomma + (asciicijfer - '0')
+       }
+
+       als formulelist[nieuwformuleplaats] == asciicijfer
+	 {
+	  nieuwformuleplaats++
+	  zolang (teken == asciicijfer)
+	    {
+	     nieuwformuleplaats++
+	     factor = factor / 10;
+	     achterkomma = achterkomma + ((asciicijfer - '0') * factor)
+	    }
+	 }
+     Machinelist[nieuwmachineplaats++] = voorkomma + achterkomma;
+    }
+
+Convertvariabele
+    {
+     Machinelist[nieuwplaats++] = variabelecode;
+     formulelist++;
+    }
+
+Convertoperatie
+    {
+     case Formulelist(formuleteken)
+
+	machtsverheffen    Machinelist[nieuwplaats++] = machtsverhefcode;
+	maal               Machinelist[nieuwplaats++] = maalcode;
+	delen              Machinelist[nieuwplaats++] = deelcode;
+	optellen           Machinelist[nieuwplaats++] = optelcode;
+	aftrekken          Machinelist[nieuwplaats++] = aftrekcode;
+
+     formulelist++;
+    }
+
+Convertspeciaal
+    {
+     case Formulelist(formuletekens)
+
+       Checkstring(arctan()	:  Machinelist[nieuwplaats++] = arctancode;
+       Checkstring(arcsin()	:  Machinelist[nieuwplaats++] = arcsincode;
+       Checkstring(arccos()	:  Machinelist[nieuwplaats++] = arccoscode;
+       Checkstring(tan()	:  Machinelist[nieuwplaats++] = tancode;
+       Checkstring(sin()	:  Machinelist[nieuwplaats++] = sincode;
+       Checkstring(cos()	:  Machinelist[nieuwplaats++] = coscode;
+       Checkstring(log()	:  Machinelist[nieuwplaats++] = logcode;
+       Checkstring(lin()	:  Machinelist[nieuwplaats++] = lincode;
+       Checkstring(exp()	:  Machinelist[nieuwplaats++] = expcode;
+       Checkstring(cosh()	:  Machinelist[nieuwplaats++] = coshcode;
+       Checkstring(sinh()	:  Machinelist[nieuwplaats++] = sinhcode;
+    }
+

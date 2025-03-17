@@ -1,0 +1,29 @@
+PDL berekening van de formule
+
+  doe totdat je een machineeindelist tegenkomt
+    Machinelist[Xplaats[xplaats++]] = F.X
+
+  doe totdat je een machineeindelist tegenkomt
+    Machinelist[Yplaats[yplaats++]] = F.Y
+
+  totaal is nul
+
+  doe totdat je een sluithaakje tegenkomt
+
+    lees de nieuwe code
+
+    code
+      getal             --> totaal = totaal,operatie,getalwaarde
+
+      speciale operatie --> onthou speciale operatie
+			    subtotaal = nieuwe aanroep(pointer,nieuwepointer)
+			    voer speciale operatie uit met subtotaal
+			    totaal = totaal,operatie,subtotaal
+
+      operatie		--> onthou operatie
+
+      openhaakje	--> subtotaal = nieuwe aanroep(pointer,nieuwepointer)
+			    totaal = totaal,operatie,subtotaal
+
+
+

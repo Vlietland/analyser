@@ -1,0 +1,26 @@
+/*=====================================================================*/
+/*                                                                     */
+/* PROGRAMMA NAAM:      Array.ext       (Array.ext)                    */
+/* AUTEUR:              Resourser                                      */
+/* BESCHRIJVING:                                                       */
+/*   In deze H-file staan alle verwijzingen naar de modules die de     */
+/*   arraymanaging voor hun rekening nemen                             */
+/*                                                                     */
+/*                                                                     */
+/*                                                                     */
+/* DATUM:                  3 oktober 1996                              */
+/*=====================================================================*/
+
+
+
+extern void  Zcoordinatenupdate(point, int, float);
+
+extern void  CopyConvertXY(intpoint, intpoint,
+			   float *, float *, float *, float *);
+extern void  CopyConvertZ(intpoint, intpoint, float);
+
+extern void  Vectorupdate(phipoint, intpoint, intpoint);
+extern void  D3schermupdate(intpoint, intpoint);
+extern void  FastD3schermupdate(intpoint, intpoint);
+extern void  FullD3schermupdate(intpoint, intpoint);
+extern float Drawcrosshair(point, phipoint, float);
