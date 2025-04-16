@@ -1,0 +1,90 @@
+# Implementation Plan: analyser-web /renderer
+
+This document defines the step-by-step implementation plan for the `renderer/` module in the analyser-web project.
+It includes features, responsibilities, file structure, and development phases.
+This document is designed for consumption by a Gemini-compatible AI agent.
+
+---
+
+## 🎯 Objective
+
+To implement a Three.js-based 3D rendering engine for visualizing a mathematical surface mesh (Z = f(x,y)) based on core calculations.
+
+---
+
+## 📁 Target Files in /renderer
+
+- renderer/
+  ├── surfaceRenderer.ts
+  ├── sceneBuilder.ts
+  └── rendererState.ts
+
+---
+
+## 🧩 Features & Responsibilities
+
+### 1. surfaceRenderer.ts
+
+- Accept a grid of (x, y, z) data
+- Generate a surface mesh
+- Map Z values to vertex color gradients (optional)
+- Add the mesh to a Three.js scene
+- Export: `renderSurface(scene, data: SurfaceGrid): void`
+
+### 2. sceneBuilder.ts
+
+- Initialize Three.js scene with:
+  - Lighting
+  - Axes
+  - Grid floor (optional)
+  - Optional orbit controls (external to core renderer)
+- Export: `buildScene(canvas: HTMLCanvasElement): { scene, camera, renderer }`
+
+### 3. rendererState.ts
+
+- Track and respond to viewport size changes
+- Manage rendering loop
+- Update camera on interaction
+- Export: `setupRenderer(canvas, scene, camera, renderer): void`
+
+---
+
+## 🛠️ Development Phases
+
+### Phase 1: Scene Setup
+
+- Implement sceneBuilder
+- Build a test scene with dummy mesh
+
+### Phase 2: Mesh Rendering
+
+- Implement surfaceRenderer using dummy data
+- Visualize static grid
+
+### Phase 3: Dynamic Linking
+
+- Integrate with real core output (SurfaceGrid)
+- Animate redraw on input
+
+---
+
+## ✅ Integration Points
+
+- CanvasViewport.tsx will host the canvas and call buildScene + renderSurface
+- Depends on `core/types.ts` for type definitions
+
+---
+
+## 🧪 Unit Testing
+
+- Use snapshot testing or mock Three.js objects (optional)
+- Focus on integration testing via CanvasViewport
+
+---
+
+## 📌 Deliverables
+
+- Fully implemented `/renderer` folder
+- Surface rendering working from input data
+- Scene built dynamically from canvas
+- Responsive resize and camera interaction

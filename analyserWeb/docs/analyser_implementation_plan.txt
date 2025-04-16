@@ -1,0 +1,126 @@
+# Implementation Plan: analyser-web (Core + Renderer + UI)
+
+This document combines the implementation plans for the `core/`, `renderer/`, and `ui/` modules of the analyser-web project.
+The project aims to refactor an old DOS-based 3D function analyzer into a modern web-based solution using React, TypeScript, math.js, and Three.js.
+
+This document is Gemini-compatible.
+
+---
+
+## 🎯 Project Objective
+
+To create a modern, modular, browser-based 3D graphing application that:
+- Accepts user-defined mathematical expressions z = f(x, y)
+- Samples and evaluates the function over a grid
+- Renders a 3D surface using Three.js
+- Allows UI-based manipulation (zoom, rotate, shift, z-scale)
+
+---
+
+## 📦 Project Structure
+
+- /core — math engine and sampling
+- /renderer — 3D scene management and mesh rendering
+- /ui — user interface built with React
+
+---
+
+## 1️⃣ /core — Functional Evaluation & Grid Sampling
+
+### Files:
+- evaluator/expressionEngine.ts
+- evaluator/expressionTypes.ts
+- grid/gridCalculator.ts
+- grid/sampleRange.ts
+- transform/transformEngine.ts
+- transform/viewState.ts
+- types.ts
+
+### Features:
+- Parse + compile math expressions
+- Evaluate z = f(x,y)
+- Generate 2D sampling grid
+- Apply view transformations
+- Export data to renderer
+
+### Phases:
+1. Expression engine
+2. Sampling (grid generation)
+3. Transformation state
+
+---
+
+## 2️⃣ /renderer — Visualization with Three.js
+
+### Files:
+- surfaceRenderer.ts
+- sceneBuilder.ts
+- rendererState.ts
+
+### Features:
+- Convert grid data to 3D mesh
+- Build scene with lighting and camera
+- Handle resizing and viewport state
+- Render surface dynamically
+
+### Phases:
+1. Scene scaffolding
+2. Static surface rendering
+3. Reactive surface updates
+
+---
+
+## 3️⃣ /ui — React Interface for Input & Controls
+
+### Files:
+- App.tsx
+- CanvasViewport.tsx
+- FormulaInput.tsx
+- SampleSelector.tsx
+- Toolbar.tsx
+- Theme.tsx
+
+### Features:
+- Controlled input of expressions
+- Sample count selector
+- 3D canvas viewport
+- Toolbar for view control
+- Application state management
+
+### Phases:
+1. Layout
+2. Input and state
+3. Live canvas rendering
+
+---
+
+## 🔄 Data Flow Overview
+
+```
+User Input → FormulaInput → expressionEngine → gridCalculator
+           ↘ SampleSelector → sampleRange → gridCalculator
+Resulting SurfaceGrid → CanvasViewport → surfaceRenderer
+```
+
+---
+
+## ✅ Deliverables
+
+- Modular and testable implementation of all layers
+- Full integration between user input, math engine, and 3D rendering
+- Modern SPA with React + TypeScript + Vite
+- Test coverage for all logic modules
+
+---
+
+## 🧪 Testing
+
+- Unit tests for /core modules using Vitest
+- Snapshot/integration tests for /renderer
+- Interaction tests for /ui with Testing Library
+
+---
+
+## 📁 Compatibility
+
+This document is readable and usable by Gemini-compatible AI assistants or agents.

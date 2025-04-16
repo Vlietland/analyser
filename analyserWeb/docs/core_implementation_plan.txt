@@ -1,0 +1,111 @@
+# Implementation Plan: analyser-web /core
+
+This document defines the step-by-step implementation plan for the `core/` module in the analyser-web project.
+It includes features, responsibilities, file structure, and development phases.
+This document is designed for consumption by a Gemini-compatible AI agent.
+
+---
+
+## 🎯 Objective
+
+To implement a fully functional and testable mathematical evaluation and sampling core for the analyser-web 3D graphing application.
+
+---
+
+## 📁 Target Files in /core
+
+- core/
+  ├── evaluator/
+  │   ├── expressionEngine.ts
+  │   └── expressionTypes.ts
+  ├── grid/
+  │   ├── gridCalculator.ts
+  │   └── sampleRange.ts
+  ├── transform/
+  │   ├── transformEngine.ts
+  │   └── viewState.ts
+  └── types.ts
+
+---
+
+## 🧩 Features & Responsibilities
+
+### 1. expressionEngine.ts
+
+- Wrap math.js
+- Compile user input to executable expression
+- Evaluate expression at (x, y)
+- Handle errors in parsing or execution
+- Export: `compileExpression(input: string): CompiledExpression`
+
+### 2. expressionTypes.ts
+
+- Define types: `CompiledExpression`, `EvaluationResult`, `ParseError`
+- Structure for validation & clarity
+- Must support types for future symbolic extensions
+
+### 3. gridCalculator.ts
+
+- Create grid of (x, y) values from sample range and sample count
+- Evaluate Z = f(x,y) using expression engine
+- Export: `generateGrid(expr, range, samples): GridResult`
+
+### 4. sampleRange.ts
+
+- Define Xmin/Xmax, Ymin/Ymax structure
+- Validate and normalize range input
+- Export: `SampleRange`, `validateRange(range): boolean`
+
+### 5. transformEngine.ts
+
+- Matrix transformations (rotation, scaling)
+- Possibly extend with projection later
+- Export: `rotateMatrix(...)`, `applyTransform(...)`
+
+### 6. viewState.ts
+
+- Track zoom, rotation (phi/theta), zFactor
+- Export: `ViewState`, `updateViewState(...)`
+
+### 7. types.ts
+
+- Shared types across core: Point2D, Point3D, SurfaceGrid
+- Export data types used by both core and renderer
+
+---
+
+## 🛠️ Development Phases
+
+### Phase 1: Evaluation Engine
+
+- Build expressionTypes
+- Implement expressionEngine
+- Test with basic f(x,y)
+
+### Phase 2: Sampling
+
+- sampleRange structure
+- gridCalculator with math integration
+- Produce raw SurfaceGrid
+
+### Phase 3: Transformation
+
+- viewState to hold state
+- transformEngine to handle matrix transforms
+
+---
+
+## ✅ Unit Testing
+
+- Write unit tests for each module in `tests/`
+- Use Vitest (recommended)
+
+---
+
+## 📌 Deliverables
+
+- Fully implemented `/core` folder
+- All modules imported/exported cleanly
+- Can run standalone with test harness
+- All types defined in `types.ts`
+- High test coverage
