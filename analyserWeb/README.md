@@ -44,20 +44,7 @@ src/
 
 ## 🛠️ Setup
 
-```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Lint and format
-npm run lint
-npm run format
-
-# Run tests
-npm run test
-```
+./setup.sh
 
 ---
 
@@ -67,7 +54,8 @@ npm run test
 - Use Vitest for fast unit and integration testing
 - Run `npm run test:watch` for watch mode
 
----
+./run.sh
+
 
 ## 📘 Documentation
 

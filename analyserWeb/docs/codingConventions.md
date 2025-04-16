@@ -12,12 +12,16 @@ Applies to: /core, /renderer, /ui, /styles, /tests
 - Framework: React (Functional Components only)
 - Build tool: Vite
 - Style: Prettier + ESLint enforced
+- Use clear variables that are easy to understand
+- Keep comments limited, rather no comments
+- Keep the code compact with very limited whitelines
+- The old legacy code is a bad example of coding conventions for this project
 
 ---
 
 ## 🧱 File & Folder Structure
 
-- Use `kebab-case` for all non-component files: `grid-calculator.ts`
+- Use `camelCase` for all non-component files: `gridCalculator.ts`
 - Use `PascalCase` for React component files: `CanvasViewport.tsx`
 - Use lowercase folder names: `core/grid/`
 - Group logic by domain, not by type (e.g. `core/evaluator/`, not `services/`)

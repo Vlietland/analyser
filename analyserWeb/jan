@@ -1,0 +1,59 @@
+.
+├── docs
+│   ├── analyserImplementationPlan.txt
+│   ├── codingConventions.md
+│   ├── coreImplementationPlan.txt
+│   ├── rendererImplementationPlan.txt
+│   └── uiImplementationPlan.txt
+├── .eslintrc.json
+├── .gitignore
+├── jan
+├── .jan.kate-swp
+├── package.json
+├── package-lock.json
+├── .prettierrc
+├── public
+│   └── index.html
+├── README.md
+├── run.sh
+├── setup.sh
+├── src
+│   ├── core
+│   │   ├── evaluator
+│   │   │   ├── expressionEngine.ts
+│   │   │   └── expressionTypes.ts
+│   │   ├── grid
+│   │   │   ├── gridCalculator.ts
+│   │   │   └── sampleRange.ts
+│   │   ├── transform
+│   │   │   ├── transformEngine.ts
+│   │   │   └── viewState.ts
+│   │   └── types.ts
+│   ├── main.tsx
+│   ├── renderer
+│   │   ├── rendererState.ts
+│   │   ├── sceneBuilder.ts
+│   │   └── surfaceRenderer.ts
+│   ├── styles
+│   │   └── app.css
+│   └── ui
+│       ├── App.tsx
+│       ├── CanvasViewport.tsx
+│       ├── FormulaInput.tsx
+│       ├── SampleSelector.tsx
+│       ├── Theme.tsx
+│       └── Toolbar.tsx
+├── tests
+│   └── core
+│       ├── evaluator
+│       │   └── expressionEngine.test.ts
+│       ├── grid
+│       │   ├── gridCalculator.test.ts
+│       │   └── sampleRange.test.ts
+│       └── transform
+│           ├── transformEngine.test.ts
+│           └── viewState.test.ts
+├── tsconfig.json
+└── vitest.config.ts
+
+16 directories, 41 files
