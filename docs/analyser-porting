@@ -14,7 +14,25 @@ Result: Detailed plan for the AI agent, including tests (copied in the dir struc
 [Gpt4o] Prompt 7: Please also create a similar plan for the renderer and the UI layer
 Result: Detailed plans for the AI agent, including tests (copied in the dir structure)
 [Gpt4o] Prompt 8: Please now create a overall plan to bind everything together
-Result: Overall plan with links to the detailed plans, all files and 
+Result: Overall plan with links to the detailed plans, all files and overall instructions
+[Gpt4o] Prompt 9: Can you write generic coding conventions for the project that I can add to the projectstructure?
+Result: Coding conventions that I changed, such as camelCasing instead of kebab-conventions (sorry for that)
+[Gpt4o] Prompt 10: Please review and expand these conventions as necessary and generate ESlint and TypeScript configs
+Result: Elaborated coding conventions
+[Gpt4o] Prompt 11: Please create ESlint/TypeScript/Prettierrc/Vitest/Package and Readme for install
+Result: Generated files stored at the (presummably) right places
+[Gpt4o] Prompt 12: Please review the right location of all files (included the file tree)
+Result: Few files moved to another location
+[Gpt4o] Prompt 13: Create a bash script for a pipeline to build, unittest, show test results and start the application in the browser
+Result: Bash script in root of the new project
+
+
+
+
+
+
+
+
 
 
 
