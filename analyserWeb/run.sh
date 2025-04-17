@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+#set -e
 
 run_tests=false
 open_browser=false
@@ -43,8 +43,19 @@ if [ "$run_tests" = true ]; then
 fi
 
 if [ "$start_server" = true ]; then
-    echo "🌐 Starting preview server..."
-    npm run preview &
+    echo "🌐 Checking for existing preview server..."
+    existing_pid=$(lsof -t -i:4173)
+
+    if [ -n "$existing_pid" ]; then
+      echo "🛑 Killing existing server on port 4173 (PID $existing_pid)..."
+      kill "$existing_pid" || true   # Try graceful shutdown
+      sleep 1
+      kill -9 "$existing_pid" 2>/dev/null || true  # Force kill if still running
+      sleep 1
+    fi
+
+    echo "🚀 Starting new preview server..."
+    nohup npm run preview > /dev/null 2>&1 &
     server_pid=$!
 
     if [ "$open_browser" = true ]; then
@@ -63,5 +74,5 @@ if [ "$start_server" = true ]; then
       fi
     fi
 
-    wait $server_pid
+    #wait $server_pid
 fi
