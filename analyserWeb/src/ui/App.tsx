@@ -11,7 +11,7 @@ import { ViewState, DEFAULT_VIEW_STATE, updateViewState } from '../core/transfor
 import { useDebounce } from './hooks/useDebounce'; // Correct path
 
 function App() {
-  const [expressionString, setExpressionString] = useState('sin(sqrt(x^2+y^2))/sqrt(x^2+y^2)');
+  const [expressionString, setExpressionString] = useState('x^2+y^2');
   const [samples, setSamples] = useState(DEFAULT_SAMPLES);
   const [compiledExpressionResult, setCompiledExpressionResult] = useState<CompilationResult | null>(null);
   const [gridData, setGridData] = useState<SurfaceGrid | null>(null);
@@ -40,6 +40,10 @@ function App() {
     }
   }, [compiledExpressionResult, samples]);
 
+  useEffect(() => {
+    console.log('🔍 viewState updated:', viewState);
+  }, [viewState]);
+
   const handleViewStateChange = useCallback((updates: Partial<ViewState>) => {
     setViewState(current => updateViewState(current, updates));
   }, []);
@@ -51,7 +55,7 @@ function App() {
       <div className="controls" style={{ padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <FormulaInput value={expressionString} onChange={setExpressionString} />
         <SampleSelector value={samples} onChange={setSamples} />
-        <Toolbar onViewStateChange={handleViewStateChange} />
+        <Toolbar currentViewState={viewState} onViewStateChange={handleViewStateChange} />
       </div>
       <div className="viewport-container" style={{ flexGrow: 1, position: 'relative' }}>
         <CanvasViewport gridData={gridData} viewState={viewState} />
