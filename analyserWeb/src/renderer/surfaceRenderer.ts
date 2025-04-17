@@ -1,11 +1,9 @@
 import * as THREE from 'three';
 import { SurfaceGrid } from '../core/types';
 
-const SURFACE_MATERIAL = new THREE.MeshStandardMaterial({
+const SURFACE_MATERIAL = new THREE.MeshBasicMaterial({
   vertexColors: true,
-  side: THREE.DoubleSide,
-  metalness: 0.2,
-  roughness: 0.8,
+  side: THREE.DoubleSide
 });
 
 function getColorForZ(z: number, zMin: number, zMax: number): THREE.Color {
