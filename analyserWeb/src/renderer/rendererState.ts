@@ -51,15 +51,14 @@ function createGizmo() {
   return { gizmoScene, gizmoCamera, gizmoGroup };
 }
 
-
 function renderLoop(
-    renderer: THREE.WebGLRenderer,
-    mainScene: THREE.Scene,
-    mainCamera: THREE.Camera,
-    controls: OrbitControls,
-    gizmoScene: THREE.Scene,
-    gizmoCamera: THREE.PerspectiveCamera,
-    gizmoGroup: THREE.Group
+  renderer: THREE.WebGLRenderer,
+  mainScene: THREE.Scene,
+  mainCamera: THREE.Camera,
+  controls: OrbitControls,
+  gizmoScene: THREE.Scene,
+  gizmoCamera: THREE.PerspectiveCamera,
+  gizmoGroup: THREE.Group
 ) {
   const canvas = renderer.domElement;
   const width = canvas.clientWidth;
@@ -89,65 +88,61 @@ function renderLoop(
   animationFrameId = requestAnimationFrame(() => renderLoop(renderer, mainScene, mainCamera, controls, gizmoScene, gizmoCamera, gizmoGroup));
 }
 
-
-function handleResize(canvas: HTMLCanvasElement, camera: THREE.Camera, renderer: THREE.WebGLRenderer, controls: OrbitControls) {
+function handleResize(canvas: HTMLCanvasElement, camera: THREE.Camera, renderer: THREE.WebGLRenderer, controls: OrbitControls, zCenter: number) {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
   const needResize = canvas.width !== width || canvas.height !== height;
   if (needResize) {
     renderer.setSize(width, height, false);
     if (camera instanceof THREE.PerspectiveCamera) {
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
     } else if (camera instanceof THREE.OrthographicCamera) {
-        const aspect = width / height;
-        const currentZoom = camera.zoom;
-        const currentHeight = (camera.top - camera.bottom) / currentZoom;
-        const targetWidth = currentHeight * aspect;
-        const halfTargetWidth = targetWidth / 2;
-        const halfCurrentHeight = currentHeight / 2;
-
-        camera.left = -halfTargetWidth;
-        camera.right = halfTargetWidth;
-        camera.top = halfCurrentHeight;
-        camera.bottom = -halfCurrentHeight;
-
-        camera.updateProjectionMatrix();
+      const aspect = width / height;
+      const currentZoom = camera.zoom;
+      const currentHeight = (camera.top - camera.bottom) / currentZoom;
+      const targetWidth = currentHeight * aspect;
+      const halfTargetWidth = targetWidth / 2;
+      const halfCurrentHeight = currentHeight / 2;
+      camera.left = -halfTargetWidth;
+      camera.right = halfTargetWidth;
+      camera.top = halfCurrentHeight;
+      camera.bottom = -halfCurrentHeight;
+      camera.updateProjectionMatrix();
     }
+    controls.target.set(0, 0, zCenter);
     controls.update();
   }
 }
-
 
 export function setupRenderer(
   canvas: HTMLCanvasElement,
   mainScene: THREE.Scene,
   mainCamera: THREE.Camera,
   renderer: THREE.WebGLRenderer,
-  initialViewState: ViewState
-): { cleanup: () => void; controls: OrbitControls } { // Return controls too
-
+  initialViewState: ViewState,
+  zCenter: number
+): { cleanup: () => void; controls: OrbitControls } {
   const controls = new OrbitControls(mainCamera, renderer.domElement);
+  controls.rotateSpeed = 0.5;
   controls.enableDamping = true;
   controls.dampingFactor = 0.1;
-  controls.screenSpacePanning = false; // Keep panning relative to the origin plane
+  controls.screenSpacePanning = false;
   controls.minDistance = 0.1;
-  controls.maxDistance = 50; // Adjust as needed
-  // Set initial zoom if using OrthographicCamera
+  controls.maxDistance = 50;
   if (mainCamera instanceof THREE.OrthographicCamera) {
-      mainCamera.zoom = initialViewState.zoom;
-      mainCamera.updateProjectionMatrix();
-      controls.update(); // Ensure controls know the initial zoom
+    mainCamera.zoom = initialViewState.zoom;
+    mainCamera.updateProjectionMatrix();
+    controls.update();
   }
-  // Note: OrbitControls uses camera.position for distance in PerspectiveCamera
 
   const { gizmoScene, gizmoCamera, gizmoGroup } = createGizmo();
 
   const resizeObserver = new ResizeObserver(() => {
-    handleResize(canvas, mainCamera, renderer, controls);
+    handleResize(canvas, mainCamera, renderer, controls, zCenter);
   });
   resizeObserver.observe(canvas);
-  handleResize(canvas, mainCamera, renderer, controls);
+  handleResize(canvas, mainCamera, renderer, controls, zCenter);
 
   if (animationFrameId !== null) {
     cancelAnimationFrame(animationFrameId);
@@ -161,23 +156,22 @@ export function setupRenderer(
       animationFrameId = null;
     }
     resizeObserver.disconnect();
-    controls.dispose(); // Dispose controls
+    controls.dispose();
     gizmoScene.traverse((object) => {
-        if (object instanceof THREE.Mesh || object instanceof THREE.Sprite) {
-            object.geometry?.dispose();
-            if (Array.isArray(object.material)) {
-                object.material.forEach(mat => {
-                    mat.map?.dispose();
-                    mat.dispose();
-                });
-            } else {
-                object.material?.map?.dispose();
-                object.material?.dispose();
-            }
+      if (object instanceof THREE.Mesh || object instanceof THREE.Sprite) {
+        object.geometry?.dispose();
+        if (Array.isArray(object.material)) {
+          object.material.forEach(mat => {
+            mat.map?.dispose();
+            mat.dispose();
+          });
+        } else {
+          object.material?.map?.dispose();
+          object.material?.dispose();
         }
+      }
     });
   };
 
-  // No longer need updateViewState as controls manage camera
-  return { cleanup, controls }; // Return object
+  return { cleanup, controls };
 }

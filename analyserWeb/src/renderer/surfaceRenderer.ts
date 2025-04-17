@@ -89,6 +89,7 @@ export function renderSurface(scene: THREE.Scene, grid: SurfaceGrid | null, exis
   geometry.computeVertexNormals();
 
   const mesh = new THREE.Mesh(geometry, SURFACE_MATERIAL);
+  const zCenter = (zMin + zMax) / 2;  
   scene.add(mesh);
-  return mesh;
+  return {mesh, zCenter};
 }

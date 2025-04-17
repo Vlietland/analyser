@@ -5,93 +5,83 @@ import { ViewState } from '../core/transform/viewState';
 import { buildScene } from '../renderer/sceneBuilder';
 import { renderSurface } from '../renderer/surfaceRenderer';
 import { setupRenderer } from '../renderer/rendererState';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'; // Needed for type checking controls
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 interface CanvasViewportProps {
   gridData: SurfaceGrid | null;
   viewState: ViewState;
 }
 
-// Cleanup function type no longer needs updateViewState
 type CleanupFunction = () => void;
 
 function CanvasViewport({ gridData, viewState }: CanvasViewportProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // Store refs for renderer, camera, controls etc.
   const rendererRef = useRef<{
     scene: THREE.Scene,
-    camera: THREE.OrthographicCamera, // Assuming Orthographic for now
+    camera: THREE.OrthographicCamera,
     renderer: THREE.WebGLRenderer,
-    controls: OrbitControls // Store controls reference
+    controls: OrbitControls
   } | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
   const cleanupRef = useRef<CleanupFunction | null>(null);
+  const zCenterRef = useRef<number>(0);
 
   useEffect(() => {
-    // Initial setup
-    if (canvasRef.current && !rendererRef.current) {
-      // 1. Build the basic scene components
+    if (canvasRef.current && gridData && !rendererRef.current) {
       const { scene, camera, renderer } = buildScene(canvasRef.current);
-
-      // 2. Setup renderer logic, controls, and get cleanup + controls instance
+      const result = renderSurface(scene, gridData);
+      const zCenter = result?.zCenter ?? 0;
+      zCenterRef.current = zCenter;
       const { cleanup, controls } = setupRenderer(
         canvasRef.current,
         scene,
-        camera, // Pass the created camera
-        renderer, // Pass the created renderer
-        viewState // Pass initial viewState for zoom etc.
+        camera,
+        renderer,
+        viewState,
+        zCenter
       );
-
-      // 3. Store all references
       rendererRef.current = { scene, camera, renderer, controls };
-      cleanupRef.current = cleanup; // Store the cleanup function
+      cleanupRef.current = cleanup;
     }
-
-    // Cleanup on unmount
     return () => {
       cleanupRef.current?.();
-      rendererRef.current = null; // Clear refs
+      rendererRef.current = null;
     };
-    // Rerun setup only if viewState reference changes (unlikely for object, but good practice)
-  }, [viewState]);
+  }, [viewState, gridData]);
 
-  // Effect to render surface when gridData changes
   useEffect(() => {
     if (rendererRef.current && rendererRef.current.scene) {
-      const { scene } = rendererRef.current;
-      // Ensure meshRef is managed correctly (add/remove from scene)
+      const { scene, camera } = rendererRef.current;
       if (meshRef.current) {
         scene.remove(meshRef.current);
         meshRef.current.geometry.dispose();
-        // Assuming material is shared or managed elsewhere, otherwise dispose it too
       }
-      meshRef.current = renderSurface(scene, gridData); // renderSurface now adds to scene
+      const result = renderSurface(scene, gridData);
+      meshRef.current = result?.mesh || null;
+      zCenterRef.current = result?.zCenter ?? 0;
       if (meshRef.current) {
-         // Apply initial zFactor scale
-         meshRef.current.scale.set(1, 1, viewState.zFactor);
+        meshRef.current.scale.set(1, 1, viewState.zFactor);
+      }
+      if (camera && camera instanceof THREE.OrthographicCamera) {
+        camera.lookAt(0, 0, zCenterRef.current);
       }
     }
-  }, [gridData, viewState.zFactor]); // Rerun if grid or zFactor changes
+  }, [gridData, viewState.zFactor]);
 
-
-  // Effect to update camera zoom and mesh zFactor based on viewState changes
   useEffect(() => {
     if (rendererRef.current && rendererRef.current.camera) {
       const { camera, controls } = rendererRef.current;
-      // Update camera zoom (only for Orthographic)
       if (camera instanceof THREE.OrthographicCamera) {
         camera.zoom = viewState.zoom;
         camera.updateProjectionMatrix();
-        controls.update(); // Important after camera changes
+        controls.target.set(0, 0, zCenterRef.current);
+        controls.update();
       }
-      // Update mesh Z scale
       if (meshRef.current) {
         meshRef.current.scale.z = viewState.zFactor;
       }
     }
-    // Exclude controls from dependency array as it's stable
   }, [viewState.zoom, viewState.zFactor]);
-
 
   return (
     <canvas
