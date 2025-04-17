@@ -20,14 +20,18 @@ function getColorForZ(z: number, zMin: number, zMax: number): THREE.Color {
   return color;
 }
 
-export function renderSurface(scene: THREE.Scene, grid: SurfaceGrid | null, existingMesh?: THREE.Mesh): THREE.Mesh | null {
-  if (existingMesh) {
-    scene.remove(existingMesh);
-    existingMesh.geometry.dispose();
-  }
+// Correct the return type signature
+export function renderSurface(scene: THREE.Scene, grid: SurfaceGrid | null): { mesh: THREE.Mesh | null; zCenter: number } {
+  // Remove existingMesh parameter as it's handled in CanvasViewport now
+  // if (existingMesh) {
+  //   scene.remove(existingMesh);
+  //   existingMesh.geometry.dispose();
+  // }
   if (!grid || grid.points.length < 2 || grid.points[0].length < 2) {
-    return null;
+    // Return null mesh and default zCenter if no grid
+    return { mesh: null, zCenter: 0 };
   }
+  // Removed extra brace here
 
   const geometry = new THREE.BufferGeometry();
   const vertices: number[] = [];
@@ -89,7 +93,7 @@ export function renderSurface(scene: THREE.Scene, grid: SurfaceGrid | null, exis
   geometry.computeVertexNormals();
 
   const mesh = new THREE.Mesh(geometry, SURFACE_MATERIAL);
-  const zCenter = (zMin + zMax) / 2;  
-  scene.add(mesh);
-  return {mesh, zCenter};
+  const zCenter = (zMin + zMax) / 2;
+  scene.add(mesh); // Add the newly created mesh to the scene
+  return { mesh, zCenter }; // Return the object
 }

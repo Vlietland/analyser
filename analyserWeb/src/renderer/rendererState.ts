@@ -29,6 +29,7 @@ function createGizmo() {
     context.textBaseline = 'middle';
     context.fillText(text, canvas.width / 2, canvas.height / 2);
     const texture = new THREE.CanvasTexture(canvas);
+    texture.flipY = false;
     texture.needsUpdate = true;
     const material = new THREE.SpriteMaterial({ map: texture, depthTest: false, transparent: true });
     const sprite = new THREE.Sprite(material);

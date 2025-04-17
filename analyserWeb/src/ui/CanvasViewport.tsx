@@ -27,58 +27,80 @@ function CanvasViewport({ gridData, viewState }: CanvasViewportProps) {
   const zCenterRef = useRef<number>(0);
 
   useEffect(() => {
-    if (canvasRef.current && gridData && !rendererRef.current) {
+    let localCleanup: CleanupFunction | null = null;
+    if (canvasRef.current && !rendererRef.current) {
       const { scene, camera, renderer } = buildScene(canvasRef.current);
-      const result = renderSurface(scene, gridData);
-      const zCenter = result?.zCenter ?? 0;
-      zCenterRef.current = zCenter;
+      const initialZCenter = 0;
       const { cleanup, controls } = setupRenderer(
         canvasRef.current,
         scene,
         camera,
         renderer,
         viewState,
-        zCenter
+        initialZCenter
       );
       rendererRef.current = { scene, camera, renderer, controls };
+      localCleanup = cleanup;
       cleanupRef.current = cleanup;
     }
     return () => {
-      cleanupRef.current?.();
-      rendererRef.current = null;
+      localCleanup?.();
+      if (rendererRef.current) {
+        if (meshRef.current) {
+          rendererRef.current.scene.remove(meshRef.current);
+          meshRef.current.geometry.dispose();
+          meshRef.current = null;
+        }
+        rendererRef.current = null;
+      }
     };
-  }, [viewState, gridData]);
+  }, []);
 
   useEffect(() => {
     if (rendererRef.current && rendererRef.current.scene) {
-      const { scene, camera } = rendererRef.current;
+      const { scene, camera, controls } = rendererRef.current;
       if (meshRef.current) {
         scene.remove(meshRef.current);
         meshRef.current.geometry.dispose();
+        meshRef.current = null;
       }
-      const result = renderSurface(scene, gridData);
-      meshRef.current = result?.mesh || null;
-      zCenterRef.current = result?.zCenter ?? 0;
-      if (meshRef.current) {
-        meshRef.current.scale.set(1, 1, viewState.zFactor);
-      }
-      if (camera && camera instanceof THREE.OrthographicCamera) {
-        camera.lookAt(0, 0, zCenterRef.current);
+      if (gridData) {
+        const result = renderSurface(scene, gridData);
+        meshRef.current = result?.mesh || null;
+        zCenterRef.current = result?.zCenter ?? 0;
+        if (meshRef.current) {
+          meshRef.current.scale.set(1, 1, viewState.zFactor);
+        }
+        if (camera instanceof THREE.OrthographicCamera) {
+          camera.lookAt(0, 0, zCenterRef.current);
+          controls.target.set(0, 0, zCenterRef.current);
+          controls.update();
+        }
       }
     }
-  }, [gridData, viewState.zFactor]);
+  }, [gridData]);
 
   useEffect(() => {
-    if (rendererRef.current && rendererRef.current.camera) {
-      const { camera, controls } = rendererRef.current;
-      if (camera instanceof THREE.OrthographicCamera) {
-        camera.zoom = viewState.zoom;
-        camera.updateProjectionMatrix();
-        controls.target.set(0, 0, zCenterRef.current);
-        controls.update();
+    if (rendererRef.current && rendererRef.current.camera && rendererRef.current.scene) {
+      const { scene, camera, controls } = rendererRef.current;
+      if (meshRef.current && gridData) {
+        scene.remove(meshRef.current);
+        meshRef.current.geometry.dispose();
+        const result = renderSurface(scene, gridData);
+        meshRef.current = result?.mesh || null;
+        zCenterRef.current = result?.zCenter ?? zCenterRef.current;
+        if (meshRef.current) {
+          meshRef.current.scale.set(1, 1, viewState.zFactor);
+          scene.add(meshRef.current);
+        }
       }
-      if (meshRef.current) {
-        meshRef.current.scale.z = viewState.zFactor;
+      if (camera instanceof THREE.OrthographicCamera) {
+        if (camera.zoom !== viewState.zoom) {
+          camera.zoom = viewState.zoom;
+          camera.updateProjectionMatrix();
+        }
+        controls.target.set(0, 0, zCenterRef.current * viewState.zFactor);
+        controls.update();
       }
     }
   }, [viewState.zoom, viewState.zFactor]);
