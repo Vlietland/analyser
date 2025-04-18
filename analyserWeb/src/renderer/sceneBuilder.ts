@@ -19,10 +19,9 @@ export function buildScene(canvas: HTMLCanvasElement) {
     1000          // far
   );
 
-  // Fixed camera position looking down -Z axis, Y is up
-  camera.position.set(0, 0, 10);
+    camera.position.set(0, 0, 10);
   camera.lookAt(0, 0, 0);
-  camera.up.set(0, 0, 1); // Ensure Y is up
+  camera.up.set(0, 0, 1); // Ensure Z is up
 
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
   scene.add(ambientLight);

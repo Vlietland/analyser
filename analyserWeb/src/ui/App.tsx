@@ -35,7 +35,6 @@ function App() {
 
   useEffect(() => {
     if (compiledExpressionResult && isCompiledExpression(compiledExpressionResult)) {
-      // Use sampleRange state in generateGrid
       const newGrid = generateGrid(compiledExpressionResult, sampleRange, samples);
       setGridData(newGrid);
     } else if (!compiledExpressionResult) {
@@ -53,16 +52,12 @@ function App() {
       const TWO_PI = Math.PI * 2;
       let finalRotationX = intermediateState.rotationX;
       let finalRotationZ = intermediateState.rotationZ;
-
-      // Wrap rotation angles
       if (finalRotationX !== undefined) {
         finalRotationX = (finalRotationX % TWO_PI + TWO_PI) % TWO_PI; // Ensure positive modulo
       }
       if (finalRotationZ !== undefined) {
         finalRotationZ = (finalRotationZ % TWO_PI + TWO_PI) % TWO_PI; // Ensure positive modulo
       }
-
-      // Return a new state object if angles changed, otherwise the intermediate one
       if (finalRotationX !== intermediateState.rotationX || finalRotationZ !== intermediateState.rotationZ) {
         return {
           ...intermediateState,
