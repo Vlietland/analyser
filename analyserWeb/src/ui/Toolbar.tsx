@@ -12,7 +12,7 @@ const Z_FACTOR_STEP = 0.1; // Additive z-scale
 
 function Toolbar({ currentViewState, onViewStateChange }: ToolbarProps) {
   const handleZoom = (factor: number) => {
-    onViewStateChange({ zoom: currentViewState.zoom * factor });
+    onViewStateChange({ zoomCamera: currentViewState.zoomCamera * factor });
   };
   const handleZFactor = (delta: number) => {
     onViewStateChange({ zFactor: currentViewState.zFactor + delta });
@@ -20,10 +20,10 @@ function Toolbar({ currentViewState, onViewStateChange }: ToolbarProps) {
 
   return (
     <div style={{ marginTop: '5px', display: 'flex', gap: '5px' }}>
-      <button onClick={() => handleZoom(ZOOM_STEP)} title="Zoom In">+</button>
-      <button onClick={() => handleZoom(1 / ZOOM_STEP)} title="Zoom Out">-</button>
-      <button onClick={() => handleZFactor(Z_FACTOR_STEP)} title="Increase Z-Factor">Z+</button>
-      <button onClick={() => handleZFactor(-Z_FACTOR_STEP)} title="Decrease Z-Factor">Z-</button>
+      <button onClick={() => handleZFactor(Z_FACTOR_STEP)} title="Increase Z-Factor">Zfactor+</button>
+      <button onClick={() => handleZFactor(-Z_FACTOR_STEP)} title="Decrease Z-Factor">Zfactor-</button>
+      <button onClick={() => handleZoom(ZOOM_STEP)} title="Zoom In Camera">Camera+</button>
+      <button onClick={() => handleZoom(1 / ZOOM_STEP)} title="Zoom Out Camera">Camera-</button>
     </div>
   );
 }

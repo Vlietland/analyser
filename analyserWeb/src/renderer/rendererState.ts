@@ -132,7 +132,7 @@ export function setupRenderer(
   controls.minDistance = 0.1;
   controls.maxDistance = 50;
   if (mainCamera instanceof THREE.OrthographicCamera) {
-    mainCamera.zoom = initialViewState.zoom;
+    mainCamera.zoom = initialViewState.zoomCamera;
     mainCamera.updateProjectionMatrix();
     controls.update();
   }

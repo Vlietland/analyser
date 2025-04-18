@@ -57,12 +57,11 @@ function CanvasViewport({ gridData, viewState }: CanvasViewportProps) {
   }, []);
 
   useEffect(() => {
-    if (rendererRef.current && rendererRef.current.scene) {
+    if (rendererRef.current && rendererRef.current.scene && rendererRef.current.camera) {
       const { scene, camera, controls } = rendererRef.current;
       if (meshRef.current) {
         scene.remove(meshRef.current);
         meshRef.current.geometry.dispose();
-        meshRef.current = null;
       }
       if (gridData) {
         const result = renderSurface(scene, gridData);
@@ -70,40 +69,18 @@ function CanvasViewport({ gridData, viewState }: CanvasViewportProps) {
         zCenterRef.current = result?.zCenter ?? 0;
         if (meshRef.current) {
           meshRef.current.scale.set(1, 1, viewState.zFactor);
+          scene.add(meshRef.current);
         }
         if (camera instanceof THREE.OrthographicCamera) {
-          camera.lookAt(0, 0, zCenterRef.current);
-          controls.target.set(0, 0, zCenterRef.current);
+          camera.zoom = viewState.zoomCamera;
+          camera.updateProjectionMatrix();
+          camera.lookAt(0, 0, zCenterRef.current * viewState.zFactor);
+          controls.target.set(0, 0, zCenterRef.current * viewState.zFactor);
           controls.update();
         }
       }
     }
-  }, [gridData]);
-
-  useEffect(() => {
-    if (rendererRef.current && rendererRef.current.camera && rendererRef.current.scene) {
-      const { scene, camera, controls } = rendererRef.current;
-      if (meshRef.current && gridData) {
-        scene.remove(meshRef.current);
-        meshRef.current.geometry.dispose();
-        const result = renderSurface(scene, gridData);
-        meshRef.current = result?.mesh || null;
-        zCenterRef.current = result?.zCenter ?? zCenterRef.current;
-        if (meshRef.current) {
-          meshRef.current.scale.set(1, 1, viewState.zFactor);
-          scene.add(meshRef.current);
-        }
-      }
-      if (camera instanceof THREE.OrthographicCamera) {
-        if (camera.zoom !== viewState.zoom) {
-          camera.zoom = viewState.zoom;
-          camera.updateProjectionMatrix();
-        }
-        controls.target.set(0, 0, zCenterRef.current * viewState.zFactor);
-        controls.update();
-      }
-    }
-  }, [viewState.zoom, viewState.zFactor]);
+  }, [gridData, viewState.zoomCamera, viewState.zFactor]); 
 
   return (
     <canvas
