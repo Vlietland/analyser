@@ -77,7 +77,12 @@ function App() {
       <div className="controls" style={{ padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px' }}>
         <FormulaInput value={expressionString} onChange={setExpressionString} />
         <SampleSelector value={samples} onChange={setSamples} />
-        <Toolbar currentViewState={viewState} onViewStateChange={handleViewStateChange} />
+        <Toolbar 
+          currentViewState={viewState} 
+          onViewStateChange={handleViewStateChange}
+          currentSampleRange={sampleRange}
+          onSampleRangeChange={setSampleRange}
+        />
         <div style={{ marginLeft: 'auto', fontSize: '0.9em', color: '#555' }}>
           X: [{sampleRange.xMin.toFixed(2)}, {sampleRange.xMax.toFixed(2)}] | Y: [{sampleRange.yMin.toFixed(2)}, {sampleRange.yMax.toFixed(2)}]
         </div>
