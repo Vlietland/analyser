@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import FormulaInput from './FormulaInput';
 import SampleSelector from './SampleSelector';
 import CanvasViewport from './CanvasViewport';
@@ -42,10 +42,6 @@ function App() {
     }
   }, [compiledExpressionResult, samples, sampleRange]); // Add sampleRange dependency
 
-  useEffect(() => {
-    console.log('🔍 viewState updated:', viewState);
-  }, [viewState]);
-
   const handleViewStateChange = useCallback((updates: Partial<ViewState>) => {
     setViewState(current => {
       const intermediateState = updateViewState(current, updates);
@@ -69,6 +65,23 @@ function App() {
       }
     });
   }, []);
+
+  const calculateIdealCameraZoom = useCallback((range: SampleRange): number => {
+    const gridWidth = Math.abs(range.xMax - range.xMin);
+    const gridHeight = Math.abs(range.yMax - range.yMin);
+    const maxDimension = Math.max(gridWidth, gridHeight);
+    const BASE_ZOOM = 10;
+    return BASE_ZOOM / maxDimension;
+  }, []);
+
+  useEffect(() => {
+    const idealZoom = calculateIdealCameraZoom(sampleRange);
+    handleViewStateChange({ zoomCamera: idealZoom });
+  }, [sampleRange, calculateIdealCameraZoom, handleViewStateChange]);
+
+  useEffect(() => {
+    console.log('🔍 viewState updated:', viewState);
+  }, [viewState]);
 
   return (
     <div className="app-container" style={{ display: 'flex', height: '100vh', flexDirection: 'column' }}>
