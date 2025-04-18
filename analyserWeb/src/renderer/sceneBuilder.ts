@@ -23,12 +23,12 @@ export function buildScene(canvas: HTMLCanvasElement) {
   camera.lookAt(0, 0, 0);
   camera.up.set(0, 0, 1); // Ensure Z is up
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambientLight);
+  //const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  //scene.add(ambientLight);
 
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  directionalLight.position.set(10, 20, 15);
-  scene.add(directionalLight);
+  //const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  //directionalLight.position.set(10, 20, 15);
+  //scene.add(directionalLight);
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
