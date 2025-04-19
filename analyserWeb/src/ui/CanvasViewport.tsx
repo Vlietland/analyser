@@ -43,6 +43,7 @@ function CanvasViewport({
   const isDraggingRef = useRef(false);
   const lastPosRef = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
 
+  //run once on mount to setup the scene, camera, renderer, controls and gizmo
   useEffect(() => {
     let localCleanup: CleanupFunction | null = null;
     if (canvasRef.current && !rendererRef.current) {
@@ -73,6 +74,7 @@ function CanvasViewport({
     };
   }, []);
 
+  // Listens globally for mouseup, Resets isDraggingRef to stop drag interaction regardless of tool.
   useEffect(() => {
     const handleMouseUp = () => {
       isDraggingRef.current = false;
@@ -83,6 +85,8 @@ function CanvasViewport({
     };
   }, []);
 
+  // Handles mouse-based zooming. On drag: calculates a zoom factor from vertical mouse movement.
+  // Adjusts currentSampleRange proportionally around the center. Updates camera and controls.
   useEffect(() => {
     if (activeTool !== 'zoom') return;
     const canvas = canvasRef.current;
@@ -129,6 +133,8 @@ function CanvasViewport({
     };
   }, [activeTool, currentSampleRange, onSampleRangeChange]);
 
+  // Handles panning (shifting) of the view. On drag: shifts the currentSampleRange in X and Y.
+  // Updates the camera controls.target to match the new center.
   useEffect(() => {
     if (activeTool !== 'shift') return;
     const canvas = canvasRef.current;
@@ -183,6 +189,8 @@ function CanvasViewport({
     };
   }, [activeTool, currentSampleRange, onSampleRangeChange, onViewStateChange]);
 
+  // Runs only when activeTool === 'zfactor' updates viewState.zFactor, scaling it inversely (as per your correction: smaller = taller)
+  // Clamps: keeps zFactor above 0.1 to avoid collapse/inversion. Triggers: camera control update
   useEffect(() => {
     if (activeTool !== 'zfactor') return;
     const canvas = canvasRef.current;
@@ -197,7 +205,7 @@ function CanvasViewport({
       if (!isDraggingRef.current) return;
 
       const deltaY = e.clientY - lastPosRef.current.y;
-      const newZFactor = viewState.zFactor + (deltaY * MOUSE_SENSITIVITY * -1);
+      const newZFactor = viewState.zFactor + (deltaY * MOUSE_SENSITIVITY);
       
       if (newZFactor > 0.1) {
         onViewStateChange({ zFactor: newZFactor });
@@ -218,6 +226,8 @@ function CanvasViewport({
     };
   }, [activeTool, viewState.zFactor, onViewStateChange]);
 
+  // Enables/disables OrbitControls. Attaches a 'change' listener to extract camera orientation.
+  // Updates viewState.rotationX and rotationZ using camera position relative to target.
   useEffect(() => {
     if (rendererRef.current?.controls) {
       rendererRef.current.controls.enabled = activeTool === 'rotate';
@@ -250,6 +260,8 @@ function CanvasViewport({
     }
   }, [activeTool, onViewStateChange]);
 
+  // Renders new surface mesh on gridData change. Applies new zoom level (zoomCamera) and height scaling (zFactor).
+  // Sets camera zoom, lookAt, and control target accordingly. Also handles disposing old mesh.
   useEffect(() => {
     if (rendererRef.current && rendererRef.current.scene && rendererRef.current.camera) {
       const { scene, camera, controls } = rendererRef.current;
@@ -262,14 +274,14 @@ function CanvasViewport({
         meshRef.current = result?.mesh || null;
         zCenterRef.current = result?.zCenter ?? 0;
         if (meshRef.current) {
-          meshRef.current.scale.set(1, 1, viewState.zFactor);
+          meshRef.current.scale.set(1, 1, 1 / viewState.zFactor);
           scene.add(meshRef.current);
         }
         if (camera instanceof THREE.OrthographicCamera) {
           camera.zoom = viewState.zoomCamera;
           camera.updateProjectionMatrix();
-          camera.lookAt(0, 0, zCenterRef.current * viewState.zFactor);
-          controls.target.set(0, 0, zCenterRef.current * viewState.zFactor);
+          camera.lookAt(0, 0, zCenterRef.current * 1 / viewState.zFactor);
+          controls.target.set(0, 0, zCenterRef.current / viewState.zFactor);
           controls.update();
         }
       }
