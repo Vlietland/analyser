@@ -6,9 +6,9 @@ export interface ViewState {
 }
 
 export const DEFAULT_VIEW_STATE: ViewState = {
-  zoomCamera: 1.0,
-  rotationX: 0.5,
-  rotationZ: 0.5,
+  zoomCamera: 0.8,
+  rotationX: 0.78,
+  rotationZ: 3.92,
   zFactor: 1.0,
 };
 

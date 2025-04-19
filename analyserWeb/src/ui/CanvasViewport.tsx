@@ -6,6 +6,7 @@ import { validateRange } from '../core/grid/sampleRange';
 import { buildScene } from '../renderer/sceneBuilder';
 import { renderSurface } from '../renderer/surfaceRenderer';
 import { setupRenderer } from '../renderer/rendererState';
+import { GizmoResources } from './viewportGizmo';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 interface CanvasViewportProps {
@@ -32,7 +33,8 @@ function CanvasViewport({
     scene: THREE.Scene,
     camera: THREE.OrthographicCamera,
     renderer: THREE.WebGLRenderer,
-    controls: OrbitControls
+    controls: OrbitControls,
+    gizmoResources: GizmoResources
   } | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
   const cleanupRef = useRef<CleanupFunction | null>(null);
@@ -40,13 +42,13 @@ function CanvasViewport({
   const MOUSE_SENSITIVITY = 0.01;
   const isDraggingRef = useRef(false);
   const lastPosRef = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
-  
+
   useEffect(() => {
     let localCleanup: CleanupFunction | null = null;
     if (canvasRef.current && !rendererRef.current) {
-      const { scene, camera, renderer } = buildScene(canvasRef.current);
+      const { scene, camera, renderer } = buildScene(canvasRef.current, viewState);
       const initialZCenter = 0;
-      const { cleanup, controls } = setupRenderer(
+      const { cleanup, controls, gizmoResources } = setupRenderer(
         canvasRef.current,
         scene,
         camera,
@@ -54,7 +56,7 @@ function CanvasViewport({
         viewState,
         initialZCenter
       );
-      rendererRef.current = { scene, camera, renderer, controls };
+      rendererRef.current = { scene, camera, renderer, controls, gizmoResources };
       localCleanup = cleanup;
       cleanupRef.current = cleanup;
     }
@@ -72,21 +74,165 @@ function CanvasViewport({
   }, []);
 
   useEffect(() => {
+    const handleMouseUp = () => {
+      isDraggingRef.current = false;
+    };
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (activeTool !== 'zoom') return;
+    const canvas = canvasRef.current;
+    if (!canvas || !rendererRef.current || !currentSampleRange || !onSampleRangeChange) return;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      isDraggingRef.current = true;
+      lastPosRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDraggingRef.current) return;
+
+      const deltaY = e.clientY - lastPosRef.current.y;
+      const zoomFactor = 1 + deltaY * MOUSE_SENSITIVITY;
+      const centerX = (currentSampleRange.xMax + currentSampleRange.xMin) / 2;
+      const centerY = (currentSampleRange.yMax + currentSampleRange.yMin) / 2;
+      const halfWidth = (currentSampleRange.xMax - currentSampleRange.xMin) * zoomFactor / 2;
+      const halfHeight = (currentSampleRange.yMax - currentSampleRange.yMin) * zoomFactor / 2;
+
+      const newRange = {
+        xMin: centerX - halfWidth,
+        xMax: centerX + halfWidth,
+        yMin: centerY - halfHeight,
+        yMax: centerY + halfHeight
+      };
+
+      if (validateRange(newRange)) {
+        onSampleRangeChange(newRange);
+        if (rendererRef.current) {
+          rendererRef.current.controls.update();
+        }
+      }
+
+      lastPosRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    canvas.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      canvas.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [activeTool, currentSampleRange, onSampleRangeChange]);
+
+  useEffect(() => {
+    if (activeTool !== 'shift') return;
+    const canvas = canvasRef.current;
+    if (!canvas || !rendererRef.current || !currentSampleRange || !onSampleRangeChange || !onViewStateChange) return;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      isDraggingRef.current = true;
+      lastPosRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDraggingRef.current) return;
+
+      const deltaX = e.clientX - lastPosRef.current.x;
+      const deltaY = e.clientY - lastPosRef.current.y;
+      const width = currentSampleRange.xMax - currentSampleRange.xMin;
+      const height = currentSampleRange.yMax - currentSampleRange.yMin;
+      const shiftX = deltaX * width * MOUSE_SENSITIVITY;
+      const shiftY = -deltaY * height * MOUSE_SENSITIVITY;
+
+      const newRange = {
+        xMin: currentSampleRange.xMin + shiftX,
+        xMax: currentSampleRange.xMax + shiftX,
+        yMin: currentSampleRange.yMin + shiftY,
+        yMax: currentSampleRange.yMax + shiftY
+      };
+
+      if (validateRange(newRange)) {
+        onSampleRangeChange(newRange);
+        if (rendererRef.current) {
+          const { controls, camera } = rendererRef.current;
+          const currentTarget = controls.target.clone();
+          controls.target.set(
+            currentTarget.x + shiftX,
+            currentTarget.y + shiftY,
+            currentTarget.z
+          );
+          camera.lookAt(controls.target);
+          controls.update();
+        }
+      }
+
+      lastPosRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    canvas.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      canvas.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [activeTool, currentSampleRange, onSampleRangeChange, onViewStateChange]);
+
+  useEffect(() => {
+    if (activeTool !== 'zfactor') return;
+    const canvas = canvasRef.current;
+    if (!canvas || !rendererRef.current || !onViewStateChange) return;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      isDraggingRef.current = true;
+      lastPosRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDraggingRef.current) return;
+
+      const deltaY = e.clientY - lastPosRef.current.y;
+      const newZFactor = viewState.zFactor + (deltaY * MOUSE_SENSITIVITY * -1);
+      
+      if (newZFactor > 0.1) {
+        onViewStateChange({ zFactor: newZFactor });
+        if (rendererRef.current) {
+          rendererRef.current.controls.update();
+        }
+      }
+
+      lastPosRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    canvas.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      canvas.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [activeTool, viewState.zFactor, onViewStateChange]);
+
+  useEffect(() => {
     if (rendererRef.current?.controls) {
       rendererRef.current.controls.enabled = activeTool === 'rotate';
-      
+
       if (activeTool === 'rotate' && onViewStateChange) {
         const controls = rendererRef.current.controls;
-        
+
         const updateRotationFromCamera = () => {
           const camera = rendererRef.current?.camera;
           if (!camera) return;
-          
+
           const position = new THREE.Vector3();
           camera.getWorldPosition(position);
-          
           const target = controls.target;
-          const direction = new THREE.Vector3().subVectors(target, position).normalize(); // from camera to target
+          const direction = new THREE.Vector3().subVectors(target, position).normalize();
           const rotationX = Math.atan2(-direction.z, Math.sqrt(direction.x ** 2 + direction.y ** 2));
           const rotationZ = Math.atan2(direction.y, direction.x);
 
@@ -95,95 +241,14 @@ function CanvasViewport({
             rotationZ: rotationZ
           });
         };
-        
+
         controls.addEventListener('change', updateRotationFromCamera);
-        
         return () => {
           controls.removeEventListener('change', updateRotationFromCamera);
         };
       }
     }
   }, [activeTool, onViewStateChange]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !rendererRef.current || !currentSampleRange || !onSampleRangeChange || !onViewStateChange) return;
-    
-    const handleMouseDown = (e: MouseEvent) => {
-      if (activeTool === 'rotate') return;
-      isDraggingRef.current = true;
-      lastPosRef.current = { x: e.clientX, y: e.clientY };
-    };
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDraggingRef.current || activeTool === 'rotate' || !currentSampleRange) return;
-      
-      const deltaX = e.clientX - lastPosRef.current.x;
-      const deltaY = e.clientY - lastPosRef.current.y;
-      
-      switch (activeTool) {
-        case 'shift': {
-          const centerX = (currentSampleRange.xMax + currentSampleRange.xMin) / 2;
-          const centerY = (currentSampleRange.yMax + currentSampleRange.yMin) / 2;
-          const width = currentSampleRange.xMax - currentSampleRange.xMin;
-          const height = currentSampleRange.yMax - currentSampleRange.yMin;
-          
-          const shiftX = deltaX * width * MOUSE_SENSITIVITY;
-          const shiftY = -deltaY * height * MOUSE_SENSITIVITY;
-          
-          const newRange = {
-            xMin: currentSampleRange.xMin + shiftX,
-            xMax: currentSampleRange.xMax + shiftX,
-            yMin: currentSampleRange.yMin + shiftY,
-            yMax: currentSampleRange.yMax + shiftY
-          };
-          
-          if (validateRange(newRange)) onSampleRangeChange(newRange);
-          break;
-        }
-        case 'zoom': {
-          const zoomFactor = 1 + (deltaY * MOUSE_SENSITIVITY);
-          const centerX = (currentSampleRange.xMax + currentSampleRange.xMin) / 2;
-          const centerY = (currentSampleRange.yMax + currentSampleRange.yMin) / 2;
-          const halfWidth = (currentSampleRange.xMax - currentSampleRange.xMin) * zoomFactor / 2;
-          const halfHeight = (currentSampleRange.yMax - currentSampleRange.yMin) * zoomFactor / 2;
-          
-          const newRange = {
-            xMin: centerX - halfWidth,
-            xMax: centerX + halfWidth,
-            yMin: centerY - halfHeight,
-            yMax: centerY + halfHeight
-          };
-          
-          if (validateRange(newRange)) onSampleRangeChange(newRange);
-          break;
-        }
-        case 'zfactor': {
-          const newZFactor = viewState.zFactor + (deltaY * MOUSE_SENSITIVITY * -1);
-          if (newZFactor > 0.1) {
-            onViewStateChange({ zFactor: newZFactor });
-          }
-          break;
-        }
-      }
-      
-      lastPosRef.current = { x: e.clientX, y: e.clientY };
-    };
-    
-    const handleMouseUp = () => {
-      isDraggingRef.current = false;
-    };
-    
-    canvas.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-    
-    return () => {
-      canvas.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [activeTool, viewState, currentSampleRange, onViewStateChange, onSampleRangeChange]);
 
   useEffect(() => {
     if (rendererRef.current && rendererRef.current.scene && rendererRef.current.camera) {
@@ -209,7 +274,7 @@ function CanvasViewport({
         }
       }
     }
-  }, [gridData, viewState.zoomCamera, viewState.zFactor]); 
+  }, [gridData, viewState.zoomCamera, viewState.zFactor]);
 
   return (
     <canvas
