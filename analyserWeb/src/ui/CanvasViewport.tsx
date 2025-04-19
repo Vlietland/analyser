@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { SurfaceGrid, SampleRange } from '../core/types';
 import { ViewState } from '../core/transform/viewState';
+import * as transformEngine from '../core/transform/transformEngine';
 import { validateRange } from '../core/grid/sampleRange';
 import { buildScene } from '../renderer/sceneBuilder';
 import { renderSurface } from '../renderer/surfaceRenderer';
@@ -72,7 +73,7 @@ function CanvasViewport({
         rendererRef.current = null;
       }
     };
-  }, []);
+  }, [viewState]);
 
   // Listens globally for mouseup, Resets isDraggingRef to stop drag interaction regardless of tool.
   useEffect(() => {
@@ -101,23 +102,24 @@ function CanvasViewport({
       if (!isDraggingRef.current) return;
 
       const deltaY = e.clientY - lastPosRef.current.y;
-      const zoomFactor = 1 + deltaY * MOUSE_SENSITIVITY;
-      const centerX = (currentSampleRange.xMax + currentSampleRange.xMin) / 2;
-      const centerY = (currentSampleRange.yMax + currentSampleRange.yMin) / 2;
-      const halfWidth = (currentSampleRange.xMax - currentSampleRange.xMin) * zoomFactor / 2;
-      const halfHeight = (currentSampleRange.yMax - currentSampleRange.yMin) * zoomFactor / 2;
-
-      const newRange = {
-        xMin: centerX - halfWidth,
-        xMax: centerX + halfWidth,
-        yMin: centerY - halfHeight,
-        yMax: centerY + halfHeight
-      };
+      
+      // Use transformEngine functions
+      const zoomFactor = transformEngine.calculateZoomFactor(deltaY, MOUSE_SENSITIVITY);
+      const newRange = transformEngine.applyZoomToRange(currentSampleRange, zoomFactor);
 
       if (validateRange(newRange)) {
         onSampleRangeChange(newRange);
-        if (rendererRef.current) {
-          rendererRef.current.controls.update();
+        if (rendererRef.current && onViewStateChange) {
+          const { controls } = rendererRef.current;
+          
+          // Update viewState with current target position
+          onViewStateChange({
+            targetX: controls.target.x,
+            targetY: controls.target.y,
+            targetZ: controls.target.z
+          });
+          
+          controls.update();
         }
       }
 
@@ -131,7 +133,7 @@ function CanvasViewport({
       canvas.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [activeTool, currentSampleRange, onSampleRangeChange]);
+  }, [activeTool, currentSampleRange, onSampleRangeChange, onViewStateChange]);
 
   // Handles panning (shifting) of the view. On drag: shifts the currentSampleRange in X and Y.
   // Updates the camera controls.target to match the new center.
@@ -150,30 +152,39 @@ function CanvasViewport({
 
       const deltaX = e.clientX - lastPosRef.current.x;
       const deltaY = e.clientY - lastPosRef.current.y;
-      const width = currentSampleRange.xMax - currentSampleRange.xMin;
-      const height = currentSampleRange.yMax - currentSampleRange.yMin;
-      const shiftX = deltaX * width * MOUSE_SENSITIVITY;
-      const shiftY = -deltaY * height * MOUSE_SENSITIVITY;
-
-      const newRange = {
-        xMin: currentSampleRange.xMin + shiftX,
-        xMax: currentSampleRange.xMax + shiftX,
-        yMin: currentSampleRange.yMin + shiftY,
-        yMax: currentSampleRange.yMax + shiftY
-      };
+      
+      // Use transformEngine functions
+      const { shiftX, shiftY } = transformEngine.calculateShift(
+        currentSampleRange, 
+        deltaX, 
+        deltaY, 
+        MOUSE_SENSITIVITY
+      );
+      const newRange = transformEngine.applyShiftToRange(currentSampleRange, shiftX, shiftY);
 
       if (validateRange(newRange)) {
         onSampleRangeChange(newRange);
         if (rendererRef.current) {
           const { controls, camera } = rendererRef.current;
           const currentTarget = controls.target.clone();
+          
+          // Update controls target
           controls.target.set(
             currentTarget.x + shiftX,
             currentTarget.y + shiftY,
             currentTarget.z
           );
+          
+          // Update camera to look at new target
           camera.lookAt(controls.target);
           controls.update();
+          
+          // Update viewState with new target position
+          onViewStateChange({
+            targetX: controls.target.x,
+            targetY: controls.target.y,
+            targetZ: controls.target.z
+          });
         }
       }
 
@@ -208,9 +219,20 @@ function CanvasViewport({
       const newZFactor = viewState.zFactor + (deltaY * MOUSE_SENSITIVITY);
       
       if (newZFactor > 0.1) {
-        onViewStateChange({ zFactor: newZFactor });
         if (rendererRef.current) {
-          rendererRef.current.controls.update();
+          const { controls } = rendererRef.current;
+          
+          // Update viewState with new zFactor and current target position
+          onViewStateChange({ 
+            zFactor: newZFactor,
+            targetX: controls.target.x,
+            targetY: controls.target.y,
+            targetZ: controls.target.z
+          });
+          
+          controls.update();
+        } else {
+          onViewStateChange({ zFactor: newZFactor });
         }
       }
 
@@ -242,13 +264,16 @@ function CanvasViewport({
           const position = new THREE.Vector3();
           camera.getWorldPosition(position);
           const target = controls.target;
-          const direction = new THREE.Vector3().subVectors(target, position).normalize();
-          const rotationX = Math.atan2(-direction.z, Math.sqrt(direction.x ** 2 + direction.y ** 2));
-          const rotationZ = Math.atan2(direction.y, direction.x);
-
+          
+          // Use transformEngine function
+          const { rotationX, rotationZ } = transformEngine.extractRotationFromCamera(position, target);
+          
           onViewStateChange({
-            rotationX: rotationX,
-            rotationZ: rotationZ
+            rotationX,
+            rotationZ,
+            targetX: target.x,
+            targetY: target.y,
+            targetZ: target.z
           });
         };
 
@@ -270,23 +295,35 @@ function CanvasViewport({
         meshRef.current.geometry.dispose();
       }
       if (gridData) {
-        const result = renderSurface(scene, gridData);
+        // Apply transformations to grid data
+        const transformedGrid = transformEngine.applyTransform(gridData, viewState);
+        const result = renderSurface(scene, transformedGrid);
         meshRef.current = result?.mesh || null;
         zCenterRef.current = result?.zCenter ?? 0;
         if (meshRef.current) {
-          meshRef.current.scale.set(1, 1, 1 / viewState.zFactor);
+          // No need to scale mesh as z-factor is already applied in transformEngine.applyTransform
           scene.add(meshRef.current);
         }
         if (camera instanceof THREE.OrthographicCamera) {
+          // Set camera zoom from viewState
           camera.zoom = viewState.zoomCamera;
           camera.updateProjectionMatrix();
-          camera.lookAt(0, 0, zCenterRef.current * 1 / viewState.zFactor);
-          controls.target.set(0, 0, zCenterRef.current / viewState.zFactor);
+          
+          // Set target position
+          const targetZ = zCenterRef.current / viewState.zFactor;
+          const target = new THREE.Vector3(viewState.targetX, viewState.targetY, targetZ);
+          controls.target.copy(target);
+          
+          // Set camera position based on viewState rotations
+          const cameraPosition = transformEngine.calculateCameraPosition(viewState);
+          camera.position.copy(cameraPosition);
+          
+          camera.lookAt(target);
           controls.update();
         }
       }
     }
-  }, [gridData, viewState.zoomCamera, viewState.zFactor]);
+  }, [gridData, viewState.zoomCamera, viewState.zFactor, viewState.rotationX, viewState.rotationZ, viewState.targetX, viewState.targetY, viewState.targetZ]);
 
   return (
     <canvas

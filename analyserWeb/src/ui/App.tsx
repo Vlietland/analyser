@@ -8,7 +8,8 @@ import { compileExpression } from '../core/evaluator/expressionEngine';
 import { isCompiledExpression, isParseError, CompilationResult } from '../core/evaluator/expressionTypes';
 import { SurfaceGrid, SampleRange } from '../core/types'; // Import SampleRange
 import { DEFAULT_SAMPLE_RANGE } from '../core/grid/sampleRange'; // Import default range
-import { ViewState, DEFAULT_VIEW_STATE, updateViewState } from '../core/transform/viewState';
+import { ViewState, DEFAULT_VIEW_STATE, updateViewState, normalizeRotation } from '../core/transform/viewState';
+import * as transformEngine from '../core/transform/transformEngine';
 import { useDebounce } from './hooks/useDebounce';
 
 function App() {
@@ -46,15 +47,19 @@ function App() {
   const handleViewStateChange = useCallback((updates: Partial<ViewState>) => {
     setViewState(current => {
       const intermediateState = updateViewState(current, updates);
-      const TWO_PI = Math.PI * 2;
+      
+      // Use transformEngine to normalize rotation angles
       let finalRotationX = intermediateState.rotationX;
       let finalRotationZ = intermediateState.rotationZ;
+      
       if (finalRotationX !== undefined) {
-        finalRotationX = (finalRotationX % TWO_PI + TWO_PI) % TWO_PI; // Ensure positive modulo
+        finalRotationX = normalizeRotation(finalRotationX);
       }
+      
       if (finalRotationZ !== undefined) {
-        finalRotationZ = (finalRotationZ % TWO_PI + TWO_PI) % TWO_PI; // Ensure positive modulo
+        finalRotationZ = normalizeRotation(finalRotationZ);
       }
+      
       if (finalRotationX !== intermediateState.rotationX || finalRotationZ !== intermediateState.rotationZ) {
         return {
           ...intermediateState,
@@ -67,18 +72,10 @@ function App() {
     });
   }, []);
 
-  const calculateIdealCameraZoom = useCallback((range: SampleRange): number => {
-    const gridWidth = Math.abs(range.xMax - range.xMin);
-    const gridHeight = Math.abs(range.yMax - range.yMin);
-    const maxDimension = Math.max(gridWidth, gridHeight);
-    const BASE_ZOOM = 10;
-    return BASE_ZOOM / maxDimension;
-  }, []);
-
   useEffect(() => {
-    const idealZoom = calculateIdealCameraZoom(sampleRange);
+    const idealZoom = transformEngine.calculateIdealCameraZoom(sampleRange);
     handleViewStateChange({ zoomCamera: idealZoom });
-  }, [sampleRange, calculateIdealCameraZoom, handleViewStateChange]);
+  }, [sampleRange, handleViewStateChange]);
 
   useEffect(() => {
     console.log('🔍 viewState updated:', viewState);
@@ -102,8 +99,8 @@ function App() {
         <div style={{ marginLeft: 'auto', fontSize: '0.9em', color: '#555' }}>
           <div>X: [{sampleRange.xMin.toFixed(2)}, {sampleRange.xMax.toFixed(2)}] | Y: [{sampleRange.yMin.toFixed(2)}, {sampleRange.yMax.toFixed(2)}]</div>
           <div>
-            RotX: {(viewState.rotationX / (2 * Math.PI) * 360).toFixed(1)}° ({viewState.rotationX.toFixed(2)}) | 
-            RotZ: {(viewState.rotationZ / (2 * Math.PI) * 360).toFixed(1)}° ({viewState.rotationZ.toFixed(2)}) | 
+            RotX: {viewState.rotationX.toFixed(2)} | 
+            RotZ: {viewState.rotationZ.toFixed(2)} | 
             ZFactor: {viewState.zFactor.toFixed(2)}
           </div>
         </div>
