@@ -124,7 +124,6 @@ export function setupRenderer(
   initialViewState: ViewState,
   zCenter: number
 ): { cleanup: () => void; controls: OrbitControls } {
-  mainCamera.up.set(0, 0, 1); // ✅ Enforce Z-up before control creation  
   const controls = new OrbitControls(mainCamera, renderer.domElement);
   controls.rotateSpeed = 0.5;
   controls.enableDamping = true;
@@ -132,6 +131,7 @@ export function setupRenderer(
   controls.screenSpacePanning = false;
   controls.minDistance = 0.1;
   controls.maxDistance = 50;
+  
   if (mainCamera instanceof THREE.OrthographicCamera) {
     mainCamera.zoom = initialViewState.zoomCamera;
     mainCamera.updateProjectionMatrix();

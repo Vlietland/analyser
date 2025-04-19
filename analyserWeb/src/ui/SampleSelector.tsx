@@ -10,11 +10,9 @@ function SampleSelector({ value, onChange }: SampleSelectorProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const numValue = parseInt(event.target.value, 10);
     if (!isNaN(numValue)) {
-        // Clamp value within allowed range before calling onChange
         const clampedValue = Math.max(MIN_SAMPLES, Math.min(MAX_SAMPLES, numValue));
         onChange(clampedValue);
     } else if (event.target.value === '') {
-        // Allow clearing the input, maybe default to MIN_SAMPLES or handle upstream
         onChange(MIN_SAMPLES); // Or handle empty state appropriately
     }
   };

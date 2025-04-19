@@ -100,7 +100,12 @@ function App() {
           onToolChange={setActiveTool}
         />
         <div style={{ marginLeft: 'auto', fontSize: '0.9em', color: '#555' }}>
-          X: [{sampleRange.xMin.toFixed(2)}, {sampleRange.xMax.toFixed(2)}] | Y: [{sampleRange.yMin.toFixed(2)}, {sampleRange.yMax.toFixed(2)}]
+          <div>X: [{sampleRange.xMin.toFixed(2)}, {sampleRange.xMax.toFixed(2)}] | Y: [{sampleRange.yMin.toFixed(2)}, {sampleRange.yMax.toFixed(2)}]</div>
+          <div>
+            RotX: {(viewState.rotationX / (2 * Math.PI) * 360).toFixed(1)}° ({viewState.rotationX.toFixed(2)}) | 
+            RotZ: {(viewState.rotationZ / (2 * Math.PI) * 360).toFixed(1)}° ({viewState.rotationZ.toFixed(2)}) | 
+            ZFactor: {viewState.zFactor.toFixed(2)}
+          </div>
         </div>
       </div>
       <div className="viewport-container" style={{ flexGrow: 1, position: 'relative' }}>

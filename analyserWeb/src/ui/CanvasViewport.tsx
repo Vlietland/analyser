@@ -74,8 +74,36 @@ function CanvasViewport({
   useEffect(() => {
     if (rendererRef.current?.controls) {
       rendererRef.current.controls.enabled = activeTool === 'rotate';
+      
+      if (activeTool === 'rotate' && onViewStateChange) {
+        const controls = rendererRef.current.controls;
+        
+        const updateRotationFromCamera = () => {
+          const camera = rendererRef.current?.camera;
+          if (!camera) return;
+          
+          const position = new THREE.Vector3();
+          camera.getWorldPosition(position);
+          
+          const target = controls.target;
+          const direction = new THREE.Vector3().subVectors(target, position).normalize(); // from camera to target
+          const rotationX = Math.atan2(-direction.z, Math.sqrt(direction.x ** 2 + direction.y ** 2));
+          const rotationZ = Math.atan2(direction.y, direction.x);
+
+          onViewStateChange({
+            rotationX: rotationX,
+            rotationZ: rotationZ
+          });
+        };
+        
+        controls.addEventListener('change', updateRotationFromCamera);
+        
+        return () => {
+          controls.removeEventListener('change', updateRotationFromCamera);
+        };
+      }
     }
-  }, [activeTool]);
+  }, [activeTool, onViewStateChange]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

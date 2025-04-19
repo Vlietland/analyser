@@ -16,11 +16,11 @@ export function buildScene(canvas: HTMLCanvasElement) {
     halfHeight,   // top
     -halfHeight,  // bottom
     0,          // near
-    1000          // far
+    10000          // far
   );
 
-  camera.position.set(-100, -100, 100);
   camera.up.set(0, 0, 1);
+  camera.position.set(0, 0, 1000);
   camera.lookAt(0, 0, 0);  
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
