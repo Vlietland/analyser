@@ -47,8 +47,6 @@ Result: Added rendering, AI keeps on adding comments and then removing them
 Result: Lots of reengineering during this prompt, at the end a working app but shows a black screen.
 [Gemini] Main has not yet been created, please read analyserImplementationPlan.txt
 Result: Main created, basic working application
-------------------------------------------start bugfixing------------------------------
-[Gemini] it seems that the stepping mechanism of the button does not work. It seems that the step is directly set without taking into account the present viewstate. there need to be a subtraction and adding mechanism...
 
 
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ViewState } from '../core/transform/viewState';
 import { SampleRange } from '../core/types';
 import { validateRange } from '../core/grid/sampleRange';
@@ -8,45 +8,52 @@ interface ToolbarProps {
   onViewStateChange: (updates: Partial<ViewState>) => void;
   currentSampleRange: SampleRange;
   onSampleRangeChange: (newRange: SampleRange) => void;
+  activeTool: string;
+  onToolChange: (tool: string) => void;
 }
 
-const ROTATION_STEP = Math.PI / 18; // 10 degrees
-const ZOOM_STEP = 1.1; // Multiplicative zoom
-const Z_FACTOR_STEP = 0.1; // Additive z-scale
-const GRID_ZOOM_FACTOR = 0.8; // Factor to zoom in/out grid range
+const ROTATION_STEP = Math.PI / 18;
+const ZOOM_STEP = 1.1;
+const Z_FACTOR_STEP = 0.1;
+const GRID_ZOOM_FACTOR = 0.8;
+const MOUSE_SENSITIVITY = 0.01;
 
-function Toolbar({ currentViewState, onViewStateChange, currentSampleRange, onSampleRangeChange }: ToolbarProps) {
-  const handleCameraZoom = (factor: number) => {
-    onViewStateChange({ zoomCamera: currentViewState.zoomCamera * factor });
-  };
-  const handleZFactor = (delta: number) => {
-    onViewStateChange({ zFactor: currentViewState.zFactor + delta });
-  };
-  const handleGridZoom = (zoomIn: boolean) => {
-    const factor = zoomIn ? GRID_ZOOM_FACTOR : 1 / GRID_ZOOM_FACTOR;
-    const centerX = (currentSampleRange.xMax + currentSampleRange.xMin) / 2;
-    const centerY = (currentSampleRange.yMax + currentSampleRange.yMin) / 2;
-    const halfWidth = (currentSampleRange.xMax - currentSampleRange.xMin) * factor / 2;
-    const halfHeight = (currentSampleRange.yMax - currentSampleRange.yMin) * factor / 2;
-    
-    const newRange = {
-      xMin: centerX - halfWidth,
-      xMax: centerX + halfWidth,
-      yMin: centerY - halfHeight,
-      yMax: centerY + halfHeight
-    };
-    
-    if (validateRange(newRange)) onSampleRangeChange(newRange);
-  };
+function Toolbar({ currentViewState, onViewStateChange, currentSampleRange, onSampleRangeChange, activeTool, onToolChange }: ToolbarProps) {
+  const getButtonStyle = (tool: string) => ({
+    backgroundColor: activeTool === tool ? '#4a90e2' : '#f0f0f0',
+    color: activeTool === tool ? 'white' : 'black',
+    padding: '5px 10px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    cursor: 'pointer'
+  });
 
   return (
     <div style={{ marginTop: '5px', display: 'flex', gap: '5px' }}>
-      <button onClick={() => handleZFactor(Z_FACTOR_STEP)} title="Increase Z-Factor">Zfactor+</button>
-      <button onClick={() => handleZFactor(-Z_FACTOR_STEP)} title="Decrease Z-Factor">Zfactor-</button>
-      <button onClick={() => handleCameraZoom(ZOOM_STEP)} title="Zoom In Camera">CameraZoom+</button>
-      <button onClick={() => handleCameraZoom(1 / ZOOM_STEP)} title="Zoom Out Camera">CameraZoom-</button>
-      <button onClick={() => handleGridZoom(true)} title="Zoom In Domain">GridZoom+</button>
-      <button onClick={() => handleGridZoom(false)} title="Zoom Out Domain">GridZoom-</button>
+      <button 
+        onClick={() => onToolChange('rotate')} 
+        style={getButtonStyle('rotate')}
+        title="Rotate View">
+        Rotate
+      </button>
+      <button 
+        onClick={() => onToolChange('shift')} 
+        style={getButtonStyle('shift')}
+        title="Shift View">
+        Shift
+      </button>
+      <button 
+        onClick={() => onToolChange('zoom')} 
+        style={getButtonStyle('zoom')}
+        title="Zoom View">
+        Zoom
+      </button>
+      <button 
+        onClick={() => onToolChange('zfactor')} 
+        style={getButtonStyle('zfactor')}
+        title="Adjust Z-Factor">
+        Zfactor
+      </button>
     </div>
   );
 }

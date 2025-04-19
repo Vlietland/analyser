@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import FormulaInput from './FormulaInput';
 import SampleSelector from './SampleSelector';
 import CanvasViewport from './CanvasViewport';
@@ -17,8 +17,9 @@ function App() {
   const [compiledExpressionResult, setCompiledExpressionResult] = useState<CompilationResult | null>(null);
   const [gridData, setGridData] = useState<SurfaceGrid | null>(null);
   const [viewState, setViewState] = useState<ViewState>(DEFAULT_VIEW_STATE);
-  const [sampleRange, setSampleRange] = useState<SampleRange>(DEFAULT_SAMPLE_RANGE); // Add state for range
+  const [sampleRange, setSampleRange] = useState<SampleRange>(DEFAULT_SAMPLE_RANGE);
   const [error, setError] = useState<string | null>(null);
+  const [activeTool, setActiveTool] = useState<string>('shift');
 
   const debouncedExpressionString = useDebounce(expressionString, 500);
 
@@ -95,13 +96,22 @@ function App() {
           onViewStateChange={handleViewStateChange}
           currentSampleRange={sampleRange}
           onSampleRangeChange={setSampleRange}
+          activeTool={activeTool}
+          onToolChange={setActiveTool}
         />
         <div style={{ marginLeft: 'auto', fontSize: '0.9em', color: '#555' }}>
           X: [{sampleRange.xMin.toFixed(2)}, {sampleRange.xMax.toFixed(2)}] | Y: [{sampleRange.yMin.toFixed(2)}, {sampleRange.yMax.toFixed(2)}]
         </div>
       </div>
       <div className="viewport-container" style={{ flexGrow: 1, position: 'relative' }}>
-        <CanvasViewport gridData={gridData} viewState={viewState} />
+        <CanvasViewport 
+          gridData={gridData} 
+          viewState={viewState} 
+          activeTool={activeTool}
+          currentSampleRange={sampleRange}
+          onSampleRangeChange={setSampleRange}
+          onViewStateChange={handleViewStateChange}
+        />
       </div>
     </div>
   );
