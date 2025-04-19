@@ -124,6 +124,7 @@ export function setupRenderer(
   initialViewState: ViewState,
   zCenter: number
 ): { cleanup: () => void; controls: OrbitControls } {
+  mainCamera.up.set(0, 0, 1); // ✅ Enforce Z-up before control creation  
   const controls = new OrbitControls(mainCamera, renderer.domElement);
   controls.rotateSpeed = 0.5;
   controls.enableDamping = true;

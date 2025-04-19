@@ -15,21 +15,13 @@ export function buildScene(canvas: HTMLCanvasElement) {
     halfWidth,    // right
     halfHeight,   // top
     -halfHeight,  // bottom
-    -1000,          // near
+    0,          // near
     1000          // far
   );
 
-    camera.position.set(0, 0, 10);
-  camera.lookAt(0, 0, 0);
-  camera.up.set(0, 0, 1); // Ensure Z is up
-
-  //const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-  //scene.add(ambientLight);
-
-  //const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  //directionalLight.position.set(10, 20, 15);
-  //scene.add(directionalLight);
-
+  camera.position.set(-100, -100, 100);
+  camera.up.set(0, 0, 1);
+  camera.lookAt(0, 0, 0);  
   const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio);

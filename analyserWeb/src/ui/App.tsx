@@ -19,7 +19,7 @@ function App() {
   const [viewState, setViewState] = useState<ViewState>(DEFAULT_VIEW_STATE);
   const [sampleRange, setSampleRange] = useState<SampleRange>(DEFAULT_SAMPLE_RANGE);
   const [error, setError] = useState<string | null>(null);
-  const [activeTool, setActiveTool] = useState<string>('shift');
+  const [activeTool, setActiveTool] = useState<string>('rotate');
 
   const debouncedExpressionString = useDebounce(expressionString, 500);
 

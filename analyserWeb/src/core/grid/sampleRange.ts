@@ -1,10 +1,10 @@
 import { SampleRange } from '../types';
 
 export const DEFAULT_SAMPLE_RANGE: SampleRange = {
-  xMin: -5,
-  xMax: 5,
-  yMin: -5,
-  yMax: 5,
+  xMin: -4,
+  xMax: 4,
+  yMin: -4,
+  yMax: 4,
 };
 
 export function validateRange(range: SampleRange): boolean {

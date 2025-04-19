@@ -37,7 +37,10 @@ function CanvasViewport({
   const meshRef = useRef<THREE.Mesh | null>(null);
   const cleanupRef = useRef<CleanupFunction | null>(null);
   const zCenterRef = useRef<number>(0);
-
+  const MOUSE_SENSITIVITY = 0.01;
+  const isDraggingRef = useRef(false);
+  const lastPosRef = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
+  
   useEffect(() => {
     let localCleanup: CleanupFunction | null = null;
     if (canvasRef.current && !rendererRef.current) {
@@ -78,23 +81,17 @@ function CanvasViewport({
     const canvas = canvasRef.current;
     if (!canvas || !rendererRef.current || !currentSampleRange || !onSampleRangeChange || !onViewStateChange) return;
     
-    const MOUSE_SENSITIVITY = 0.01;
-    let isDragging = false;
-    let lastX = 0;
-    let lastY = 0;
-    
     const handleMouseDown = (e: MouseEvent) => {
       if (activeTool === 'rotate') return;
-      isDragging = true;
-      lastX = e.clientX;
-      lastY = e.clientY;
+      isDraggingRef.current = true;
+      lastPosRef.current = { x: e.clientX, y: e.clientY };
     };
     
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || activeTool === 'rotate' || !currentSampleRange) return;
+      if (!isDraggingRef.current || activeTool === 'rotate' || !currentSampleRange) return;
       
-      const deltaX = e.clientX - lastX;
-      const deltaY = e.clientY - lastY;
+      const deltaX = e.clientX - lastPosRef.current.x;
+      const deltaY = e.clientY - lastPosRef.current.y;
       
       switch (activeTool) {
         case 'shift': {
@@ -103,8 +100,8 @@ function CanvasViewport({
           const width = currentSampleRange.xMax - currentSampleRange.xMin;
           const height = currentSampleRange.yMax - currentSampleRange.yMin;
           
-          const shiftX = -deltaX * width * MOUSE_SENSITIVITY;
-          const shiftY = deltaY * height * MOUSE_SENSITIVITY;
+          const shiftX = deltaX * width * MOUSE_SENSITIVITY;
+          const shiftY = -deltaY * height * MOUSE_SENSITIVITY;
           
           const newRange = {
             xMin: currentSampleRange.xMin + shiftX,
@@ -142,12 +139,11 @@ function CanvasViewport({
         }
       }
       
-      lastX = e.clientX;
-      lastY = e.clientY;
+      lastPosRef.current = { x: e.clientX, y: e.clientY };
     };
     
     const handleMouseUp = () => {
-      isDragging = false;
+      isDraggingRef.current = false;
     };
     
     canvas.addEventListener('mousedown', handleMouseDown);
