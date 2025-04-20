@@ -9,7 +9,7 @@ export interface ViewState {
 }
 
 export const DEFAULT_VIEW_STATE: ViewState = {
-  zoomCamera: 0.8,
+  zoomCamera: 0.05,
   rotationX: 0.78,
   rotationZ: 3.92,
   zFactor: 1.0,
@@ -20,7 +20,18 @@ export const DEFAULT_VIEW_STATE: ViewState = {
 
 export function updateViewState(currentState: ViewState, updates: Partial<ViewState>): ViewState {
   const newState = { ...currentState, ...updates };
-  // Potential validation/clamping could be added here
+
+  console.log('[ViewState] updateViewState called');
+
+  Object.keys(DEFAULT_VIEW_STATE).forEach((key) => {
+    const k = key as keyof ViewState;
+    const before = currentState[k];
+    const after = newState[k];
+    if (before !== after) {
+      console.log(`  ${k}: ${before} → ${after}`);
+    }
+  });
+
   return newState;
 }
 

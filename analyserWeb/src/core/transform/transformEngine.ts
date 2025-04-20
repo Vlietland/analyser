@@ -6,7 +6,7 @@ export function applyTransform(grid: SurfaceGrid, viewState: ViewState): Surface
   const transformedPoints = grid.points.map(row =>
     row.map(point => ({
       ...point,
-      z: Number.isFinite(point.z) ? point.z * viewState.zFactor : NaN
+      z: Number.isFinite(point.z) ? point.z / viewState.zFactor : NaN
     }))
   );
 
@@ -97,6 +97,6 @@ export function calculateIdealCameraZoom(range: SampleRange): number {
   const gridWidth = Math.abs(range.xMax - range.xMin);
   const gridHeight = Math.abs(range.yMax - range.yMin);
   const maxDimension = Math.max(gridWidth, gridHeight);
-  const BASE_ZOOM = 10;
+  const BASE_ZOOM = 5;
   return BASE_ZOOM / maxDimension;
 }
