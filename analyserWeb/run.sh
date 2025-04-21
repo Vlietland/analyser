@@ -23,7 +23,7 @@ for arg in "$@"; do
 done
 
 echo "📦 Building the project..."
-npm run build
+npm run dev
 
 if [ "$run_tests" = true ]; then
   echo "🧪 Running tests..."

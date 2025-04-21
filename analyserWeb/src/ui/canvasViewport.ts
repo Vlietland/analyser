@@ -9,7 +9,7 @@ import {
   useZFactorTool,
   useRotateTool,
   useRenderSurface
-} from './hooks/viewport';
+} from './hooks';
 
 interface CanvasViewportProps {
   gridData: SurfaceGrid | null;
