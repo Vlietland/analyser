@@ -1,56 +1,40 @@
-import React, { useRef } from 'react';
-import { SurfaceGrid, SampleRange } from '../core/types';
-import { ViewState } from '../core/transform/viewState';
-import {
-  useViewportTools,
-  useViewportSetup,
-  useZoomTool,
-  useShiftTool,
-  useZFactorTool,
-  useRotateTool,
-  useRenderSurface
-} from './hooks';
+import * as THREE from 'three';
 
-interface CanvasViewportProps {
-  gridData: SurfaceGrid | null;
-  viewState: ViewState;
-  activeTool: string;
-  currentSampleRange?: SampleRange;
-  onSampleRangeChange?: (newRange: SampleRange) => void;
-  onViewStateChange?: (updates: Partial<ViewState>) => void;
+export class CanvasViewport {
+  private canvas: HTMLCanvasElement;
+  private renderer: THREE.WebGLRenderer;
+
+  constructor(width: number = 800, height: number = 600) {
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.canvas.style.display = 'block'; // Prevent extra space below canvas
+
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvas,
+      antialias: true,
+    });
+    this.renderer.setSize(width, height);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+  }
+
+  public getElement(): HTMLCanvasElement {
+    return this.canvas;
+  }
+
+  public getRenderer(): THREE.WebGLRenderer {
+    return this.renderer;
+  }
+
+  public render(scene: THREE.Scene, camera: THREE.Camera): void {
+    this.renderer.render(scene, camera);
+  }
+
+  public resize(width: number, height: number): void {
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.renderer.setSize(width, height);
+    // Note: Camera aspect ratio might need updating here as well, 
+    // but camera logic is handled separately for now.
+  }
 }
-
-function CanvasViewport({ 
-  gridData, 
-  viewState, 
-  activeTool,
-  currentSampleRange,
-  onSampleRangeChange,
-  onViewStateChange
-}: CanvasViewportProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  
-  // Set up common tool state
-  const toolState = useViewportTools();
-  
-  // Set up the viewport
-  const { rendererRef } = useViewportSetup(canvasRef, viewState);
-  
-  // Handle rendering to get zCenterRef
-  const { meshRef, zCenterRef } = useRenderSurface(rendererRef, gridData, viewState);
-  
-  // Set up individual tools
-  useZoomTool(canvasRef, rendererRef, toolState, activeTool, currentSampleRange, onSampleRangeChange, onViewStateChange);
-  useShiftTool(canvasRef, rendererRef, toolState, activeTool, currentSampleRange, onSampleRangeChange, onViewStateChange);
-  useZFactorTool(canvasRef, rendererRef, toolState, activeTool, viewState, onViewStateChange);
-  useRotateTool(rendererRef, activeTool, onViewStateChange);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{ display: 'block', width: '100%', height: '100%' }}
-    />
-  );
-}
-
-export default CanvasViewport;

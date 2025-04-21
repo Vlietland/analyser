@@ -9,13 +9,12 @@ export interface ParseError {
 export type CompilationResult = boolean | ParseError;
 
 export class ExpressionParser {
-  private static math = create(all);
-  private static PARSE_OPTIONS: ParseOptions = {};
-  private static compiledNode: any = null;
-  private static compiledInput: string = '';
+  private math = create(all);
+  private PARSE_OPTIONS: ParseOptions = {};
+  private compiledNode: any = null;
+  private compiledInput: string = ''; 
 
-  // Compile the expression and store it in compiledNode
-  public static compileExpression(input: string): CompilationResult {
+  public compileExpression(input: string): CompilationResult {
     if (!input || input.trim() === '') {
       return {
         input,
@@ -27,9 +26,13 @@ export class ExpressionParser {
     try {
       const node: MathNode = this.math.parse(input, this.PARSE_OPTIONS);
 
-      if (node.type === 'AssignmentNode' || 
-          (node.type === 'SymbolNode' && input.trim() === node.name)) {
-        throw new Error('Expression must evaluate to a value, not an assignment or a symbol.');
+      if (node.type === 'AssignmentNode') {
+        throw new Error('Expression must evaluate to a value, not an assignment.');
+      }
+      if (node.type === 'SymbolNode') {
+        if (input.trim() === node.toString()) {
+          throw new Error('Expression must evaluate to a value, not a symbol.');
+        }
       }
 
       this.compiledNode = node.compile();  // Store the compiled expression
@@ -48,7 +51,7 @@ export class ExpressionParser {
     }
   }
 
-  public static evaluateExpression(scope: Record<string, number>): number {
+  public evaluateExpression(scope: Record<string, number>): number {
     if (!this.compiledNode) {
       throw new Error('No expression has been compiled. Call compileExpression first.');
     }
@@ -64,11 +67,7 @@ export class ExpressionParser {
     }
   }
 
-  public static isCompilationSuccessful(result: CompilationResult): result is boolean {
-    return typeof result === 'boolean' && result === true;
-  }
-
-  public static isParseError(result: CompilationResult): result is ParseError {
+  public isParseError(result: CompilationResult): result is ParseError {
     return typeof result === 'object' && (result as ParseError).message !== undefined;
   }
 }

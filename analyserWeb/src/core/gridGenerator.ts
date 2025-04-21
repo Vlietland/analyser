@@ -1,18 +1,17 @@
 import { ExpressionParser } from './expressionParser';
 
 export class GridGenerator {
-  public static readonly MIN_SAMPLES = 2;
-  public static readonly MAX_SAMPLES = 200;
-  public static readonly DEFAULT_SAMPLES = 50;
-  
-  private static readonly DEFAULT_SAMPLE_RANGE = {
-    xMin: -4,
-    xMax: 4,
-    yMin: -4,
-    yMax: 4,
-  };
+  private readonly expressionParser: ExpressionParser;  
+  private readonly MIN_SAMPLES = 2;
+  private readonly MAX_SAMPLES = 200;
+  private readonly DEFAULT_SAMPLES = 50;
+  private readonly DEFAULT_SAMPLE_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4};
 
-  public static generateGrid(
+  constructor(expressionParser: ExpressionParser) {
+    this.expressionParser = expressionParser;
+  }
+
+  public generateGrid(
     range = this.DEFAULT_SAMPLE_RANGE,
     samples = this.DEFAULT_SAMPLES
   ) {
@@ -39,7 +38,7 @@ export class GridGenerator {
         const x = range.xMin + i * stepX;
         let z;
         try {
-          z = ExpressionParser.evaluateExpression({ x, y });
+          z = this.expressionParser.evaluateExpression({ x, y });
           if (!Number.isFinite(z)) {
             z = NaN;
           }
@@ -58,7 +57,7 @@ export class GridGenerator {
     };
   }
   
-  private static validateRange(range: any) {
+  private validateRange(range: any) {
     return (
       range.xMin < range.xMax &&
       range.yMin < range.yMax &&
