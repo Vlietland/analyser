@@ -7,7 +7,6 @@ import { SceneBuilder } from '@src/renderer/sceneBuilder';
 import { Camera } from '@src/renderer/camera';
 
 export class App {
-  // Keep core logic components
   private expressionParser: ExpressionParser;
   private gridGenerator: GridGenerator;
   private sceneBuilder: SceneBuilder;
@@ -17,10 +16,8 @@ export class App {
   private ui: UI;
 
   constructor() {
-    // Instantiate core components first
     this.expressionParser = new ExpressionParser(); 
     this.gridGenerator = new GridGenerator(this.expressionParser); 
-    // Instantiate UI, passing handlers and defaults
     this.ui = new UI(
       {
         onFormulaChange: this.handleFormulaChange.bind(this),
@@ -30,33 +27,21 @@ export class App {
     );
     this.ui.getFormulaInput().setValue(this.expressionParser.DEFAULT_EXPRESSION)    
 
-    // Get canvas and renderer from UI
     const canvas = this.ui.getCanvasViewport();
     this.renderer = this.ui.getRenderer();
-
-    // Instantiate rendering components using the canvas
     this.sceneBuilder = new SceneBuilder(this.ui.getCanvasElement());
-    this.camera = new Camera(this.ui.getCanvasViewport()); // Assuming Camera constructor takes canvas or viewport
-
-    // Get initial tool selection from UI (Toolbar) if needed
-    // this.currentTool = this.ui.getSelectedTool(); // Assuming UI provides this
-
-    // Trigger initial formula processing via UI
+    this.camera = new Camera(this.ui.getCanvasViewport());
     this.ui.triggerFormulaChange(); 
   }
-
-  // --- UI Event Handlers ---
 
   private handleFormulaChange(value: string): void {
     console.log('App: Formula changed:', value);
     const compilationResult = this.expressionParser.compileExpression(value);
-    
     if (this.expressionParser.isParseError(compilationResult)) { 
       console.log('App: Parse Error:', compilationResult.message);
       this.clearSurface(); 
       return;
     }
-    
     this.updateSurface(); 
   }
 
@@ -72,32 +57,16 @@ export class App {
   private handleToolChange(newTool: string): void {
     console.log('App: Tool changed:', newTool);
     this.currentTool = newTool;
-    // Add logic here based on the tool
-  }
-
-  // --- Core Logic ---
-
-  private clearSurface(): void {
-    const scene = this.sceneBuilder.getScene();
-    const existingMesh = scene.getObjectByName("mesh");
-    if (existingMesh) {
-      scene.remove(existingMesh);
-      console.log('App: Previous mesh removed');
-      this.renderer.render(scene, this.camera.getCamera()); 
-    }
   }
 
   private updateSurface(): void {
-    // Ensure a formula is compiled before trying to generate grid
     if (!this.expressionParser.hasCompiledExpression()) {
         console.log("App: updateSurface called without a compiled expression.");
         this.clearSurface();
         return;
     }
-
     console.log(`App: Updating surface with ${this.gridGenerator.DEFAULT_SAMPLES} samples.`);
     let surfaceGrid: SurfaceGrid | null = null;
-    
     try {
       surfaceGrid = this.gridGenerator.generateGrid(undefined, this.gridGenerator.DEFAULT_SAMPLES); 
       console.log('App: Surface Grid:', surfaceGrid);
@@ -106,9 +75,7 @@ export class App {
       this.clearSurface();
       return; 
     }
-    
     this.clearSurface(); 
-
     if (surfaceGrid) {
       const surfaceRenderer = new SurfaceRenderer();
       const { mesh } = surfaceRenderer.createMesh(surfaceGrid);
@@ -125,9 +92,18 @@ export class App {
     
     this.renderer.render(this.sceneBuilder.getScene(), this.camera.getCamera()); 
   }
+  
+  private clearSurface(): void {
+    const scene = this.sceneBuilder.getScene();
+    const existingMesh = scene.getObjectByName("mesh");
+    if (existingMesh) {
+      scene.remove(existingMesh);
+      console.log('App: Previous mesh removed');
+      this.renderer.render(scene, this.camera.getCamera()); 
+    }
+  }
 }
 
-// initApp remains the same, assuming it's called from main.ts or similar
 export function initApp(): void {
   new App();
 }

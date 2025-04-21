@@ -33,7 +33,8 @@ export class UI {
     // Toolbar constructor already appends itself, handle others
     document.body.appendChild(this.formulaInput.getElement());
     document.body.appendChild(this.sampleSelector.getElement());
-    document.body.appendChild(this.canvasViewport.getElement());
+    document.body.appendChild(this.toolbar.getElement());    
+    document.body.appendChild(this.canvasViewport.getElement());    
   }
 
   // --- Internal Handlers ---
