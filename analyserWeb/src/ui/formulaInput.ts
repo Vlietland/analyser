@@ -1,11 +1,12 @@
 export class FormulaInput {
+  public readonly INITIAL_FORMULA = 'x^2+y^2';
   private inputElement: HTMLInputElement;
   private onChangeCallback: ((value: string) => void) | null = null;
 
   constructor(initialValue: string = '') {
     this.inputElement = document.createElement('input');
     this.inputElement.type = 'text';
-    this.inputElement.placeholder = 'x^2+y^2';
+    this.inputElement.placeholder = this.INITIAL_FORMULA;
     this.inputElement.value = initialValue;
     this.inputElement.style.marginRight = '10px';
     this.inputElement.style.padding = '5px';
@@ -31,7 +32,7 @@ export class FormulaInput {
 
   triggerChange(): void {
     if (this.onChangeCallback) {
-      this.onChangeCallback(this.inputElement.value); // Call the correct callback
+      this.onChangeCallback(this.inputElement.value);
     }
   }
 

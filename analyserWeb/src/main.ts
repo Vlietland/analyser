@@ -1,4 +1,4 @@
-import { initApp } from './ui/App';
+import { initApp } from './App';
 
 window.onload = () => {
   initApp();

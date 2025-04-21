@@ -1,11 +1,11 @@
 export class SampleSelector {
   private readonly MIN_SAMPLES = 5;
   private readonly MAX_SAMPLES = 99;
-  private value: number;
+  public readonly DEFAULT_SAMPLES = 50;
+  private value: number = this.DEFAULT_SAMPLES;
   private onChangeCallback: (newValue: number) => void;
 
-  constructor(initialValue: number, onChange: (newValue: number) => void) {
-    this.value = initialValue;
+  constructor(onChange: (newValue: number) => void) {
     this.onChangeCallback = onChange;
   }
 
@@ -18,8 +18,8 @@ export class SampleSelector {
       this.value = clampedValue;
       this.onChangeCallback(clampedValue);
     } else if (target.value === '') {
-      this.value = MIN_SAMPLES;
-      this.onChangeCallback(MIN_SAMPLES);
+      this.value = this.MIN_SAMPLES;
+      this.onChangeCallback(this.MIN_SAMPLES);
     }
   }
 

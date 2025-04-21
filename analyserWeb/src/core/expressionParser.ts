@@ -10,9 +10,10 @@ export type CompilationResult = boolean | ParseError;
 
 export class ExpressionParser {
   private math = create(all);
+  public readonly DEFAULT_EXPRESSION = 'x^2 + y^2'
   private PARSE_OPTIONS: ParseOptions = {};
   private compiledNode: any = null;
-  private compiledInput: string = ''; 
+  private compiledInput: string = '';
 
   public compileExpression(input: string): CompilationResult {
     if (!input || input.trim() === '') {

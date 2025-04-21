@@ -4,8 +4,8 @@ export class GridGenerator {
   private readonly expressionParser: ExpressionParser;  
   private readonly MIN_SAMPLES = 2;
   private readonly MAX_SAMPLES = 200;
-  private readonly DEFAULT_SAMPLES = 50;
-  private readonly DEFAULT_SAMPLE_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4};
+  public readonly DEFAULT_SAMPLES = 50;
+  public readonly DEFAULT_SAMPLE_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4};
 
   constructor(expressionParser: ExpressionParser) {
     this.expressionParser = expressionParser;
