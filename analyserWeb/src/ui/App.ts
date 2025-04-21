@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { FormulaInput } from '@src/ui/formulaInput';
-import SampleSelector from '@src/ui/sampleSelector'; // Default export
+import { SampleSelector } from '@src/ui/sampleSelector';
+import { Toolbar } from '@src/ui/toolbar';
 import { CanvasViewport } from '@src/ui/canvasViewport';
 import { ExpressionParser } from '@src/core/expressionParser';
 import { GridGenerator } from '@src/core/gridGenerator';
@@ -11,6 +12,7 @@ import { Camera } from '@src/renderer/camera';
 export class App {
   private formulaInput: FormulaInput;
   private sampleSelector: SampleSelector;
+  private toolbar: Toolbar;
   private canvasViewport: CanvasViewport;
   private expressionParser: ExpressionParser;
   private gridGenerator: GridGenerator;
@@ -18,9 +20,10 @@ export class App {
   private renderer: THREE.WebGLRenderer;
   private camera: Camera;
   private currentSamples: number;
+  private currentTool: string;
 
   constructor() {
-    const DEFAULT_SAMPLES = 50; // Or get from GridGenerator.DEFAULT_SAMPLES if made public/static
+    const DEFAULT_SAMPLES = 50; 
 
     this.formulaInput = new FormulaInput();
     this.canvasViewport = new CanvasViewport(); 
@@ -34,22 +37,28 @@ export class App {
       this.currentSamples, 
       this.handleSampleChange.bind(this)
     );
+    
+    // Instantiate Toolbar
+    this.toolbar = new Toolbar(this.handleToolChange.bind(this));
+    this.currentTool = this.toolbar.getSelection(); // Get initial tool
 
+    // Append elements (Make sure toolbar is appended to document)
     document.body.appendChild(this.formulaInput.getElement());
-    document.body.appendChild(this.sampleSelector.getElement()); // Add sample selector
+    document.body.appendChild(this.sampleSelector.getElement()); 
+    document.body.appendChild(this.toolbar.getElement());
     document.body.appendChild(this.canvasViewport.getElement());
 
+    // Trigger formula input change to update the surface initially
     this.formulaInput.onChange((value) => {
       console.log('Formula changed:', value);
       const compilationResult = this.expressionParser.compileExpression(value);
       
       if (this.expressionParser.isParseError(compilationResult)) { 
         console.log('Parse Error:', compilationResult.message);
-        this.clearSurface(); // Clear mesh on error
+        this.clearSurface(); 
         return;
       }
       
-      // If compilation successful, update the surface
       this.updateSurface(); 
     });
 
@@ -60,22 +69,28 @@ export class App {
   private handleSampleChange(newValue: number): void {
     console.log('Samples changed:', newValue);
     this.currentSamples = newValue;
-    // Only update if a valid expression is already compiled
-    if (this.expressionParser.hasCompiledExpression()) { // Assuming this method exists
+    if (this.expressionParser.hasCompiledExpression()) { 
        this.updateSurface();
     } else {
         console.log("No valid formula compiled yet, ignoring sample change.")
     }
   }
 
+  // Handler for Toolbar changes
+  private handleToolChange(newTool: string): void {
+    console.log('Tool changed:', newTool);
+    this.currentTool = newTool;
+    // Add logic here to handle different tools (e.g., change interaction mode)
+  }
+
   private clearSurface(): void {
-      const scene = this.sceneBuilder.getScene();
-      const existingMesh = scene.getObjectByName("mesh");
-      if (existingMesh) {
-        scene.remove(existingMesh);
-        console.log('Previous mesh removed');
-        this.renderer.render(scene, this.camera.getCamera()); // Re-render empty scene
-      }
+    const scene = this.sceneBuilder.getScene();
+    const existingMesh = scene.getObjectByName("mesh");
+    if (existingMesh) {
+      scene.remove(existingMesh);
+      console.log('Previous mesh removed');
+      this.renderer.render(scene, this.camera.getCamera()); 
+    }
   }
 
   private updateSurface(): void {
@@ -83,16 +98,15 @@ export class App {
     let surfaceGrid: SurfaceGrid | null = null;
     
     try {
-      // Generate grid with current samples, using default range
       surfaceGrid = this.gridGenerator.generateGrid(undefined, this.currentSamples); 
       console.log('Surface Grid:', surfaceGrid);
     } catch (error) {
       console.error('Grid Generation Error:', error instanceof Error ? error.message : String(error));
       this.clearSurface();
-      return; // Stop if grid generation fails
+      return; 
     }
     
-    this.clearSurface(); // Remove old mesh before adding new one
+    this.clearSurface(); 
 
     if (surfaceGrid) {
       const surfaceRenderer = new SurfaceRenderer();
@@ -108,7 +122,6 @@ export class App {
       console.error('Failed to generate surface grid');
     }
     
-    // Always render, even if mesh creation failed (shows empty scene or cleared scene)
     this.renderer.render(this.sceneBuilder.getScene(), this.camera.getCamera()); 
   }
 }

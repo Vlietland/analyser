@@ -1,4 +1,4 @@
-class SampleSelector {
+export class SampleSelector {
   private readonly MIN_SAMPLES = 5;
   private readonly MAX_SAMPLES = 99;
   private value: number;

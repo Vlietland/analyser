@@ -1,61 +1,65 @@
-import React, { useState } from 'react';
-import { ViewState } from '../core/transform/viewState';
-import { SampleRange } from '../core/types';
-import { validateRange } from '../core/grid/sampleRange';
+export class Toolbar {
+  private selectedTool: string;
+  private onToolChangeCallback: (tool: string) => void;
+  private tools: string[] = ['Analyse', 'Rotate', 'Shift', 'Zoom', 'Zfactor', 'Configure'];
 
-interface ToolbarProps {
-  currentViewState: ViewState;
-  onViewStateChange: (updates: Partial<ViewState>) => void;
-  currentSampleRange: SampleRange;
-  onSampleRangeChange: (newRange: SampleRange) => void;
-  activeTool: string;
-  onToolChange: (tool: string) => void;
+  constructor(onToolChange: (tool: string) => void) {
+    this.selectedTool = 'Analyse'; // Default selection
+    this.onToolChangeCallback = onToolChange;
+  }
+
+  // Create and return the toolbar element
+  public getElement(): HTMLElement {
+    const toolbarContainer = document.createElement('div');
+    toolbarContainer.style.marginTop = '5px';
+    toolbarContainer.style.display = 'flex';
+    toolbarContainer.style.gap = '5px';
+
+    this.tools.forEach(tool => {
+      const button = document.createElement('button');
+      button.textContent = tool;
+      button.title = tool;
+      button.style.padding = '5px 10px';
+      button.style.border = '1px solid #ccc';
+      button.style.borderRadius = '4px';
+      button.style.cursor = 'pointer';
+      button.style.backgroundColor = this.selectedTool === tool ? '#4a90e2' : '#f0f0f0';
+      button.style.color = this.selectedTool === tool ? 'white' : 'black';
+
+      // Event listener for button click
+      button.addEventListener('click', () => this.handleToolChange(tool));
+
+      toolbarContainer.appendChild(button);
+    });
+
+    return toolbarContainer;
+  }
+
+  // Handle tool change and update the selected tool
+  private handleToolChange(tool: string) {
+    if (this.selectedTool !== tool) {
+      this.selectedTool = tool;
+      this.onToolChangeCallback(tool);
+      this.updateButtonStyles();
+    }
+  }
+
+  // Update button styles based on the selected tool
+  private updateButtonStyles() {
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach((button: HTMLButtonElement) => {
+      if (button.textContent === this.selectedTool) {
+        button.style.backgroundColor = '#4a90e2';
+        button.style.color = 'white';
+      } else {
+        button.style.backgroundColor = '#f0f0f0';
+        button.style.color = 'black';
+      }
+    });
+  }
+
+  // Get the currently selected tool
+  public getSelection(): string {
+    return this.selectedTool;
+  }
 }
-
-const ROTATION_STEP = Math.PI / 18;
-const ZOOM_STEP = 1.1;
-const Z_FACTOR_STEP = 0.1;
-const GRID_ZOOM_FACTOR = 0.8;
-const MOUSE_SENSITIVITY = 0.01;
-
-function Toolbar({ currentViewState, onViewStateChange, currentSampleRange, onSampleRangeChange, activeTool, onToolChange }: ToolbarProps) {
-  const getButtonStyle = (tool: string) => ({
-    backgroundColor: activeTool === tool ? '#4a90e2' : '#f0f0f0',
-    color: activeTool === tool ? 'white' : 'black',
-    padding: '5px 10px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    cursor: 'pointer'
-  });
-
-  return (
-    <div style={{ marginTop: '5px', display: 'flex', gap: '5px' }}>
-      <button 
-        onClick={() => onToolChange('rotate')} 
-        style={getButtonStyle('rotate')}
-        title="Rotate View">
-        Rotate
-      </button>
-      <button 
-        onClick={() => onToolChange('shift')} 
-        style={getButtonStyle('shift')}
-        title="Shift View">
-        Shift
-      </button>
-      <button 
-        onClick={() => onToolChange('zoom')} 
-        style={getButtonStyle('zoom')}
-        title="Zoom View">
-        Zoom
-      </button>
-      <button 
-        onClick={() => onToolChange('zfactor')} 
-        style={getButtonStyle('zfactor')}
-        title="Adjust Z-Factor">
-        Zfactor
-      </button>
-    </div>
-  );
-}
-
-export default Toolbar;
