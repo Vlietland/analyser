@@ -70,4 +70,8 @@ export class ExpressionParser {
   public isParseError(result: CompilationResult): result is ParseError {
     return typeof result === 'object' && (result as ParseError).message !== undefined;
   }
+
+  public hasCompiledExpression(): boolean {
+    return this.compiledNode !== null;
+  }
 }

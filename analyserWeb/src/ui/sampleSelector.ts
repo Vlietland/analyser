@@ -14,7 +14,7 @@ class SampleSelector {
     const numValue = parseInt(target.value, 10);
 
     if (!isNaN(numValue)) {
-      const clampedValue = Math.max(MIN_SAMPLES, Math.min(MAX_SAMPLES, numValue));
+      const clampedValue = Math.max(this.MIN_SAMPLES, Math.min(this.MAX_SAMPLES, numValue));
       this.value = clampedValue;
       this.onChangeCallback(clampedValue);
     } else if (target.value === '') {
@@ -26,10 +26,10 @@ class SampleSelector {
   getElement(): HTMLInputElement {
     const inputElement = document.createElement('input');
     inputElement.type = 'number';
-    inputElement.title = `Samples (${MIN_SAMPLES}-${MAX_SAMPLES})`; // Use title for hint
+    inputElement.title = `Samples (${this.MIN_SAMPLES}-${this.MAX_SAMPLES})`; // Use title for hint
     inputElement.value = String(this.value);
-    inputElement.min = String(MIN_SAMPLES);
-    inputElement.max = String(MAX_SAMPLES);
+    inputElement.min = String(this.MIN_SAMPLES);
+    inputElement.max = String(this.MAX_SAMPLES);
     inputElement.step = '1';
     inputElement.style.width = '80px';
     inputElement.style.padding = '5px';
