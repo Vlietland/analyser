@@ -5,7 +5,7 @@ export class FormulaInput {
   constructor(initialValue: string = '') {
     this.inputElement = document.createElement('input');
     this.inputElement.type = 'text';
-    this.inputElement.placeholder = 'Enter formula z = f(x, y)';
+    this.inputElement.placeholder = 'x^2+y^2';
     this.inputElement.value = initialValue;
     this.inputElement.style.marginRight = '10px';
     this.inputElement.style.padding = '5px';
@@ -27,6 +27,12 @@ export class FormulaInput {
 
   setValue(value: string): void {
     this.inputElement.value = value;
+  }
+
+  triggerChange(): void {
+    if (this.onChangeCallback) {
+      this.onChangeCallback(this.inputElement.value); // Call the correct callback
+    }
   }
 
   onChange(callback: (value: string) => void): void {
