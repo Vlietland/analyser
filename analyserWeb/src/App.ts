@@ -65,10 +65,10 @@ export class App {
         this.clearSurface();
         return;
     }
-    console.log(`App: Updating surface with ${this.gridGenerator.DEFAULT_SAMPLES} samples.`);
+    console.log(`App: Updating surface with ${this.gridGenerator.currentSamples()} samples.`);
     let surfaceGrid: SurfaceGrid | null = null;
     try {
-      surfaceGrid = this.gridGenerator.generateGrid(undefined, this.gridGenerator.DEFAULT_SAMPLES); 
+      surfaceGrid = this.gridGenerator.generateGrid(undefined, this.gridGenerator.currentSamples()); 
       console.log('App: Surface Grid:', surfaceGrid);
     } catch (error) {
       console.error('App: Grid Generation Error:', error instanceof Error ? error.message : String(error));
@@ -92,7 +92,7 @@ export class App {
     
     this.renderer.render(this.sceneBuilder.getScene(), this.camera.getCamera()); 
   }
-  
+
   private clearSurface(): void {
     const scene = this.sceneBuilder.getScene();
     const existingMesh = scene.getObjectByName("mesh");

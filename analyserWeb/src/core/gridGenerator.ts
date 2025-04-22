@@ -1,10 +1,11 @@
 import { ExpressionParser } from './expressionParser';
 
 export class GridGenerator {
-  private readonly expressionParser: ExpressionParser;  
+  private readonly expressionParser: ExpressionParser;
   private readonly MIN_SAMPLES = 2;
   private readonly MAX_SAMPLES = 200;
-  public readonly DEFAULT_SAMPLES = 50;
+  private readonly DEFAULT_SAMPLES = 50;
+  private validatedSamples = this.DEFAULT_SAMPLES;
   public readonly DEFAULT_SAMPLE_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4};
 
   constructor(expressionParser: ExpressionParser) {
@@ -20,13 +21,13 @@ export class GridGenerator {
       return null;
     }
     
-    const validatedSamples = Math.max(this.MIN_SAMPLES, Math.min(this.MAX_SAMPLES, Math.floor(samples)));
-    if (validatedSamples !== samples) {
-      console.warn(`Samples adjusted from ${samples} to ${validatedSamples} (min: ${this.MIN_SAMPLES}, max: ${this.MAX_SAMPLES})`);
+    this.validatedSamples = Math.max(this.MIN_SAMPLES, Math.min(this.MAX_SAMPLES, Math.floor(samples)));
+    if (this.validatedSamples !== samples) {
+      console.warn(`Samples adjusted from ${samples} to ${this.validatedSamples} (min: ${this.MIN_SAMPLES}, max: ${this.MAX_SAMPLES})`);
     }
     
-    const samplesX = validatedSamples;
-    const samplesY = validatedSamples;
+    const samplesX = this.validatedSamples;
+    const samplesY = this.validatedSamples;
     const points = [];
     const stepX = (range.xMax - range.xMin) / (samplesX - 1);
     const stepY = (range.yMax - range.yMin) / (samplesY - 1);
@@ -56,7 +57,7 @@ export class GridGenerator {
       samplesY,
     };
   }
-  
+
   private validateRange(range: any) {
     return (
       range.xMin < range.xMax &&
@@ -66,5 +67,9 @@ export class GridGenerator {
       Number.isFinite(range.yMin) &&
       Number.isFinite(range.yMax)
     );
+  }
+
+  public currentSamples() {
+    return this.validatedSamples;
   }
 }
