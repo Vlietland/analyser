@@ -1,29 +1,26 @@
-import { CameraOrbitController } from '@src/controller/cameraOrbitController';
+import { MouseTool } from '@src/controller/mouseTool';
 
 export class MouseHandler {
-  private cameraOrbitController: CameraOrbitController;
   private domElement: HTMLCanvasElement;
+  private activeTool: MouseTool | null = null;
 
   private isDragging: boolean = false;
   private previousMousePosition: { x: number; y: number } = { x: 0, y: 0 };
 
-  // Bound event listeners
   private boundOnMouseDown: (event: MouseEvent) => void;
   private boundOnMouseMove: (event: MouseEvent) => void;
   private boundOnMouseUp: (event: MouseEvent) => void;
 
-  private currentTool: string = '';
-
-  constructor(
-    cameraOrbitController: CameraOrbitController, 
-    domElement: HTMLCanvasElement, 
-  ) {
-    this.cameraOrbitController = cameraOrbitController;
+  constructor(domElement: HTMLCanvasElement) {
     this.domElement = domElement;
     this.boundOnMouseDown = this.onMouseDown.bind(this);
     this.boundOnMouseMove = this.onMouseMove.bind(this);
     this.boundOnMouseUp = this.onMouseUp.bind(this);
     this.addEventListeners();
+  }
+  
+  public setTool(tool: MouseTool | null = null): void {
+    this.activeTool = tool;
   }
 
   public addEventListeners(): void {
@@ -48,15 +45,13 @@ export class MouseHandler {
   }
 
   private onMouseMove(event: MouseEvent): void {
-    if (!this.isDragging) return;
+    if (!this.isDragging || !this.activeTool) return;
     event.preventDefault();
+
     const deltaX = event.clientX - this.previousMousePosition.x;
     const deltaY = event.clientY - this.previousMousePosition.y;
 
-    if (this.currentTool == "Rotate") {
-      this.cameraOrbitController.setDeltaX(deltaX);
-      this.cameraOrbitController.setDeltaY(deltaY);
-    }
+    this.activeTool.handleMouseDrag(deltaX, deltaY);
 
     this.previousMousePosition.x = event.clientX;
     this.previousMousePosition.y = event.clientY;
@@ -65,9 +60,5 @@ export class MouseHandler {
   private onMouseUp(event: MouseEvent): void {
     event.preventDefault();
     this.isDragging = false;
-  }
-
-  public setTool(newTool: string) {
-    this.currentTool = newTool;
   }
 }

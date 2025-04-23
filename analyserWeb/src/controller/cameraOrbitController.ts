@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import { MouseTool } from '@src/controller/mouseTool';
 
-export class CameraOrbitController {
+export class CameraOrbitController implements MouseTool{
   private radius: number;
   private theta: number;
   private phi: number;
@@ -22,18 +23,14 @@ export class CameraOrbitController {
     this.updateMatrix();
   }
 
-  public setDeltaX(deltaX: number): void {
-    const newTheta = (this.theta - deltaX * this.rotationSpeed);
-    this.theta = ((newTheta % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
-    this.updateMatrix();
-    this.onUpdateCallback(); // Call callback
-  }
-
-  public setDeltaY(deltaY: number): void {
+  public handleMouseDrag(deltaX: number = 0, deltaY: number = 0): void {
     const newPhi = (this.phi + deltaY * this.rotationSpeed);    
     this.phi = ((newPhi % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
+    const newTheta = (this.theta - deltaX * this.rotationSpeed);
+    this.theta = ((newTheta % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
+
     this.updateMatrix();
-    this.onUpdateCallback(); // Call callback
+    this.onUpdateCallback();
   }
 
   public setRadius(distance: number): void {

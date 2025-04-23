@@ -7,6 +7,7 @@ import { SceneBuilder } from '@src/renderer/sceneBuilder';
 import { Camera } from '@src/renderer/camera';
 import { CameraOrbitController } from '@src/controller/cameraOrbitController';
 import { MouseHandler } from '@src/ui/mouseHandler'; 
+import { ZFactorController } from '@src/controller/zfactorController'; // Import ZFactorController
 
 export class App {
   private expressionParser: ExpressionParser;
@@ -16,6 +17,7 @@ export class App {
   private camera: Camera;
   private cameraOrbitController: CameraOrbitController; 
   private mouseHandler: MouseHandler; 
+  private zFactorController: ZFactorController; // Add ZFactorController property
   private ui: UI;
   
   constructor() {
@@ -31,17 +33,20 @@ export class App {
     );
     this.ui.getFormulaInput().setValue(this.expressionParser.getCompiledInput());    
     
-    const canvasElement = this.ui.getCanvasElement(); // Get HTMLCanvasElement
-    const canvasViewport = this.ui.getCanvasViewport(); // Get CanvasViewport object
+    const canvasElement = this.ui.getCanvasElement(); 
+    const canvasViewport = this.ui.getCanvasViewport(); 
     this.renderer = this.ui.getRenderer(); 
-    this.sceneBuilder = new SceneBuilder(canvasElement); // Pass element
-    this.camera = new Camera(canvasViewport); // Pass viewport object
+    this.sceneBuilder = new SceneBuilder(canvasElement); 
+    this.camera = new Camera(canvasViewport); 
 
     const initialCameraPos = this.camera.getCamera().position;
     this.cameraOrbitController = new CameraOrbitController(this.handleRender.bind(this));
-    this.mouseHandler = new MouseHandler(this.cameraOrbitController, canvasElement);
+    console.log('Passing to MouseHandler:', canvasElement, typeof canvasElement, canvasElement instanceof HTMLCanvasElement); 
+    this.mouseHandler = new MouseHandler(canvasElement); 
+    
+    this.zFactorController = new ZFactorController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.ui.triggerFormulaChange(); 
-    //this.render(); 
+    this.handleRender(); // Call initial render after setup
   }
 
   private handleFormulaChange(value: string): void {
@@ -59,7 +64,7 @@ export class App {
     console.log('App: Samples changed:', newValue);
      console.warn("GridGenerator needs method to update samples from App");
     if (this.expressionParser.hasCompiledExpression()) { 
-       this.updateSurface(newValue); // Pass new value to updateSurface
+       this.updateSurface(newValue);
     } else {
         console.log("App: No valid formula compiled yet, ignoring sample change.")
     }
@@ -67,7 +72,19 @@ export class App {
 
   private handleToolChange(newTool: string): void {
     console.log('App: Tool changed:', newTool);
-    this.mouseHandler.setTool(newTool);
+  
+    switch (newTool) {
+      case 'Rotate':
+        this.mouseHandler.setTool(this.cameraOrbitController);
+        break;
+      case 'Zfactor':
+        this.mouseHandler.setTool(this.zFactorController);
+        break;
+      default:
+        console.warn(`App: Unknown tool "${newTool}"`);
+        this.mouseHandler.setTool(null);
+        break;
+    }
   }
 
   private updateSurface(samples?: number): void { 
@@ -76,11 +93,11 @@ export class App {
         this.clearSurface();
         return;
     }
-    const currentSamples = samples ?? this.gridGenerator.currentSamples(); 
+    const currentSamples = samples ?? this.gridGenerator.getCurrentSamples(); 
     console.log(`App: Updating surface with ${currentSamples} samples.`);
     let surfaceGrid: SurfaceGrid | null = null;
     try {
-      surfaceGrid = this.gridGenerator.generateGrid(undefined, currentSamples); 
+      surfaceGrid = this.gridGenerator.generateGrid(); 
       console.log('App: Surface Grid:', surfaceGrid);
     } catch (error) {
       console.error('App: Grid Generation Error:', error instanceof Error ? error.message : String(error));
