@@ -12,8 +12,6 @@ export class SceneBuilder {
 
   public addObject(object: THREE.Object3D | null): void {
     if (object) {
-      // Consider adding logic here to remove the previous mesh if necessary
-      // For now, just add the new object
       this.scene.add(object);
     }
   }

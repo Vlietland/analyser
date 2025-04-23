@@ -29,10 +29,8 @@ export class App {
         onSampleChange: this.handleSampleChange.bind(this), 
         onToolChange: this.handleToolChange.bind(this)
       }
-      // No defaults passed to UI constructor anymore
     );
-    // Set default formula using value from parser
-    this.ui.getFormulaInput().setValue(this.expressionParser.DEFAULT_EXPRESSION);    
+    this.ui.getFormulaInput().setValue(this.expressionParser.getCompiledInput());    
     
     const canvasElement = this.ui.getCanvasElement(); // Get HTMLCanvasElement
     const canvasViewport = this.ui.getCanvasViewport(); // Get CanvasViewport object
@@ -115,10 +113,11 @@ export class App {
     this.clearSurface(); 
     if (surfaceGrid) {
       const surfaceRenderer = new SurfaceRenderer();
-      const { mesh } = surfaceRenderer.createMesh(surfaceGrid);
+      const { mesh, zCenter } = surfaceRenderer.createMesh(surfaceGrid);
       if (mesh) {
         mesh.name = "mesh"; 
         this.sceneBuilder.addObject(mesh); 
+        this.orbitControls.setZCenter(zCenter);
         console.log('App: Mesh added to scene');
       } else {
          console.error('App: Mesh creation failed');
