@@ -3,7 +3,6 @@ import { CameraOrbitController } from '@src/controller/cameraOrbitController';
 export class MouseHandler {
   private cameraOrbitController: CameraOrbitController;
   private domElement: HTMLCanvasElement;
-  private onUpdateCallback: () => void;
 
   private isDragging: boolean = false;
   private previousMousePosition: { x: number; y: number } = { x: 0, y: 0 };
@@ -18,11 +17,9 @@ export class MouseHandler {
   constructor(
     cameraOrbitController: CameraOrbitController, 
     domElement: HTMLCanvasElement, 
-    onUpdateCallback: () => void
   ) {
     this.cameraOrbitController = cameraOrbitController;
     this.domElement = domElement;
-    this.onUpdateCallback = onUpdateCallback;
     this.boundOnMouseDown = this.onMouseDown.bind(this);
     this.boundOnMouseMove = this.onMouseMove.bind(this);
     this.boundOnMouseUp = this.onMouseUp.bind(this);
@@ -63,7 +60,6 @@ export class MouseHandler {
 
     this.previousMousePosition.x = event.clientX;
     this.previousMousePosition.y = event.clientY;
-    this.onUpdateCallback();
   }
 
   private onMouseUp(event: MouseEvent): void {

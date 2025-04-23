@@ -9,8 +9,10 @@ export class CameraOrbitController {
   private rotationSpeed: number = 0.003; // Adjust sensitivity  
   private up: THREE.Vector3;
   private TWO_PI = Math.PI * 2;
+  private onUpdateCallback: () => void; // Added callback property
 
-  constructor() {
+  constructor(onUpdateCallback: () => void) { // Added callback parameter
+    this.onUpdateCallback = onUpdateCallback; // Store callback
     this.radius = 100;
     this.theta = 0.78;
     this.phi = 3.92;
@@ -23,15 +25,15 @@ export class CameraOrbitController {
   public setDeltaX(deltaX: number): void {
     const newTheta = (this.theta - deltaX * this.rotationSpeed);
     this.theta = ((newTheta % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
-    //console.log('camera Theta:', angle);            
     this.updateMatrix();
+    this.onUpdateCallback(); // Call callback
   }
 
   public setDeltaY(deltaY: number): void {
     const newPhi = (this.phi + deltaY * this.rotationSpeed);    
     this.phi = ((newPhi % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
     this.updateMatrix();
-    //console.log('camera Phi:', this.phi);                
+    this.onUpdateCallback(); // Call callback
   }
 
   public setRadius(distance: number): void {
