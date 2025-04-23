@@ -5,20 +5,15 @@ export class OrbitControls {
   public theta: number;
   public phi: number;
   public target: THREE.Vector3;
-
   private rotationMatrix: THREE.Matrix4;
   private up: THREE.Vector3;
+  private TWO_PI = Math.PI * 2;
 
-  constructor(
-    initialRadius: number = 100,
-    initialTheta: number = Math.PI / 4,
-    initialPhi: number = Math.PI / 4,
-    target: THREE.Vector3 = new THREE.Vector3(0, 0, 0)
-  ) {
-    this.radius = initialRadius;
-    this.theta = initialTheta;
-    this.phi = initialPhi;
-    this.target = target.clone();
+  constructor() {
+    this.radius = 100;
+    this.theta = 0.78;
+    this.phi = 3.92;
+    this.target = new THREE.Vector3(0, 0, 0);
     this.rotationMatrix = new THREE.Matrix4();
     this.up = new THREE.Vector3(0, 0, 1);
     this.updateMatrix();
@@ -31,12 +26,14 @@ export class OrbitControls {
   }
 
   public setTheta(angle: number): void {
-    this.theta = angle;
+    this.theta = ((angle % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
+    //console.log('camera Theta:', angle);            
     this.updateMatrix();
   }
 
   public setPhi(angle: number): void {
-    this.phi = angle;
+    //console.log('camera Phi:', this.phi);            
+    this.phi = ((angle % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
     this.updateMatrix();
   }
 
@@ -54,7 +51,6 @@ export class OrbitControls {
 
   public getPosition(): THREE.Vector3 {
     const offset = new THREE.Vector3(0, -this.radius, 0).applyMatrix4(this.rotationMatrix);
-    console.log('camera position:', offset.clone().add(this.target));        
     return offset.add(this.target);
   }
 

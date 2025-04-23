@@ -17,7 +17,6 @@ export class App {
   private orbitControls: OrbitControls; 
   private mouseHandler: MouseHandler; 
   private ui: UI;
-  private currentTool: string = ""; 
   
   constructor() {
     this.expressionParser = new ExpressionParser(); 
@@ -39,20 +38,13 @@ export class App {
     this.camera = new Camera(canvasViewport); // Pass viewport object
 
     const initialCameraPos = this.camera.getCamera().position;
-    const radius = initialCameraPos.length();
-    // Calculate initial angles based on Z-up assumption
-    const initialPhi = Math.asin(initialCameraPos.z / radius); 
-    const initialTheta = Math.atan2(initialCameraPos.y, initialCameraPos.x);
-    this.orbitControls = new OrbitControls(radius, initialTheta, initialPhi); // Correct order? Check OrbitControls constructor
+    this.orbitControls = new OrbitControls(); 
 
     this.mouseHandler = new MouseHandler(
         this.orbitControls, 
         canvasElement, // Pass element
         this.render.bind(this) 
     );
-
-    // this.currentTool = this.ui.getToolbar().getSelection(); // If UI exposes toolbar
-
     this.ui.triggerFormulaChange(); 
     this.render(); 
   }
@@ -68,15 +60,8 @@ export class App {
     this.updateSurface(); 
   }
 
-  // handleSampleChange now needs to update GridGenerator's internal state
-  // Option 1: Add a method to GridGenerator like setSamples()
-  // Option 2: Pass samples directly to generateGrid() if it accepts it
-  // Assuming Option 2 for now, but GridGenerator needs adjustment
   private handleSampleChange(newValue: number): void {
     console.log('App: Samples changed:', newValue);
-    // We need a way to tell GridGenerator the new sample value
-    // For now, just log it and call updateSurface which uses GridGenerator's internal state
-    // This requires GridGenerator to be updated to accept new sample values
      console.warn("GridGenerator needs method to update samples from App");
     if (this.expressionParser.hasCompiledExpression()) { 
        this.updateSurface(newValue); // Pass new value to updateSurface
@@ -87,22 +72,19 @@ export class App {
 
   private handleToolChange(newTool: string): void {
     console.log('App: Tool changed:', newTool);
-    this.currentTool = newTool;
+    this.mouseHandler.setTool(newTool);
   }
 
-  // updateSurface now optionally takes samples
   private updateSurface(samples?: number): void { 
     if (!this.expressionParser.hasCompiledExpression()) {
         console.log("App: updateSurface called without a compiled expression.");
         this.clearSurface();
         return;
     }
-    // Use passed samples or get from generator (which needs updating)
     const currentSamples = samples ?? this.gridGenerator.currentSamples(); 
     console.log(`App: Updating surface with ${currentSamples} samples.`);
     let surfaceGrid: SurfaceGrid | null = null;
     try {
-      // Pass samples value to generateGrid
       surfaceGrid = this.gridGenerator.generateGrid(undefined, currentSamples); 
       console.log('App: Surface Grid:', surfaceGrid);
     } catch (error) {

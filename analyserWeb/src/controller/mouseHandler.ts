@@ -14,6 +14,8 @@ export class MouseHandler {
   private boundOnMouseMove: (event: MouseEvent) => void;
   private boundOnMouseUp: (event: MouseEvent) => void;
 
+  private currentTool: string = '';
+
   constructor(
     orbitControls: OrbitControls, 
     domElement: HTMLCanvasElement, 
@@ -22,21 +24,16 @@ export class MouseHandler {
     this.orbitControls = orbitControls;
     this.domElement = domElement;
     this.onUpdateCallback = onUpdateCallback;
-
-    // Bind methods to ensure 'this' context is correct
     this.boundOnMouseDown = this.onMouseDown.bind(this);
     this.boundOnMouseMove = this.onMouseMove.bind(this);
     this.boundOnMouseUp = this.onMouseUp.bind(this);
-
     this.addEventListeners();
   }
 
   public addEventListeners(): void {
     this.domElement.addEventListener('mousedown', this.boundOnMouseDown, false);
-    // Add move/up listeners to window/document to capture events outside the canvas
     window.addEventListener('mousemove', this.boundOnMouseMove, false);
     window.addEventListener('mouseup', this.boundOnMouseUp, false);
-    // Prevent context menu on right-click (optional, useful for orbit controls)
     this.domElement.addEventListener('contextmenu', (event) => event.preventDefault());
   }
 
@@ -56,31 +53,29 @@ export class MouseHandler {
 
   private onMouseMove(event: MouseEvent): void {
     if (!this.isDragging) return;
-
     event.preventDefault();
-
     const deltaX = event.clientX - this.previousMousePosition.x;
     const deltaY = event.clientY - this.previousMousePosition.y;
 
-    // Vertical movement (deltaY) controls phi (vertical angle)
-    // Screen Y increases upwards, phi increases upwards (towards +Z pole)
-    const newPhi = this.orbitControls.phi + deltaY * this.rotationSpeed; 
-    this.orbitControls.setPhi(newPhi);
+    if (this.currentTool == "Rotate") {
+      const newPhi = (this.orbitControls.phi + deltaY * this.rotationSpeed);
+      this.orbitControls.setPhi(newPhi);
 
-    // Horizontal movement (deltaX) controls theta (horizontal angle around Z)
-    // Screen X increases rightwards, theta increases counter-clockwise
-    const newTheta = this.orbitControls.theta - deltaX * this.rotationSpeed; 
-    this.orbitControls.setTheta(newTheta);
+      const newTheta = (this.orbitControls.theta - deltaX * this.rotationSpeed);
+      this.orbitControls.setTheta(newTheta);
+    }
 
     this.previousMousePosition.x = event.clientX;
     this.previousMousePosition.y = event.clientY;
-
-    // Notify the application that controls have updated
     this.onUpdateCallback();
   }
 
   private onMouseUp(event: MouseEvent): void {
     event.preventDefault();
     this.isDragging = false;
+  }
+
+  public setTool(newTool: string) {
+    this.currentTool = newTool;
   }
 }
