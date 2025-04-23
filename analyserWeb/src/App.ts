@@ -5,8 +5,8 @@ import { GridGenerator } from '@src/core/gridGenerator';
 import { SurfaceGrid, SurfaceRenderer } from '@src/renderer/surfaceRenderer';
 import { SceneBuilder } from '@src/renderer/sceneBuilder';
 import { Camera } from '@src/renderer/camera';
-import { OrbitControls } from '@src/controller/orbitControls'; 
-import { MouseHandler } from '@src/controller/mouseHandler'; 
+import { CameraOrbitController } from '@src/controller/cameraOrbitController';
+import { MouseHandler } from '@src/ui/mouseHandler'; 
 
 export class App {
   private expressionParser: ExpressionParser;
@@ -14,7 +14,7 @@ export class App {
   private sceneBuilder: SceneBuilder;
   private renderer: THREE.WebGLRenderer;
   private camera: Camera;
-  private orbitControls: OrbitControls; 
+  private orbitController: CameraOrbitController; 
   private mouseHandler: MouseHandler; 
   private ui: UI;
   
@@ -38,10 +38,10 @@ export class App {
     this.camera = new Camera(canvasViewport); // Pass viewport object
 
     const initialCameraPos = this.camera.getCamera().position;
-    this.orbitControls = new OrbitControls(); 
+    this.orbitController = new CameraOrbitController(); 
 
     this.mouseHandler = new MouseHandler(
-        this.orbitControls, 
+        this.orbitController, 
         canvasElement, // Pass element
         this.render.bind(this) 
     );
@@ -99,7 +99,7 @@ export class App {
       if (mesh) {
         mesh.name = "mesh"; 
         this.sceneBuilder.addObject(mesh); 
-        this.orbitControls.setZCenter(zCenter);
+        this.orbitController.setZCenter(zCenter);
         console.log('App: Mesh added to scene');
       } else {
          console.error('App: Mesh creation failed');
@@ -122,8 +122,8 @@ export class App {
   }
 
   private render(): void {
-    const position = this.orbitControls.getPosition();
-    const quaternion = this.orbitControls.getQuaternion(); // Get quaternion
+    const position = this.orbitController.getPosition();
+    const quaternion = this.orbitController.getQuaternion(); // Get quaternion
     this.camera.updateOrbit(position, quaternion); // Pass quaternion
     this.renderer.render(this.sceneBuilder.getScene(), this.camera.getCamera());
   }

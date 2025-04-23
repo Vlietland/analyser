@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 
-export class OrbitControls {
-  public radius: number;
-  public theta: number;
-  public phi: number;
-  public target: THREE.Vector3;
+export class CameraOrbitController {
+  private radius: number;
+  private theta: number;
+  private phi: number;
+  private target: THREE.Vector3;
   private rotationMatrix: THREE.Matrix4;
+  private rotationSpeed: number = 0.003; // Adjust sensitivity  
   private up: THREE.Vector3;
   private TWO_PI = Math.PI * 2;
 
@@ -19,22 +20,18 @@ export class OrbitControls {
     this.updateMatrix();
   }
 
-  private updateMatrix(): void {
-    const rotZ = new THREE.Matrix4().makeRotationZ(this.theta);
-    const rotX = new THREE.Matrix4().makeRotationX(this.phi);
-    this.rotationMatrix.identity().multiply(rotZ).multiply(rotX);
-  }
-
-  public setTheta(angle: number): void {
-    this.theta = ((angle % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
+  public setDeltaX(deltaX: number): void {
+    const newTheta = (this.theta - deltaX * this.rotationSpeed);
+    this.theta = ((newTheta % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
     //console.log('camera Theta:', angle);            
     this.updateMatrix();
   }
 
-  public setPhi(angle: number): void {
-    //console.log('camera Phi:', this.phi);            
-    this.phi = ((angle % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
+  public setDeltaY(deltaY: number): void {
+    const newPhi = (this.phi + deltaY * this.rotationSpeed);    
+    this.phi = ((newPhi % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
     this.updateMatrix();
+    //console.log('camera Phi:', this.phi);                
   }
 
   public setRadius(distance: number): void {
@@ -43,10 +40,6 @@ export class OrbitControls {
 
   public setZCenter(zCenter: number): void {
     this.target.set(0, 0, zCenter);
-  }
-
-  public getTarget(): THREE.Vector3 {
-    return this.target.clone();
   }
 
   public getPosition(): THREE.Vector3 {
@@ -58,5 +51,11 @@ export class OrbitControls {
     const eye = this.getPosition();
     const matrix = new THREE.Matrix4().lookAt(eye, this.target, this.up);
     return new THREE.Quaternion().setFromRotationMatrix(matrix);
+  }
+
+  private updateMatrix(): void {
+    const rotZ = new THREE.Matrix4().makeRotationZ(this.theta);
+    const rotX = new THREE.Matrix4().makeRotationX(this.phi);
+    this.rotationMatrix.identity().multiply(rotZ).multiply(rotX);
   }
 }

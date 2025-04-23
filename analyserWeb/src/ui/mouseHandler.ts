@@ -1,13 +1,12 @@
-import { OrbitControls } from '@src/controller/orbitControls';
+import { CameraOrbitController } from '@src/controller/cameraOrbitController';
 
 export class MouseHandler {
-  private orbitControls: OrbitControls;
+  private cameraOrbitController: CameraOrbitController;
   private domElement: HTMLCanvasElement;
   private onUpdateCallback: () => void;
 
   private isDragging: boolean = false;
   private previousMousePosition: { x: number; y: number } = { x: 0, y: 0 };
-  private rotationSpeed: number = 0.003; // Adjust sensitivity
 
   // Bound event listeners
   private boundOnMouseDown: (event: MouseEvent) => void;
@@ -17,11 +16,11 @@ export class MouseHandler {
   private currentTool: string = '';
 
   constructor(
-    orbitControls: OrbitControls, 
+    cameraOrbitController: CameraOrbitController, 
     domElement: HTMLCanvasElement, 
     onUpdateCallback: () => void
   ) {
-    this.orbitControls = orbitControls;
+    this.cameraOrbitController = cameraOrbitController;
     this.domElement = domElement;
     this.onUpdateCallback = onUpdateCallback;
     this.boundOnMouseDown = this.onMouseDown.bind(this);
@@ -58,11 +57,8 @@ export class MouseHandler {
     const deltaY = event.clientY - this.previousMousePosition.y;
 
     if (this.currentTool == "Rotate") {
-      const newPhi = (this.orbitControls.phi + deltaY * this.rotationSpeed);
-      this.orbitControls.setPhi(newPhi);
-
-      const newTheta = (this.orbitControls.theta - deltaX * this.rotationSpeed);
-      this.orbitControls.setTheta(newTheta);
+      this.cameraOrbitController.setDeltaX(deltaX);
+      this.cameraOrbitController.setDeltaY(deltaY);
     }
 
     this.previousMousePosition.x = event.clientX;
