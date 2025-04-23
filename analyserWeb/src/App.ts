@@ -7,7 +7,9 @@ import { SceneBuilder } from '@src/renderer/sceneBuilder';
 import { Camera } from '@src/renderer/camera';
 import { CameraOrbitController } from '@src/controller/cameraOrbitController';
 import { MouseHandler } from '@src/ui/mouseHandler'; 
-import { ZFactorController } from '@src/controller/zfactorController'; // Import ZFactorController
+import { ZFactorController } from '@src/controller/zfactorController'; 
+import { ShiftController } from '@src/controller/shiftController'; 
+import { ZoomController } from '@src/controller/zoomController'; 
 
 export class App {
   private expressionParser: ExpressionParser;
@@ -17,7 +19,9 @@ export class App {
   private camera: Camera;
   private cameraOrbitController: CameraOrbitController; 
   private mouseHandler: MouseHandler; 
-  private zFactorController: ZFactorController; // Add ZFactorController property
+  private zFactorController: ZFactorController; 
+  private shiftController: ShiftController; 
+  private zoomController: ZoomController; 
   private ui: UI;
   
   constructor() {
@@ -41,12 +45,13 @@ export class App {
 
     const initialCameraPos = this.camera.getCamera().position;
     this.cameraOrbitController = new CameraOrbitController(this.handleRender.bind(this));
-    console.log('Passing to MouseHandler:', canvasElement, typeof canvasElement, canvasElement instanceof HTMLCanvasElement); 
-    this.mouseHandler = new MouseHandler(canvasElement); 
-    
+    this.mouseHandler = new MouseHandler(canvasElement);
     this.zFactorController = new ZFactorController(this.gridGenerator, this.updateSurface.bind(this)); 
+    this.shiftController = new ShiftController(this.gridGenerator, this.updateSurface.bind(this)); 
+    this.zoomController = new ZoomController(this.gridGenerator, this.updateSurface.bind(this)); 
+
     this.ui.triggerFormulaChange(); 
-    this.handleRender(); // Call initial render after setup
+    this.handleRender(); 
   }
 
   private handleFormulaChange(value: string): void {
@@ -64,7 +69,7 @@ export class App {
     console.log('App: Samples changed:', newValue);
      console.warn("GridGenerator needs method to update samples from App");
     if (this.expressionParser.hasCompiledExpression()) { 
-       this.updateSurface(newValue);
+       this.updateSurface(newValue); 
     } else {
         console.log("App: No valid formula compiled yet, ignoring sample change.")
     }
@@ -76,6 +81,12 @@ export class App {
     switch (newTool) {
       case 'Rotate':
         this.mouseHandler.setTool(this.cameraOrbitController);
+        break;
+      case 'Shift':
+        this.mouseHandler.setTool(this.shiftController);
+        break;
+      case 'Zoom':
+        this.mouseHandler.setTool(this.zoomController);
         break;
       case 'Zfactor':
         this.mouseHandler.setTool(this.zFactorController);
@@ -135,8 +146,8 @@ export class App {
 
   private handleRender(): void {
     const position = this.cameraOrbitController.getPosition();
-    const quaternion = this.cameraOrbitController.getQuaternion(); // Get quaternion
-    this.camera.updateOrbit(position, quaternion); // Pass quaternion
+    const quaternion = this.cameraOrbitController.getQuaternion(); 
+    this.camera.updateOrbit(position, quaternion); 
     this.renderer.render(this.sceneBuilder.getScene(), this.camera.getCamera());
   }
 }
