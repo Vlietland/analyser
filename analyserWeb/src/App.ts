@@ -3,9 +3,9 @@ import { UI } from '@src/ui/ui';
 import { ExpressionParser } from '@src/core/expressionParser';
 import { GridGenerator } from '@src/core/gridGenerator';
 import { SurfaceGrid, SurfaceRenderer } from '@src/renderer/surfaceRenderer';
+import { Camera } from '@src/renderer/camera'; 
 import { SceneBuilder } from '@src/renderer/sceneBuilder';
-import { Camera } from '@src/renderer/camera';
-import { CameraOrbitController } from '@src/controller/cameraOrbitController';
+import { CameraController } from '@src/controller/cameraController';
 import { MouseHandler } from '@src/ui/mouseHandler'; 
 import { ZFactorController } from '@src/controller/zfactorController'; 
 import { ShiftController } from '@src/controller/shiftController'; 
@@ -15,9 +15,8 @@ export class App {
   private expressionParser: ExpressionParser;
   private gridGenerator: GridGenerator;
   private sceneBuilder: SceneBuilder;
-  //private renderer: THREE.WebGLRenderer;
   private camera: Camera;
-  private cameraOrbitController: CameraOrbitController; 
+  private cameraController: CameraController; 
   private mouseHandler: MouseHandler; 
   private zFactorController: ZFactorController; 
   private shiftController: ShiftController; 
@@ -27,11 +26,10 @@ export class App {
   constructor() {
     this.expressionParser = new ExpressionParser(); 
     this.gridGenerator = new GridGenerator(this.expressionParser); 
-    
-    this.cameraOrbitController = new CameraOrbitController(this.handleRender.bind(this));
     this.zFactorController = new ZFactorController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.shiftController = new ShiftController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.zoomController = new ZoomController(this.gridGenerator, this.updateSurface.bind(this)); 
+    this.cameraController = new CameraController(this.handleRender.bind(this));     
     
     this.ui = new UI(
       {
@@ -40,25 +38,21 @@ export class App {
         onToolChange: this.handleToolChange.bind(this)
       },
       this.gridGenerator,
-      this.cameraOrbitController
+      this.cameraController
     );
-    this.ui.getFormulaInput().setValue(this.expressionParser.getCompiledInput());    
+    this.ui.getFormulaInput().setValue(this.expressionParser.getCompiledInput());  
     
-    const canvasElement = this.ui.getCanvasElement(); 
-    const canvasViewport = this.ui.getCanvasViewport(); 
-    this.mouseHandler = new MouseHandler(canvasElement);    
-    this.sceneBuilder = new SceneBuilder(canvasElement); 
-    this.camera = new Camera(canvasViewport); 
-
-    //this.renderer = this.ui.getRenderer(); 
-    //const initialCameraPos = this.camera.getCamera().position;
-  
+    this.camera = new Camera(this.ui.getCanvasViewport()); 
+    this.cameraController.setCamera(this.camera);
+    this.zoomController.setCameraController(this.cameraController);
+    this.mouseHandler = new MouseHandler(this.ui.getCanvasElement());    
+    this.sceneBuilder = new SceneBuilder(this.ui.getCanvasElement()); 
+   
     this.ui.triggerFormulaChange(); 
     this.handleRender(); 
   }
 
   private handleFormulaChange(value: string): void {
-    console.log('App: Formula changed:', value);
     const compilationResult = this.expressionParser.compileExpression(value);
     if (this.expressionParser.isParseError(compilationResult)) { 
       console.log('App: Parse Error:', compilationResult.message);
@@ -83,7 +77,7 @@ export class App {
   
     switch (newTool) {
       case 'Rotate':
-        this.mouseHandler.setTool(this.cameraOrbitController);
+        this.mouseHandler.setTool(this.cameraController);
         break;
       case 'Shift':
         this.mouseHandler.setTool(this.shiftController);
@@ -123,8 +117,7 @@ export class App {
       if (mesh) {
         mesh.name = "mesh";
         this.sceneBuilder.addObject(mesh); 
-        this.camera.setTarget(this.gridGenerator.getTarget());
-        this.cameraOrbitController.setTarget(this.gridGenerator.getTarget());
+        this.cameraController.setTarget(this.gridGenerator.getTarget());
       } else {
          console.error('App: Mesh creation failed');
       }
@@ -145,8 +138,8 @@ export class App {
   }
 
   private handleRender(): void {
-    const position = this.cameraOrbitController.getPosition();
-    const quaternion = this.cameraOrbitController.getQuaternion();
+    const position = this.cameraController.getPosition();
+    const quaternion = this.cameraController.getQuaternion();
     this.camera.updateOrbit(position, quaternion); 
     this.ui.getRenderer().render(this.sceneBuilder.getScene(), this.camera.getCamera());
     this.ui.getDashboard().updateDashboard();

@@ -5,7 +5,7 @@ import { Toolbar } from '@src/ui/toolbar';
 import { CanvasViewport } from '@src/ui/canvasViewport';
 import { Dashboard } from '@src/ui/dashboard'; // Import Dashboard
 import { GridGenerator } from '@src/core/gridGenerator'; // Import GridGenerator
-import { CameraOrbitController } from '@src/controller/cameraOrbitController'; // Import CameraOrbitController
+import { CameraController } from '@src/controller/cameraController'; // Import CameraOrbitController
 
 interface UICallbacks {
   onFormulaChange: (value: string) => void;
@@ -24,7 +24,7 @@ export class UI {
   constructor(
     callbacks: UICallbacks,
     gridGenerator: GridGenerator, // Add gridGenerator parameter
-    cameraOrbitController: CameraOrbitController // Add cameraOrbitController parameter
+    cameraController: CameraController // Add cameraOrbitController parameter
   ) {
     this.callbacks = callbacks;
 
@@ -33,7 +33,7 @@ export class UI {
     this.sampleSelector = new SampleSelector(this.handleSampleChange.bind(this));
     this.toolbar = new Toolbar(this.handleToolChange.bind(this));
     this.canvasViewport = new CanvasViewport(); // Use default size or pass config
-    this.dashboard = new Dashboard(gridGenerator, cameraOrbitController); // Instantiate Dashboard
+    this.dashboard = new Dashboard(gridGenerator, cameraController); // Instantiate Dashboard
 
     this.formulaInput.onChange(this.handleFormulaChange.bind(this));
     document.body.appendChild(this.formulaInput.getElement());

@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { MouseTool } from '@src/controller/mouseTool';
+import { Camera } from '@src/renderer/camera';
 
-export class CameraOrbitController implements MouseTool{
+export class CameraController implements MouseTool{
   private radius: number;
   private theta: number;
   private phi: number;
@@ -10,7 +11,8 @@ export class CameraOrbitController implements MouseTool{
   private rotationSpeed: number = 0.003; // Adjust sensitivity  
   private up: THREE.Vector3;
   private TWO_PI = Math.PI * 2;
-  private onUpdateCallback: () => void; // Added callback property
+  private onUpdateCallback: () => void;
+  private camera: Camera | undefined;
 
   constructor(onUpdateCallback: () => void) { // Added callback parameter
     this.onUpdateCallback = onUpdateCallback; // Store callback
@@ -33,12 +35,19 @@ export class CameraOrbitController implements MouseTool{
     this.onUpdateCallback();
   }
 
-  public setRadius(distance: number): void {
-    this.radius = Math.max(0.1, distance);
+  public scaleZoom(factor: number) {
+    this.camera?.zoomCamera(1/factor);
+  }
+
+  public setCamera(camera: Camera){
+    this.camera = camera;
   }
 
   public setTarget(target: THREE.Vector3): void {
-    this.target.copy(target);
+    if (this.camera) {
+      this.target.copy(target);
+      this.camera.setTarget(target);       
+    }
   }
 
   public getPosition(): THREE.Vector3 {

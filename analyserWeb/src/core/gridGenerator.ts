@@ -66,7 +66,6 @@ export class GridGenerator {
       }
       points.push(row);
     }
-    console.log(this.range);
     if (this.range.zMin === Infinity) {
       this.range.zMin = 0;
       this.range.zMax= 0;

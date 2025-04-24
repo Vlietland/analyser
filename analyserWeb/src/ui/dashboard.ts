@@ -1,5 +1,5 @@
 import { GridGenerator } from '@src/core/gridGenerator';
-import { CameraOrbitController } from '@src/controller/cameraOrbitController';
+import { CameraOrbitController } from '@src/controller/cameraController';
 
 export class Dashboard {
   private gridGenerator: GridGenerator;

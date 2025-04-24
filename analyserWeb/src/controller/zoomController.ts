@@ -1,10 +1,12 @@
 import { GridGenerator } from '@src/core/gridGenerator';
 import { MouseTool } from '@src/controller/mouseTool';
+import { CameraController } from '@src/controller/cameraController';
 
 export class ZoomController implements MouseTool {
   private gridGenerator: GridGenerator;
   private static readonly SENSITIVITY: number = 0.01;
   private onUpdateCallback: () => void;
+  private cameraController: CameraController | undefined;
 
   constructor(gridGenerator: GridGenerator, onUpdateCallback: () => void) {
     this.gridGenerator = gridGenerator;
@@ -20,6 +22,11 @@ export class ZoomController implements MouseTool {
       factor = 1 + deltaY * ZoomController.SENSITIVITY;
     }
     this.gridGenerator.scaleRange(factor);
+    this.cameraController?.scaleZoom(factor);
     this.onUpdateCallback();
+  }
+
+  public setCameraController(cameraController: CameraController) {
+    this.cameraController = cameraController;
   }
 }

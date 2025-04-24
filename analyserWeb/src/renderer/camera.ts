@@ -28,11 +28,14 @@ export class Camera {
 
   public setTarget(target: THREE.Vector3) {
     this.camera.lookAt(target);
-    console.log(target);
   }
 
   public updateOrbit(position: THREE.Vector3, quaternion: THREE.Quaternion): void {
     this.camera.position.copy(position);
     this.camera.quaternion.copy(quaternion);
   }
+  public zoomCamera(factor: number): void {
+    this.camera.zoom *= factor;
+    this.camera.updateProjectionMatrix();
+  }  
 }
