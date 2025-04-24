@@ -15,7 +15,7 @@ export class App {
   private expressionParser: ExpressionParser;
   private gridGenerator: GridGenerator;
   private sceneBuilder: SceneBuilder;
-  private renderer: THREE.WebGLRenderer;
+  //private renderer: THREE.WebGLRenderer;
   private camera: Camera;
   private cameraOrbitController: CameraOrbitController; 
   private mouseHandler: MouseHandler; 
@@ -28,28 +28,31 @@ export class App {
     this.expressionParser = new ExpressionParser(); 
     this.gridGenerator = new GridGenerator(this.expressionParser); 
     
+    this.cameraOrbitController = new CameraOrbitController(this.handleRender.bind(this));
+    this.zFactorController = new ZFactorController(this.gridGenerator, this.updateSurface.bind(this)); 
+    this.shiftController = new ShiftController(this.gridGenerator, this.updateSurface.bind(this)); 
+    this.zoomController = new ZoomController(this.gridGenerator, this.updateSurface.bind(this)); 
+    
     this.ui = new UI(
       {
         onFormulaChange: this.handleFormulaChange.bind(this),
         onSampleChange: this.handleSampleChange.bind(this), 
         onToolChange: this.handleToolChange.bind(this)
-      }
+      },
+      this.gridGenerator,
+      this.cameraOrbitController
     );
     this.ui.getFormulaInput().setValue(this.expressionParser.getCompiledInput());    
     
     const canvasElement = this.ui.getCanvasElement(); 
     const canvasViewport = this.ui.getCanvasViewport(); 
-    this.renderer = this.ui.getRenderer(); 
+    this.mouseHandler = new MouseHandler(canvasElement);    
     this.sceneBuilder = new SceneBuilder(canvasElement); 
     this.camera = new Camera(canvasViewport); 
 
-    const initialCameraPos = this.camera.getCamera().position;
-    this.cameraOrbitController = new CameraOrbitController(this.handleRender.bind(this));
-    this.mouseHandler = new MouseHandler(canvasElement);
-    this.zFactorController = new ZFactorController(this.gridGenerator, this.updateSurface.bind(this)); 
-    this.shiftController = new ShiftController(this.gridGenerator, this.updateSurface.bind(this)); 
-    this.zoomController = new ZoomController(this.gridGenerator, this.updateSurface.bind(this)); 
-
+    //this.renderer = this.ui.getRenderer(); 
+    //const initialCameraPos = this.camera.getCamera().position;
+  
     this.ui.triggerFormulaChange(); 
     this.handleRender(); 
   }
@@ -148,7 +151,8 @@ export class App {
     const position = this.cameraOrbitController.getPosition();
     const quaternion = this.cameraOrbitController.getQuaternion(); 
     this.camera.updateOrbit(position, quaternion); 
-    this.renderer.render(this.sceneBuilder.getScene(), this.camera.getCamera());
+    this.ui.getRenderer().render(this.sceneBuilder.getScene(), this.camera.getCamera());
+    this.ui.getDashboard().updateDashboard();
   }
 }
 

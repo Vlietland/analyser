@@ -57,4 +57,12 @@ export class CameraOrbitController implements MouseTool{
     const rotX = new THREE.Matrix4().makeRotationX(this.phi);
     this.rotationMatrix.identity().multiply(rotZ).multiply(rotX);
   }
+
+  public getPhi() {
+    return this.phi;
+  }  
+
+  public getTheta() {
+    return this.theta;
+  }  
 }
