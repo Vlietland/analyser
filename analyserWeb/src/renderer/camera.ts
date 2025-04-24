@@ -17,13 +17,18 @@ export class Camera {
       10000
     );
 
-    this.camera.up.set(0, 0, 1); // Set Z as up
+    this.camera.up.set(0, 0, 1);
     this.camera.position.set(0, 0, 100);
-    this.camera.lookAt(0, 0, 0); // Initial lookAt
+    this.camera.lookAt(0, 0, 0);
   }
 
   public getCamera(): THREE.OrthographicCamera {
     return this.camera;
+  }
+
+  public setTarget(target: THREE.Vector3) {
+    this.camera.lookAt(target);
+    console.log(target);
   }
 
   public updateOrbit(position: THREE.Vector3, quaternion: THREE.Quaternion): void {

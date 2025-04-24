@@ -37,8 +37,8 @@ export class CameraOrbitController implements MouseTool{
     this.radius = Math.max(0.1, distance);
   }
 
-  public setZCenter(zCenter: number): void {
-    this.target.set(0, 0, zCenter);
+  public setTarget(target: THREE.Vector3): void {
+    this.target.copy(target);
   }
 
   public getPosition(): THREE.Vector3 {

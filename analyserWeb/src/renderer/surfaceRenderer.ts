@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { SampleRange } from '@src/core/gridGenerator';
 
 export interface SurfaceGrid {
   points: { x: number; y: number; z: number }[][];
@@ -16,11 +17,10 @@ export class SurfaceRenderer {
     });
   }
 
-  public createMesh(grid: SurfaceGrid | null): { mesh: THREE.Mesh | null; zCenter: number } {
+  public createMesh(grid: SurfaceGrid | null, range: SampleRange): { mesh: THREE.Mesh | null } {
     if (!grid || grid.points.length < 2 || grid.points[0].length < 2) {
-      return { mesh: null, zCenter: 0 };
+      return { mesh: null };
     }
-
     const geometry = new THREE.BufferGeometry();
     const vertices: number[] = [];
     const colors: number[] = [];
@@ -28,30 +28,12 @@ export class SurfaceRenderer {
     const numRows = grid.samplesY;
     const numCols = grid.samplesX;
 
-    let zMin = Infinity;
-    let zMax = -Infinity;
-    for (let j = 0; j < numRows; j++) {
-      for (let i = 0; i < numCols; i++) {
-        const z = grid.points[j][i].z;
-        if (Number.isFinite(z)) {
-          if (z < zMin) zMin = z;
-          if (z > zMax) zMax = z;
-        }
-      }
-    }
-    if (zMin === Infinity) {
-        zMin = 0;
-        zMax = 0;
-    } else if (zMin === zMax) {
-        zMax += 1e-6;
-    }
-
     for (let j = 0; j < numRows; j++) {
       for (let i = 0; i < numCols; i++) {
         const point = grid.points[j][i];
         const zValue = Number.isFinite(point.z) ? point.z : 0;
         vertices.push(point.x, point.y, zValue);
-        const color = this.getColorForZ(point.z, zMin, zMax);
+        const color = this.getColorForZ(point.z, range.zMin, range.zMax);
         colors.push(color.r, color.g, color.b);
       }
     }
@@ -81,9 +63,7 @@ export class SurfaceRenderer {
     geometry.computeVertexNormals();
 
     const mesh = new THREE.Mesh(geometry, this.material);
-    const zCenter = (zMin + zMax) / 2;
-    
-    return { mesh, zCenter };
+    return { mesh };
   }
 
   private getColorForZ(z: number, zMin: number, zMax: number): THREE.Color {

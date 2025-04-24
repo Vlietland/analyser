@@ -1,10 +1,13 @@
-import { ExpressionParser } from '@src/core/expressionParser';
+import * as THREE from 'three';
+import { ExpressionParser } from './expressionParser';
 
 export interface SampleRange {
   xMin: number;
   xMax: number;
   yMin: number;
   yMax: number;
+  zMin: number;
+  zMax: number;
 }
 
 export class GridGenerator {
@@ -14,15 +17,18 @@ export class GridGenerator {
   private readonly DEFAULT_SAMPLES = 50;
   private samples = this.DEFAULT_SAMPLES
   private validatedSamples = this.DEFAULT_SAMPLES;
-  private readonly DEFAULT_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4};
+  private readonly DEFAULT_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4, zMin: 0, zMax: 0};
   private range = this.DEFAULT_RANGE;
-  private zFactor = 1; // Default zFactor
+  private zFactor = 1;
 
   constructor(expressionParser: ExpressionParser) {
     this.expressionParser = expressionParser;
   }
 
   public generateGrid() {
+    this.range.zMin = 0;
+    this.range.zMax = 0;
+    
     if (!this.validateRange(this.range)) {
       console.error("generateGrid received an invalid range.", this.range);
       return null;
@@ -38,7 +44,6 @@ export class GridGenerator {
     const points = [];
     const stepX = (this.range.xMax - this.range.xMin) / (samplesX - 1);
     const stepY = (this.range.yMax - this.range.yMin) / (samplesY - 1);
-
     for (let j = 0; j < samplesY; j++) {
       const y = this.range.yMin + j * stepY;
       const row = [];
@@ -46,16 +51,27 @@ export class GridGenerator {
         const x = this.range.xMin + i * stepX;
         let z;
         try {
-          z = this.expressionParser.evaluateExpression({ x, y });
+          z = this.expressionParser.evaluateExpression({ x, y }) / this.zFactor;
           if (!Number.isFinite(z)) {
             z = NaN;
+          }
+          else {
+            if (z < this.range.zMin) this.range.zMin = z;
+            if (z > this.range.zMax) this.range.zMax = z;
           }
         } catch (error) {
           z = NaN;
         }
-        row.push({ x, y, z: z / this.zFactor }); // Scale z by zFactor
+        row.push({ x, y, z});
       }
       points.push(row);
+    }
+    console.log(this.range);
+    if (this.range.zMin === Infinity) {
+      this.range.zMin = 0;
+      this.range.zMax= 0;
+    } else if (this.range.zMin === this.range.zMax) {
+      this.range.zMax += 1e-6;
     }
 
     return {
@@ -76,8 +92,20 @@ export class GridGenerator {
     );
   }
 
+  public getTarget(): THREE.Vector3 {
+    return new THREE.Vector3(
+      (this.range.xMin + this.range.xMax) / 2,
+      (this.range.yMin + this.range.yMax) / 2,
+      (this.range.zMin + this.range.zMax) / 2,
+    );
+  }
+
   public getCurrentSamples() {
     return this.validatedSamples;
+  }
+
+  public getCurrentRange(): SampleRange {
+    return { ...this.range };
   }
 
   public scaleRange(factor: number): void {
@@ -90,11 +118,9 @@ export class GridGenerator {
       xMax: xCenter + xRange / 2,
       yMin: yCenter - yRange / 2,
       yMax: yCenter + yRange / 2,
+      zMin: this.range.zMin,
+      zMax: this.range.zMax
     };
-  }
-
-  public getCurrentRange(): SampleRange {
-    return { ...this.range };
   }
 
   public shiftRange(deltaX: number, deltaY: number): void {
@@ -103,6 +129,8 @@ export class GridGenerator {
       xMax: this.range.xMax + deltaX,
       yMin: this.range.yMin + deltaY,
       yMax: this.range.yMax + deltaY,
+      zMin: this.range.zMin,
+      zMax: this.range.zMax
     };
   }
 

@@ -108,25 +108,23 @@ export class App {
         return;
     }
     const currentSamples = samples ?? this.gridGenerator.getCurrentSamples(); 
-    console.log(`App: Updating surface with ${currentSamples} samples.`);
     let surfaceGrid: SurfaceGrid | null = null;
     try {
       surfaceGrid = this.gridGenerator.generateGrid(); 
-      console.log('App: Surface Grid:', surfaceGrid);
     } catch (error) {
-      console.error('App: Grid Generation Error:', error instanceof Error ? error.message : String(error));
       this.clearSurface();
       return; 
     }
     this.clearSurface(); 
     if (surfaceGrid) {
       const surfaceRenderer = new SurfaceRenderer();
-      const { mesh, zCenter } = surfaceRenderer.createMesh(surfaceGrid);
+      const range = this.gridGenerator.getCurrentRange()      
+      const { mesh } = surfaceRenderer.createMesh(surfaceGrid, range);
       if (mesh) {
-        mesh.name = "mesh"; 
+        mesh.name = "mesh";
         this.sceneBuilder.addObject(mesh); 
-        this.cameraOrbitController.setZCenter(zCenter);
-        console.log('App: Mesh added to scene');
+        this.camera.setTarget(this.gridGenerator.getTarget());
+        this.cameraOrbitController.setTarget(this.gridGenerator.getTarget());
       } else {
          console.error('App: Mesh creation failed');
       }
@@ -142,14 +140,13 @@ export class App {
     const existingMesh = scene.getObjectByName("mesh");
     if (existingMesh) {
       scene.remove(existingMesh);
-      console.log('App: Previous mesh removed');
       this.handleRender(); 
     }
   }
 
   private handleRender(): void {
     const position = this.cameraOrbitController.getPosition();
-    const quaternion = this.cameraOrbitController.getQuaternion(); 
+    const quaternion = this.cameraOrbitController.getQuaternion();
     this.camera.updateOrbit(position, quaternion); 
     this.ui.getRenderer().render(this.sceneBuilder.getScene(), this.camera.getCamera());
     this.ui.getDashboard().updateDashboard();
