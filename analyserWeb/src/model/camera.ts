@@ -14,7 +14,7 @@ export class Camera {
       frustumSize / 2,
       -frustumSize / 2,
       0.1,
-      10000
+      100000
     );
 
     this.camera.up.set(0, 0, 1);

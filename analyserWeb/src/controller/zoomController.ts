@@ -15,11 +15,11 @@ export class ZoomController implements MouseTool {
 
   public handleMouseDrag(deltaX: number = 0, deltaY: number = 0): void {
     let factor: number;
-    if (deltaY < 0) {
-      const absY = Math.abs(deltaY);
-      factor = 1 / (1 + absY * ZoomController.SENSITIVITY);
+    if (deltaY > 0) {
+      factor = 1 / (1 + deltaY * ZoomController.SENSITIVITY);
     } else {
-      factor = 1 + deltaY * ZoomController.SENSITIVITY;
+      const absY = Math.abs(deltaY);      
+      factor = 1 + absY * ZoomController.SENSITIVITY;
     }
     if (this.gridGenerator.scaleRange(factor)) {
       this.cameraController?.scaleZoom(factor);

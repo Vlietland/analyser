@@ -7,9 +7,9 @@ export class CameraController implements MouseTool{
   private theta: number;
   private phi: number;
   private target: THREE.Vector3;
-  private rotationMatrix: THREE.Matrix4;
+  //private rotationMatrix: THREE.Matrix4;
   private rotationSpeed: number = 0.003; // Adjust sensitivity  
-  private up: THREE.Vector3;
+  //private up: THREE.Vector3;
   private TWO_PI = Math.PI * 2;
   private onUpdateCallback: () => void;
   private camera: Camera | undefined;
@@ -22,27 +22,27 @@ export class CameraController implements MouseTool{
     //this.theta = 0.78;
     //this.phi = 3.92;
     this.target = new THREE.Vector3(0, 0, 0);
-    this.rotationMatrix = new THREE.Matrix4();
-    this.up = new THREE.Vector3(0, 0, 1);
-    this.updateMatrix();
+    //this.rotationMatrix = new THREE.Matrix4();
+    //this.up = new THREE.Vector3(0, 0, 1);
+    //this.updateMatrix();
+  }
+
+  public setCamera(camera: Camera){
+    this.camera = camera;
   }
 
   public handleMouseDrag(deltaX: number = 0, deltaY: number = 0): void {
-    const newPhi = (this.phi + deltaY * this.rotationSpeed);    
+    const newPhi = (this.phi - deltaY * this.rotationSpeed);    
     this.phi = ((newPhi % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
     const newTheta = (this.theta - deltaX * this.rotationSpeed);
     this.theta = ((newTheta % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
 
-    this.updateMatrix();
+    this.setRotation(this.phi, this.theta);
     this.onUpdateCallback();
   }
 
   public scaleZoom(factor: number) {
     this.camera?.zoomCamera(1/factor);
-  }
-
-  public setCamera(camera: Camera){
-    this.camera = camera;
   }
 
   public setTarget(target: THREE.Vector3): void {
@@ -52,22 +52,16 @@ export class CameraController implements MouseTool{
     }
   }
 
-  public getPosition(): THREE.Vector3 {
-    const offset = new THREE.Vector3(0, 0, this.radius).applyMatrix4(this.rotationMatrix);
-    return offset.add(this.target);
-  }
-
-  public getQuaternion(): THREE.Quaternion {
-    const eye = this.getPosition();
-    const matrix = new THREE.Matrix4().lookAt(eye, this.target, this.up);
-    return new THREE.Quaternion().setFromRotationMatrix(matrix);
-  }
-
-  private updateMatrix(): void {
-    const rotZ = new THREE.Matrix4().makeRotationZ(this.theta);
-    const rotX = new THREE.Matrix4().makeRotationX(this.phi);
-    this.rotationMatrix.identity().multiply(rotZ).multiply(rotX);
-  }
+  public setRotation(phi: number, theta: number): void {
+    const xQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), phi)
+    const zQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), theta)
+    const orientation = new THREE.Quaternion().multiplyQuaternions(zQuat, xQuat)
+    const offset = new THREE.Vector3(0, 0, 10000).applyQuaternion(orientation)
+    this.camera?.getCamera().position.copy(offset)
+    const upDirection = new THREE.Vector3(0, 1, 0).applyQuaternion(orientation)    
+    this.camera?.getCamera().up.copy(upDirection)
+    this.camera?.getCamera().lookAt(this.target);
+  }  
 
   public getPhi() {
     return this.phi;

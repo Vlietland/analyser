@@ -128,10 +128,10 @@ export class App {
   }
 
   private handleRender(): void {
-    const position = this.cameraController.getPosition();
-    const quaternion = this.cameraController.getQuaternion();
-    this.camera.updateOrbit(position, quaternion); 
-    this.ui.getGizmo().updateGizmo();    
+    /*const position = this.cameraController.getPosition();
+    const quaternion = this.cameraController.getQuaternion(); */
+    //this.cameraController.updateCamera(); 
+    this.ui.getGizmo().updateGizmo();  
     this.ui.getRenderer().render(this.sceneBuilder.getScene(), this.camera.getCamera());
     this.ui.getDashboard().updateDashboard();
   }
