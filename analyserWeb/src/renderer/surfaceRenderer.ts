@@ -56,7 +56,6 @@ export class SurfaceRenderer {
         }
       }
     }
-
     geometry.setIndex(indices);
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
@@ -79,4 +78,10 @@ export class SurfaceRenderer {
     }
     return color;
   }
+ /*
+  const analysisMarker = new THREE.Mesh(
+    new THREE.SphereGeometry(0.3, 12, 12),
+    new THREE.MeshBasicMaterial({ color: 0xff0000 })
+  );
+  //scene.add(analysisMarker); */ 
 }

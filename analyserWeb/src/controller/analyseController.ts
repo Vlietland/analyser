@@ -9,6 +9,7 @@ export class AnalyseController implements MouseTool {
   private currentSampleX: number;
   private currentSampleY: number;
   private analysisResult: THREE.Vector3;
+  private marker?: THREE.Object3D;  
   
   constructor(gridGenerator: GridGenerator, onUpdateCallback: () => void) {
     this.gridGenerator = gridGenerator;
@@ -16,26 +17,24 @@ export class AnalyseController implements MouseTool {
     this.currentSampleX = 0;
     this.currentSampleY = 0;
     this.analysisResult = new THREE.Vector3(0, 0, 0);
-    this.reset();
   }
 
   public handleMouseDrag(deltaX: number = 0, deltaY: number = 0): void {
     const grid = this.gridGenerator.getGrid();
     if (!grid) return;
-    const xChange = Math.round(deltaX * AnalyseController.SENSITIVITY);
-    const yChange = Math.round(deltaY * AnalyseController.SENSITIVITY);    
     this.currentSampleX = Math.min(
       grid.samplesX - 1,
-      Math.max(0, this.currentSampleX + xChange)
+      Math.max(0, this.currentSampleX + Math.round(deltaX * AnalyseController.SENSITIVITY))
     );    
     this.currentSampleY = Math.min(
       grid.samplesY - 1,
-      Math.max(0, this.currentSampleY + yChange)
+      Math.max(0, this.currentSampleY - Math.round(deltaY * AnalyseController.SENSITIVITY))
     );
     const points = grid.points;
     const point = points[this.currentSampleY][this.currentSampleX];
     this.analysisResult.set(point.x, point.y, isFinite(point.z) ? point.z : 0);
-    console.log(xChange, yChange, this.analysisResult);    
+
+    if (this.marker) this.marker.position.set(point.x, point.y, this.analysisResult.z + 0.01);    
     this.onUpdateCallback();
   }
   
@@ -50,7 +49,11 @@ export class AnalyseController implements MouseTool {
     this.currentSampleY = grid.samplesY / 2;
     const point = grid.points[this.currentSampleY][this.currentSampleX];        
     this.analysisResult.set(point.x, point.y, isFinite(point.z) ? point.z : 0);
-    console.log(this.analysisResult)
     this.onUpdateCallback();
   }
+
+  public setMarker(marker: THREE.Object3D) {
+    this.marker = marker;
+    this.reset();
+  }  
 }

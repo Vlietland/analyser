@@ -14,12 +14,8 @@ export class Camera {
       frustumSize / 2,
       -frustumSize / 2,
       0.1,
-      100000
+      1000000
     );
-
-    this.camera.up.set(0, 0, 1);
-    this.camera.position.set(0, 0, 100);
-    this.camera.lookAt(0, 0, 0);
   }
 
   public getCamera(): THREE.OrthographicCamera {

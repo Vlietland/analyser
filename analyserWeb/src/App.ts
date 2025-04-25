@@ -52,9 +52,13 @@ export class App {
     this.mouseHandler = new MouseHandler(this.ui.getCanvasElement());    
     this.sceneBuilder = new SceneBuilder(this.ui.getCanvasElement()); 
    
-    this.ui.getToolbar().setTool('Analyse')
+    const analysisMarker = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 12), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+    analysisMarker.name = "analysisMarker";
+    this.sceneBuilder.addObject(analysisMarker);
     this.ui.triggerFormulaChange();
-    this.handleRender(); 
+    this.ui.getToolbar().setTool('Analyse')    
+    this.analyseController.setMarker(analysisMarker);
+    this.analyseController.reset();    
   }
 
   private handleFormulaChange(value: string): void {
@@ -130,10 +134,10 @@ export class App {
   }
 
   private handleRender(): void {
-    this.ui.getRenderer().render(this.sceneBuilder.getScene(), this.camera.getCamera());
     this.ui.getGizmo().updateGizmo();  
     this.ui.getDashboard().updateDashboard();
     this.ui.getAnalyseDashboard().updateDashboard();
+    this.ui.getRenderer().render(this.sceneBuilder.getScene(), this.camera.getCamera());    
   }
 }
 

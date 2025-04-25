@@ -156,6 +156,7 @@ export class GridGenerator {
       zMin: this.range.zMin,
       zMax: this.range.zMax
     };
+    console.log(this.range)
     return true;
   }
 

@@ -3,32 +3,24 @@ import { MouseTool } from '@src/controller/mouseTool';
 import { Camera } from '@src/model/camera';
 
 export class CameraController implements MouseTool{
-  private radius: number;
   private theta: number;
   private phi: number;
   private target: THREE.Vector3;
-  //private rotationMatrix: THREE.Matrix4;
   private rotationSpeed: number = 0.003; // Adjust sensitivity  
-  //private up: THREE.Vector3;
   private TWO_PI = Math.PI * 2;
   private onUpdateCallback: () => void;
   private camera: Camera | undefined;
 
   constructor(onUpdateCallback: () => void) { // Added callback parameter
     this.onUpdateCallback = onUpdateCallback; // Store callback
-    this.radius = 100;
-    this.theta = 0;
-    this.phi = 0;
-    //this.theta = 0.78;
-    //this.phi = 3.92;
+    this.theta = 0.1;
+    this.phi = 0.1;
     this.target = new THREE.Vector3(0, 0, 0);
-    //this.rotationMatrix = new THREE.Matrix4();
-    //this.up = new THREE.Vector3(0, 0, 1);
-    //this.updateMatrix();
   }
 
   public setCamera(camera: Camera){
     this.camera = camera;
+    this.setRotation(this.phi, this.theta)    
   }
 
   public handleMouseDrag(deltaX: number = 0, deltaY: number = 0): void {
