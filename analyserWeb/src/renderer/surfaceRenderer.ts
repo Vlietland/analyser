@@ -78,10 +78,4 @@ export class SurfaceRenderer {
     }
     return color;
   }
- /*
-  const analysisMarker = new THREE.Mesh(
-    new THREE.SphereGeometry(0.3, 12, 12),
-    new THREE.MeshBasicMaterial({ color: 0xff0000 })
-  );
-  //scene.add(analysisMarker); */ 
 }

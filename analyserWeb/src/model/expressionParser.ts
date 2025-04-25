@@ -12,7 +12,7 @@ export class ExpressionParser {
   private math = create(all);
   private PARSE_OPTIONS: ParseOptions = {};
   private compiledNode: any = null;
-  private readonly DEFAULT_EXPRESSION = 'x^2 + y^2';  
+  private readonly DEFAULT_EXPRESSION = '';  
   private compiledInput: string;
 
   constructor() {
@@ -40,7 +40,7 @@ export class ExpressionParser {
         }
       }
 
-      this.compiledNode = node.compile();  // Store the compiled expression
+      this.compiledNode = node.compile();
       this.compiledInput = input;
       return true;
     } catch (parseError: unknown) {

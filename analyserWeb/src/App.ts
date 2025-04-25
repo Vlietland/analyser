@@ -1,6 +1,6 @@
-import * as THREE from 'three';
 import { UI } from '@src/ui/ui'; 
 import { ExpressionParser } from '@src/model/expressionParser';
+import { Marker } from '@src/renderer/marker';
 import { GridGenerator } from '@src/model/gridGenerator';
 import { SurfaceGrid, SurfaceRenderer } from '@src/renderer/surfaceRenderer';
 import { Camera } from '@src/model/camera'; 
@@ -23,12 +23,14 @@ export class App {
   private zFactorController: ZFactorController; 
   private shiftController: ShiftController; 
   private zoomController: ZoomController; 
+  private marker: Marker;
   private ui: UI;
   
   constructor() {
     this.expressionParser = new ExpressionParser(); 
+    this.marker = new Marker();
     this.gridGenerator = new GridGenerator(this.expressionParser); 
-    this.analyseController = new AnalyseController(this.gridGenerator, this.handleRender.bind(this));
+    this.analyseController = new AnalyseController(this.gridGenerator, this.marker, this.handleRender.bind(this));
     this.zFactorController = new ZFactorController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.shiftController = new ShiftController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.zoomController = new ZoomController(this.gridGenerator, this.updateSurface.bind(this)); 
@@ -52,20 +54,16 @@ export class App {
     this.mouseHandler = new MouseHandler(this.ui.getCanvasElement());    
     this.sceneBuilder = new SceneBuilder(this.ui.getCanvasElement()); 
    
-    const analysisMarker = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 12), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-    analysisMarker.name = "analysisMarker";
-    this.sceneBuilder.addObject(analysisMarker);
+    this.sceneBuilder.addObject(this.marker.getMesh());
     this.ui.triggerFormulaChange();
-    this.ui.getToolbar().setTool('Analyse')    
-    this.analyseController.setMarker(analysisMarker);
-    this.analyseController.reset();    
+    this.ui.getToolbar().setTool('Analyse')
+    this.analyseController.setTool(this.ui.getToolbar().getSelection())
   }
 
   private handleFormulaChange(value: string): void {
     const compilationResult = this.expressionParser.compileExpression(value);
     if (this.expressionParser.isParseError(compilationResult)) { 
       console.log('App: Parse Error:', compilationResult.message);
-      this.clearSurface(); 
       return;
     }
     this.updateSurface(); 
@@ -82,10 +80,9 @@ export class App {
   }
 
   private handleToolChange(newTool: string): void {
-    console.log('App: Tool changed:', newTool);
-  
+    this.analyseController.setTool(this.ui.getToolbar().getSelection())  
     switch (newTool) {
-      case 'Analyse': this.mouseHandler.setTool(this.analyseController); this.analyseController.reset(); break;      
+      case 'Analyse': this.mouseHandler.setTool(this.analyseController); break;
       case 'Rotate':  this.mouseHandler.setTool(this.cameraController);  break;
       case 'Shift':   this.mouseHandler.setTool(this.shiftController);   break;
       case 'Zoom':    this.mouseHandler.setTool(this.zoomController);    break;
@@ -98,7 +95,10 @@ export class App {
   }
 
   private updateSurface(samples?: number): void { 
-    this.clearSurface();
+    const scene = this.sceneBuilder.getScene();
+    const existingMesh = scene.getObjectByName("mesh");
+    if (existingMesh) scene.remove(existingMesh);    
+
     if (!this.expressionParser.hasCompiledExpression()) return;
     let surfaceGrid: SurfaceGrid | null = null;
     try {
@@ -119,18 +119,8 @@ export class App {
       }
     } else {
       console.error('App: Failed to generate surface grid');
-    }
-    
+    }    
     this.handleRender(); 
-  }
-
-  private clearSurface(): void {
-    const scene = this.sceneBuilder.getScene();
-    const existingMesh = scene.getObjectByName("mesh");
-    if (existingMesh) {
-      scene.remove(existingMesh);
-      this.handleRender(); 
-    }
   }
 
   private handleRender(): void {
