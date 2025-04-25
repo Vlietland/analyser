@@ -1,14 +1,12 @@
 export class Toolbar {
-  private selectedTool: string;
+  private selectedTool: string = '';
   private onToolChangeCallback: (tool: string) => void;
   private tools: string[] = ['Analyse', 'Rotate', 'Shift', 'Zoom', 'Zfactor', 'Configure'];
 
   constructor(onToolChange: (tool: string) => void) {
-    this.selectedTool = 'Analyse'; // Default selection
     this.onToolChangeCallback = onToolChange;
   }
 
-  // Create and return the toolbar element
   public getElement(): HTMLElement {
     const toolbarContainer = document.createElement('div');
     toolbarContainer.style.marginTop = '5px';
@@ -25,17 +23,21 @@ export class Toolbar {
       button.style.cursor = 'pointer';
       button.style.backgroundColor = this.selectedTool === tool ? '#4a90e2' : '#f0f0f0';
       button.style.color = this.selectedTool === tool ? 'white' : 'black';
-
-      // Event listener for button click
       button.addEventListener('click', () => this.handleToolChange(tool));
 
       toolbarContainer.appendChild(button);
     });
-
     return toolbarContainer;
   }
 
-  // Handle tool change and update the selected tool
+  public getSelection(): string {
+    return this.selectedTool;
+  }
+
+  public setTool(tool: string) {
+    this.handleToolChange(tool);
+  }
+
   private handleToolChange(tool: string) {
     if (this.selectedTool !== tool) {
       this.selectedTool = tool;
@@ -44,7 +46,6 @@ export class Toolbar {
     }
   }
 
-  // Update button styles based on the selected tool
   private updateButtonStyles() {
     const buttons = document.querySelectorAll('button');
     buttons.forEach((button: HTMLButtonElement) => {
@@ -56,10 +57,5 @@ export class Toolbar {
         button.style.color = 'black';
       }
     });
-  }
-
-  // Get the currently selected tool
-  public getSelection(): string {
-    return this.selectedTool;
   }
 }

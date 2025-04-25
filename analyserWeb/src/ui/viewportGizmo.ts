@@ -34,9 +34,9 @@ export class ViewportGizmo {
     this.gizmoGroup = new THREE.Group();
     this.gizmoGroup.add(axesHelper);
 
-    const labelX = this.createTextSprite('X', '#ff0000', new THREE.Vector3(1.2, 0, 0));
-    const labelY = this.createTextSprite('Y', '#00ff00', new THREE.Vector3(0, 1.2, 0));
-    const labelZ = this.createTextSprite('Z', '#0000ff', new THREE.Vector3(0, 0, 1.2));
+    const labelX = this.createTextSprite('X', '#ff4444', new THREE.Vector3(1.2, 0, 0));
+    const labelY = this.createTextSprite('Y', '#44ff44', new THREE.Vector3(0, 1.2, 0));
+    const labelZ = this.createTextSprite('Z', '#4444ff', new THREE.Vector3(0, 0, 1.2));
     if (labelX) this.gizmoGroup.add(labelX);
     if (labelY) this.gizmoGroup.add(labelY);
     if (labelZ) this.gizmoGroup.add(labelZ);

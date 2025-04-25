@@ -4,8 +4,10 @@ import { SampleSelector } from '@src/ui/sampleSelector';
 import { Toolbar } from '@src/ui/toolbar';
 import { CanvasViewport } from '@src/ui/canvasViewport';
 import { Dashboard } from '@src/ui/dashboard';
+import { AnalyseDashboard } from '@src/ui/analyseDashboard';
 import { GridGenerator } from '@src/model/gridGenerator';
 import { CameraController } from '@src/controller/cameraController';
+import { AnalyseController } from '@src/controller/analyseController';
 import { ViewportGizmo } from '@src/ui/viewportGizmo';
 
 interface UICallbacks {
@@ -21,23 +23,27 @@ export class UI {
   private canvasViewport: CanvasViewport;
   private dashboard: Dashboard;
   private viewportGizmo: ViewportGizmo;
+  private analyseDashboard: AnalyseDashboard;
   private callbacks: UICallbacks;
 
   constructor(
     callbacks: UICallbacks,
-    gridGenerator: GridGenerator, // Add gridGenerator parameter
-    cameraController: CameraController // Add cameraOrbitController parameter
+    gridGenerator: GridGenerator,
+    cameraController: CameraController,
+    analyseController: AnalyseController
   ) {
     this.callbacks = callbacks;
 
     this.formulaInput = new FormulaInput();
     this.sampleSelector = new SampleSelector(this.handleSampleChange.bind(this));
     this.toolbar = new Toolbar(this.handleToolChange.bind(this));
-    this.canvasViewport = new CanvasViewport(); // Use default size or pass config
-    this.dashboard = new Dashboard(gridGenerator, cameraController); // Instantiate Dashboard
+    this.canvasViewport = new CanvasViewport();
+    this.dashboard = new Dashboard(gridGenerator, cameraController);
     this.viewportGizmo = new ViewportGizmo(cameraController);
+    this.analyseDashboard = new AnalyseDashboard(analyseController);
 
     this.formulaInput.onChange(this.handleFormulaChange.bind(this));
+    document.body.appendChild(this.analyseDashboard.getElement());
     document.body.appendChild(this.formulaInput.getElement());
     document.body.appendChild(this.sampleSelector.getElement());
     document.body.appendChild(this.toolbar.getElement());    
@@ -64,6 +70,14 @@ export class UI {
   
   public getDashboard(): Dashboard {
     return this.dashboard;
+  }
+
+  public getAnalyseDashboard(): AnalyseDashboard {
+    return this.analyseDashboard;
+  }
+
+  public getToolbar(): Toolbar {
+    return this.toolbar;
   }
 
   public getGizmo(): ViewportGizmo {

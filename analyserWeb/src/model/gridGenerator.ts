@@ -21,6 +21,7 @@ export class GridGenerator {
   private range = this.DEFAULT_RANGE;
   private MAX_RANGE = 99;  
   private zFactor = 1;
+  private currentGrid: { points: { x: number, y: number, z: number }[][], samplesX: number, samplesY: number } | null = null;
 
   constructor(expressionParser: ExpressionParser) {
     this.expressionParser = expressionParser;
@@ -74,11 +75,12 @@ export class GridGenerator {
       this.range.zMax += 1e-6;
     }
 
-    return {
-      points,
-      samplesX,
-      samplesY,
-    };
+    this.currentGrid = {points, samplesX, samplesY};;
+    return this.currentGrid;
+  }
+
+  public getGrid() {
+    return this.currentGrid;
   }
 
   private validateRange(range: any) {

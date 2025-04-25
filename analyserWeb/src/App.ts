@@ -5,8 +5,9 @@ import { GridGenerator } from '@src/model/gridGenerator';
 import { SurfaceGrid, SurfaceRenderer } from '@src/renderer/surfaceRenderer';
 import { Camera } from '@src/model/camera'; 
 import { SceneBuilder } from '@src/renderer/sceneBuilder';
-import { CameraController } from '@src/controller/cameraController';
 import { MouseHandler } from '@src/ui/mouseHandler'; 
+import { AnalyseController } from '@src/controller/analyseController';
+import { CameraController } from '@src/controller/cameraController';
 import { ZFactorController } from '@src/controller/zfactorController'; 
 import { ShiftController } from '@src/controller/shiftController'; 
 import { ZoomController } from '@src/controller/zoomController'; 
@@ -16,8 +17,9 @@ export class App {
   private gridGenerator: GridGenerator;
   private sceneBuilder: SceneBuilder;
   private camera: Camera;
-  private cameraController: CameraController; 
   private mouseHandler: MouseHandler; 
+  private cameraController: CameraController; 
+  private analyseController: AnalyseController;
   private zFactorController: ZFactorController; 
   private shiftController: ShiftController; 
   private zoomController: ZoomController; 
@@ -26,6 +28,7 @@ export class App {
   constructor() {
     this.expressionParser = new ExpressionParser(); 
     this.gridGenerator = new GridGenerator(this.expressionParser); 
+    this.analyseController = new AnalyseController(this.gridGenerator, this.handleRender.bind(this));
     this.zFactorController = new ZFactorController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.shiftController = new ShiftController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.zoomController = new ZoomController(this.gridGenerator, this.updateSurface.bind(this)); 
@@ -38,7 +41,8 @@ export class App {
         onToolChange: this.handleToolChange.bind(this)
       },
       this.gridGenerator,
-      this.cameraController
+      this.cameraController,
+      this.analyseController
     );
     this.ui.getFormulaInput().setValue(this.expressionParser.getCompiledInput());  
     
@@ -48,7 +52,8 @@ export class App {
     this.mouseHandler = new MouseHandler(this.ui.getCanvasElement());    
     this.sceneBuilder = new SceneBuilder(this.ui.getCanvasElement()); 
    
-    this.ui.triggerFormulaChange(); 
+    this.ui.getToolbar().setTool('Analyse')
+    this.ui.triggerFormulaChange();
     this.handleRender(); 
   }
 
@@ -76,6 +81,7 @@ export class App {
     console.log('App: Tool changed:', newTool);
   
     switch (newTool) {
+      case 'Analyse': this.mouseHandler.setTool(this.analyseController); this.analyseController.reset(); break;      
       case 'Rotate':  this.mouseHandler.setTool(this.cameraController);  break;
       case 'Shift':   this.mouseHandler.setTool(this.shiftController);   break;
       case 'Zoom':    this.mouseHandler.setTool(this.zoomController);    break;
@@ -88,18 +94,14 @@ export class App {
   }
 
   private updateSurface(samples?: number): void { 
-    if (!this.expressionParser.hasCompiledExpression()) {
-        this.clearSurface();
-        return;
-    }
+    this.clearSurface();
+    if (!this.expressionParser.hasCompiledExpression()) return;
     let surfaceGrid: SurfaceGrid | null = null;
     try {
       surfaceGrid = this.gridGenerator.generateGrid(); 
     } catch (error) {
-      this.clearSurface();
       return; 
     }
-    this.clearSurface(); 
     if (surfaceGrid) {
       const surfaceRenderer = new SurfaceRenderer();
       const range = this.gridGenerator.getCurrentRange()      
@@ -128,12 +130,10 @@ export class App {
   }
 
   private handleRender(): void {
-    /*const position = this.cameraController.getPosition();
-    const quaternion = this.cameraController.getQuaternion(); */
-    //this.cameraController.updateCamera(); 
-    this.ui.getGizmo().updateGizmo();  
     this.ui.getRenderer().render(this.sceneBuilder.getScene(), this.camera.getCamera());
+    this.ui.getGizmo().updateGizmo();  
     this.ui.getDashboard().updateDashboard();
+    this.ui.getAnalyseDashboard().updateDashboard();
   }
 }
 
