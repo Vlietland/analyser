@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FormulaInput } from '@src/ui/formulaInput';
+import { FormulaPane } from '@src/ui/formulaPane';
 import { SampleSelector } from '@src/ui/sampleSelector';
 import { Toolbar } from '@src/ui/toolbar';
 import { CanvasViewport } from '@src/ui/canvasViewport';
@@ -17,7 +17,7 @@ interface UICallbacks {
 }
 
 export class UI {
-  private formulaInput: FormulaInput;
+  private formulaPane: FormulaPane;
   private sampleSelector: SampleSelector;
   private toolbar: Toolbar;
   private canvasViewport: CanvasViewport;
@@ -34,7 +34,7 @@ export class UI {
   ) {
     this.callbacks = callbacks;
 
-    this.formulaInput = new FormulaInput();
+    this.formulaPane = new FormulaPane();
     this.sampleSelector = new SampleSelector(this.handleSampleChange.bind(this));
     this.toolbar = new Toolbar(this.handleToolChange.bind(this));
     this.canvasViewport = new CanvasViewport();
@@ -42,9 +42,9 @@ export class UI {
     this.viewportGizmo = new ViewportGizmo(cameraController);
     this.analyseDashboard = new AnalyseDashboard(analyseController);
 
-    this.formulaInput.onChange(this.handleFormulaChange.bind(this));
+    this.formulaPane.onChange(this.handleFormulaChange.bind(this));
     document.body.appendChild(this.analyseDashboard.getElement());
-    document.body.appendChild(this.formulaInput.getElement());
+    document.body.appendChild(this.formulaPane.getElement());
     document.body.appendChild(this.sampleSelector.getElement());
     document.body.appendChild(this.toolbar.getElement());    
     document.body.appendChild(this.dashboard.getElement()); // Append Dashboard element    
@@ -52,8 +52,8 @@ export class UI {
     document.body.appendChild(this.viewportGizmo.getElement());
   }
 
-  public getFormulaInput(): FormulaInput {
-    return this.formulaInput;
+  public getFormulaPane(): FormulaPane {
+    return this.formulaPane;
   }
 
   public getCanvasElement(): HTMLCanvasElement {
@@ -85,7 +85,7 @@ export class UI {
   }
 
   public triggerFormulaChange(): void {
-      this.formulaInput.triggerChange();
+      this.formulaPane.triggerChange();
   }
 
   private handleFormulaChange(value: string): void {

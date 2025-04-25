@@ -1,6 +1,7 @@
-export class FormulaInput {
-  public readonly INITIAL_FORMULA = 'x^2+y^2';
+export class FormulaPane {
+  public readonly INITIAL_FORMULA = 'f(x,y)'
   private inputElement: HTMLInputElement;
+  private messageBox: HTMLDivElement;
   private onChangeCallback: ((value: string) => void) | null = null;
 
   constructor(initialValue: string = '') {
@@ -11,6 +12,12 @@ export class FormulaInput {
     this.inputElement.style.marginRight = '10px';
     this.inputElement.style.padding = '5px';
 
+    this.messageBox = document.createElement('div');
+    this.messageBox.style.color = 'red';
+    this.messageBox.style.marginTop = '5px';
+    this.messageBox.style.fontSize = '12px';
+    this.messageBox.style.display = 'none';
+
     this.inputElement.addEventListener('input', () => {
       if (this.onChangeCallback) {
         this.onChangeCallback(this.inputElement.value);
@@ -18,12 +25,11 @@ export class FormulaInput {
     });
   }
 
-  getElement(): HTMLInputElement {
-    return this.inputElement;
-  }
-
-  getValue(): string {
-    return this.inputElement.value;
+  getElement(): HTMLDivElement {
+    const container = document.createElement('div');
+    container.appendChild(this.inputElement);
+    container.appendChild(this.messageBox);
+    return container;
   }
 
   setValue(value: string): void {
@@ -38,5 +44,15 @@ export class FormulaInput {
 
   onChange(callback: (value: string) => void): void {
     this.onChangeCallback = callback;
+  }
+
+  showError(message: string): void {
+    this.messageBox.textContent = message;
+    this.messageBox.style.display = 'block';
+  }
+
+  hideError(): void {
+    this.messageBox.textContent = '';
+    this.messageBox.style.display = 'none';
   }
 }

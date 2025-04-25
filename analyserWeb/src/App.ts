@@ -46,7 +46,7 @@ export class App {
       this.cameraController,
       this.analyseController
     );
-    this.ui.getFormulaInput().setValue(this.expressionParser.getCompiledInput());  
+    this.ui.getFormulaPane().setValue(this.expressionParser.getCompiledInput());  
     
     this.camera = new Camera(this.ui.getCanvasViewport()); 
     this.cameraController.setCamera(this.camera);
@@ -63,15 +63,14 @@ export class App {
   private handleFormulaChange(value: string): void {
     const compilationResult = this.expressionParser.compileExpression(value);
     if (this.expressionParser.isParseError(compilationResult)) { 
-      console.log('App: Parse Error:', compilationResult.message);
+      this.ui.getFormulaPane().showError(compilationResult.message)
       return;
-    }
+    } 
+    else this.ui.getFormulaPane().hideError()
     this.updateSurface(); 
   }
 
   private handleSampleChange(newValue: number): void {
-    console.log('App: Samples changed:', newValue);
-     console.warn("GridGenerator needs method to update samples from App");
     if (this.expressionParser.hasCompiledExpression()) { 
        this.updateSurface(newValue); 
     } else {
