@@ -1,14 +1,15 @@
 import * as THREE from 'three';
-import { FormulaPane } from '@src/ui/formulaPane';
-import { SampleSelector } from '@src/ui/sampleSelector';
-import { Toolbar } from '@src/ui/toolbar';
+import { FormulaPane } from '@src/ui/rightpanel/formulaPane';
+import { SampleSelector } from '@src/ui/rightpanel/sampleSelector';
+import { Toolbar } from '@src/ui/rightpanel/toolbar';
 import { CanvasViewport } from '@src/ui/canvasViewport';
-import { Dashboard } from '@src/ui/dashboard';
-import { AnalyseDashboard } from '@src/ui/analyseDashboard';
+import { Dashboard } from '@src/ui/rightpanel/dashboard';
+import { AnalyseDashboard } from '@src/ui/rightpanel/analyseDashboard';
 import { GridGenerator } from '@src/model/gridGenerator';
 import { CameraController } from '@src/controller/cameraController';
 import { AnalyseController } from '@src/controller/analyseController';
-import { ViewportGizmo } from '@src/ui/viewportGizmo';
+import { ViewportGizmo } from '@src/ui/rightpanel/viewportGizmo';
+import { RightPanel } from '@src/ui/rightPanel';
 
 interface UICallbacks {
   onFormulaChange: (value: string) => void;
@@ -33,7 +34,6 @@ export class UI {
     analyseController: AnalyseController
   ) {
     this.callbacks = callbacks;
-
     this.formulaPane = new FormulaPane();
     this.sampleSelector = new SampleSelector(this.handleSampleChange.bind(this));
     this.toolbar = new Toolbar(this.handleToolChange.bind(this));
@@ -41,23 +41,22 @@ export class UI {
     this.dashboard = new Dashboard(gridGenerator, cameraController);
     this.viewportGizmo = new ViewportGizmo(cameraController);
     this.analyseDashboard = new AnalyseDashboard(analyseController);
+    const rightPanel = new RightPanel(
+      this.formulaPane,
+      this.sampleSelector,
+      this.toolbar,
+      this.dashboard,
+      this.analyseDashboard,
+      this.viewportGizmo
+    );
 
     this.formulaPane.onChange(this.handleFormulaChange.bind(this));
-    document.body.appendChild(this.analyseDashboard.getElement());
-    document.body.appendChild(this.formulaPane.getElement());
-    document.body.appendChild(this.sampleSelector.getElement());
-    document.body.appendChild(this.toolbar.getElement());    
-    document.body.appendChild(this.dashboard.getElement()); // Append Dashboard element    
+    document.body.appendChild(rightPanel.getElement());
     document.body.appendChild(this.canvasViewport.getElement());
-    document.body.appendChild(this.viewportGizmo.getElement());
   }
 
   public getFormulaPane(): FormulaPane {
     return this.formulaPane;
-  }
-
-  public getCanvasElement(): HTMLCanvasElement {
-    return this.canvasViewport.getElement();
   }
 
   public getCanvasViewport(): CanvasViewport {

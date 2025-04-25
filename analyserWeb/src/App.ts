@@ -51,8 +51,8 @@ export class App {
     this.camera = new Camera(this.ui.getCanvasViewport()); 
     this.cameraController.setCamera(this.camera);
     this.zoomController.setCameraController(this.cameraController);
-    this.mouseHandler = new MouseHandler(this.ui.getCanvasElement());    
-    this.sceneBuilder = new SceneBuilder(this.ui.getCanvasElement()); 
+    this.mouseHandler = new MouseHandler(this.ui.getCanvasViewport().getElement());    
+    this.sceneBuilder = new SceneBuilder(this.ui.getCanvasViewport().getElement());
    
     this.sceneBuilder.addObject(this.marker.getMesh());
     this.ui.triggerFormulaChange();

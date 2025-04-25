@@ -1,0 +1,129 @@
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Main container */
+.ui-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+
+/* Formula input section */
+.formula-section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.formula-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 300px;
+}
+
+.formula-message {
+  color: #ff4444;
+  font-size: 0.9em;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  gap: 5px;
+}
+
+.toolbar button {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f5f5f5;
+  cursor: pointer;
+}
+
+.toolbar button:hover {
+  background: #e0e0e0;
+}
+
+/* Dashboard */
+.dashboard {
+  display: flex;
+  gap: 15px;
+  padding: 10px;
+  background: #f8f8f8;
+  border-radius: 4px;
+}
+
+.dashboard-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dashboard-label {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.dashboard-value {
+  font-weight: bold;
+}
+
+/* Canvas container */
+.canvas-container {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Sample selector */
+.sample-selector {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.sample-selector label {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.sample-selector input {
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Analyse dashboard */
+.analyse-dashboard {
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.analyse-value {
+  font-weight: bold;
+  font-family: monospace;
+}
+
+/* Viewport gizmo */
+.viewport-gizmo {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  overflow: hidden;
+}

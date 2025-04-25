@@ -11,6 +11,7 @@ export class Toolbar {
     const toolbarContainer = document.createElement('div');
     toolbarContainer.style.marginTop = '5px';
     toolbarContainer.style.display = 'flex';
+    toolbarContainer.style.flexDirection = 'column';
     toolbarContainer.style.gap = '5px';
 
     this.tools.forEach(tool => {
