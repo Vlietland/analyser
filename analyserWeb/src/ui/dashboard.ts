@@ -1,13 +1,13 @@
-import { GridGenerator } from '@src/core/gridGenerator';
-import { CameraOrbitController } from '@src/controller/cameraController';
+import { GridGenerator } from '@src/model/gridGenerator';
+import { CameraController } from '@src/controller/cameraController';
 
 export class Dashboard {
   private gridGenerator: GridGenerator;
-  private cameraOrbitController: CameraOrbitController;
+  private cameraOrbitController: CameraController;
 
   private dashboardContainer: HTMLElement;
 
-  constructor(gridGenerator: GridGenerator, cameraOrbitController: CameraOrbitController) {
+  constructor(gridGenerator: GridGenerator, cameraOrbitController: CameraController) {
     this.gridGenerator = gridGenerator;
     this.cameraOrbitController = cameraOrbitController;
 

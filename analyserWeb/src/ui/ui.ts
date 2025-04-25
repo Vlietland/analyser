@@ -3,9 +3,10 @@ import { FormulaInput } from '@src/ui/formulaInput';
 import { SampleSelector } from '@src/ui/sampleSelector';
 import { Toolbar } from '@src/ui/toolbar';
 import { CanvasViewport } from '@src/ui/canvasViewport';
-import { Dashboard } from '@src/ui/dashboard'; // Import Dashboard
-import { GridGenerator } from '@src/core/gridGenerator'; // Import GridGenerator
-import { CameraController } from '@src/controller/cameraController'; // Import CameraOrbitController
+import { Dashboard } from '@src/ui/dashboard';
+import { GridGenerator } from '@src/model/gridGenerator';
+import { CameraController } from '@src/controller/cameraController';
+import { ViewportGizmo } from '@src/ui/viewportGizmo';
 
 interface UICallbacks {
   onFormulaChange: (value: string) => void;
@@ -18,7 +19,8 @@ export class UI {
   private sampleSelector: SampleSelector;
   private toolbar: Toolbar;
   private canvasViewport: CanvasViewport;
-  private dashboard: Dashboard; // Add Dashboard property
+  private dashboard: Dashboard;
+  private viewportGizmo: ViewportGizmo;
   private callbacks: UICallbacks;
 
   constructor(
@@ -28,19 +30,20 @@ export class UI {
   ) {
     this.callbacks = callbacks;
 
-    // Instantiate UI components
     this.formulaInput = new FormulaInput();
     this.sampleSelector = new SampleSelector(this.handleSampleChange.bind(this));
     this.toolbar = new Toolbar(this.handleToolChange.bind(this));
     this.canvasViewport = new CanvasViewport(); // Use default size or pass config
     this.dashboard = new Dashboard(gridGenerator, cameraController); // Instantiate Dashboard
+    this.viewportGizmo = new ViewportGizmo(cameraController);
 
     this.formulaInput.onChange(this.handleFormulaChange.bind(this));
     document.body.appendChild(this.formulaInput.getElement());
     document.body.appendChild(this.sampleSelector.getElement());
     document.body.appendChild(this.toolbar.getElement());    
     document.body.appendChild(this.dashboard.getElement()); // Append Dashboard element    
-    document.body.appendChild(this.canvasViewport.getElement());    
+    document.body.appendChild(this.canvasViewport.getElement());
+    document.body.appendChild(this.viewportGizmo.getElement());
   }
 
   public getFormulaInput(): FormulaInput {
@@ -61,6 +64,10 @@ export class UI {
   
   public getDashboard(): Dashboard {
     return this.dashboard;
+  }
+
+  public getGizmo(): ViewportGizmo {
+    return this.viewportGizmo;
   }
 
   public triggerFormulaChange(): void {

@@ -1,4 +1,4 @@
-import { GridGenerator } from '@src/core/gridGenerator';
+import { GridGenerator } from '@src/model/gridGenerator';
 import { MouseTool } from '@src/controller/mouseTool';
 import { CameraController } from '@src/controller/cameraController';
 
@@ -21,9 +21,10 @@ export class ZoomController implements MouseTool {
     } else {
       factor = 1 + deltaY * ZoomController.SENSITIVITY;
     }
-    this.gridGenerator.scaleRange(factor);
-    this.cameraController?.scaleZoom(factor);
-    this.onUpdateCallback();
+    if (this.gridGenerator.scaleRange(factor)) {
+      this.cameraController?.scaleZoom(factor);
+      this.onUpdateCallback();
+    }
   }
 
   public setCameraController(cameraController: CameraController) {

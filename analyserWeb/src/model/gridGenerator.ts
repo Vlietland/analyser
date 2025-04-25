@@ -19,6 +19,7 @@ export class GridGenerator {
   private validatedSamples = this.DEFAULT_SAMPLES;
   private readonly DEFAULT_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4, zMin: 0, zMax: 0};
   private range = this.DEFAULT_RANGE;
+  private MAX_RANGE = 99;  
   private zFactor = 1;
 
   constructor(expressionParser: ExpressionParser) {
@@ -107,30 +108,53 @@ export class GridGenerator {
     return { ...this.range };
   }
 
-  public scaleRange(factor: number): void {
+  public scaleRange(factor: number): boolean {
     const xCenter = (this.range.xMin + this.range.xMax) / 2;
     const yCenter = (this.range.yMin + this.range.yMax) / 2;
     const xRange = (this.range.xMax - this.range.xMin) * factor;
     const yRange = (this.range.yMax - this.range.yMin) * factor;
+    
+    const newXMin = xCenter - xRange / 2;
+    const newXMax = xCenter + xRange / 2;
+    const newYMin = yCenter - yRange / 2;
+    const newYMax = yCenter + yRange / 2;
+
+    if (newXMin < -this.MAX_RANGE || newXMax > this.MAX_RANGE ||
+        newYMin < -this.MAX_RANGE || newYMax > this.MAX_RANGE) {
+      return false;
+    }
+
     this.range = {
-      xMin: xCenter - xRange / 2,
-      xMax: xCenter + xRange / 2,
-      yMin: yCenter - yRange / 2,
-      yMax: yCenter + yRange / 2,
+      xMin: newXMin,
+      xMax: newXMax,
+      yMin: newYMin,
+      yMax: newYMax,
       zMin: this.range.zMin,
       zMax: this.range.zMax
     };
+    return true;
   }
 
-  public shiftRange(deltaX: number, deltaY: number): void {
+  public shiftRange(deltaX: number, deltaY: number): boolean {
+    const newXMin = this.range.xMin + deltaX;
+    const newXMax = this.range.xMax + deltaX;
+    const newYMin = this.range.yMin + deltaY;
+    const newYMax = this.range.yMax + deltaY;
+    
+    if (newXMin < -this.MAX_RANGE || newXMax > this.MAX_RANGE ||
+        newYMin < -this.MAX_RANGE || newYMax > this.MAX_RANGE) {
+      return false;
+    }
+
     this.range = {
-      xMin: this.range.xMin + deltaX,
-      xMax: this.range.xMax + deltaX,
-      yMin: this.range.yMin + deltaY,
-      yMax: this.range.yMax + deltaY,
+      xMin: newXMin,
+      xMax: newXMax,
+      yMin: newYMin,
+      yMax: newYMax,
       zMin: this.range.zMin,
       zMax: this.range.zMax
     };
+    return true;
   }
 
   public scaleZFactor(factor: number): void {

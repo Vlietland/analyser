@@ -34,6 +34,7 @@ export class Camera {
     this.camera.position.copy(position);
     this.camera.quaternion.copy(quaternion);
   }
+  
   public zoomCamera(factor: number): void {
     this.camera.zoom *= factor;
     this.camera.updateProjectionMatrix();

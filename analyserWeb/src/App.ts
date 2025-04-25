@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { UI } from '@src/ui/ui'; 
-import { ExpressionParser } from '@src/core/expressionParser';
-import { GridGenerator } from '@src/core/gridGenerator';
+import { ExpressionParser } from '@src/model/expressionParser';
+import { GridGenerator } from '@src/model/gridGenerator';
 import { SurfaceGrid, SurfaceRenderer } from '@src/renderer/surfaceRenderer';
-import { Camera } from '@src/renderer/camera'; 
+import { Camera } from '@src/model/camera'; 
 import { SceneBuilder } from '@src/renderer/sceneBuilder';
 import { CameraController } from '@src/controller/cameraController';
 import { MouseHandler } from '@src/ui/mouseHandler'; 
@@ -76,18 +76,10 @@ export class App {
     console.log('App: Tool changed:', newTool);
   
     switch (newTool) {
-      case 'Rotate':
-        this.mouseHandler.setTool(this.cameraController);
-        break;
-      case 'Shift':
-        this.mouseHandler.setTool(this.shiftController);
-        break;
-      case 'Zoom':
-        this.mouseHandler.setTool(this.zoomController);
-        break;
-      case 'Zfactor':
-        this.mouseHandler.setTool(this.zFactorController);
-        break;
+      case 'Rotate':  this.mouseHandler.setTool(this.cameraController);  break;
+      case 'Shift':   this.mouseHandler.setTool(this.shiftController);   break;
+      case 'Zoom':    this.mouseHandler.setTool(this.zoomController);    break;
+      case 'Zfactor': this.mouseHandler.setTool(this.zFactorController); break;
       default:
         console.warn(`App: Unknown tool "${newTool}"`);
         this.mouseHandler.setTool(null);
@@ -97,11 +89,9 @@ export class App {
 
   private updateSurface(samples?: number): void { 
     if (!this.expressionParser.hasCompiledExpression()) {
-        console.log("App: updateSurface called without a compiled expression.");
         this.clearSurface();
         return;
     }
-    const currentSamples = samples ?? this.gridGenerator.getCurrentSamples(); 
     let surfaceGrid: SurfaceGrid | null = null;
     try {
       surfaceGrid = this.gridGenerator.generateGrid(); 
@@ -141,6 +131,7 @@ export class App {
     const position = this.cameraController.getPosition();
     const quaternion = this.cameraController.getQuaternion();
     this.camera.updateOrbit(position, quaternion); 
+    this.ui.getGizmo().updateGizmo();    
     this.ui.getRenderer().render(this.sceneBuilder.getScene(), this.camera.getCamera());
     this.ui.getDashboard().updateDashboard();
   }

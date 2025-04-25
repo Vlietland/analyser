@@ -1,4 +1,4 @@
-import { GridGenerator } from '@src/core/gridGenerator';
+import { GridGenerator } from '@src/model/gridGenerator';
 import { MouseTool } from '@src/controller/mouseTool';
 
 export class ShiftController implements MouseTool {
@@ -16,7 +16,6 @@ export class ShiftController implements MouseTool {
     const deltaGridX = -deltaX * (currentRange.xMax - currentRange.xMin) * ShiftController.SENSITIVITY;
     const deltaGridY = -deltaY * (currentRange.yMax - currentRange.yMin) * ShiftController.SENSITIVITY;
     
-    this.gridGenerator.shiftRange(deltaGridX, deltaGridY);
-    this.onUpdateCallback();
+    if (this.gridGenerator.shiftRange(deltaGridX, deltaGridY)) this.onUpdateCallback();
   }
 }

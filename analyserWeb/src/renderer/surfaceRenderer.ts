@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { SampleRange } from '@src/core/gridGenerator';
+import { SampleRange } from '@src/model/gridGenerator';
 
 export interface SurfaceGrid {
   points: { x: number; y: number; z: number }[][];

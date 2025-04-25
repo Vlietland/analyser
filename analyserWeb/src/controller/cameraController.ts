@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MouseTool } from '@src/controller/mouseTool';
-import { Camera } from '@src/renderer/camera';
+import { Camera } from '@src/model/camera';
 
 export class CameraController implements MouseTool{
   private radius: number;
@@ -17,8 +17,10 @@ export class CameraController implements MouseTool{
   constructor(onUpdateCallback: () => void) { // Added callback parameter
     this.onUpdateCallback = onUpdateCallback; // Store callback
     this.radius = 100;
-    this.theta = 0.78;
-    this.phi = 3.92;
+    this.theta = 0;
+    this.phi = 0;
+    //this.theta = 0.78;
+    //this.phi = 3.92;
     this.target = new THREE.Vector3(0, 0, 0);
     this.rotationMatrix = new THREE.Matrix4();
     this.up = new THREE.Vector3(0, 0, 1);
@@ -51,7 +53,7 @@ export class CameraController implements MouseTool{
   }
 
   public getPosition(): THREE.Vector3 {
-    const offset = new THREE.Vector3(0, -this.radius, 0).applyMatrix4(this.rotationMatrix);
+    const offset = new THREE.Vector3(0, 0, this.radius).applyMatrix4(this.rotationMatrix);
     return offset.add(this.target);
   }
 
