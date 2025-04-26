@@ -24,12 +24,6 @@ export class RightPanel {
   ) {
     this.container = document.createElement('div');
     this.container.className = 'right-panel';
-    this.container.style.position = 'fixed';
-    this.container.style.right = '10px';
-    this.container.style.top = '10px';
-    this.container.style.display = 'flex';
-    this.container.style.flexDirection = 'column';
-    this.container.style.gap = '10px';
 
     this.formulaPane = formulaPane;
     this.sampleSelector = sampleSelector;
