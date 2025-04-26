@@ -4,20 +4,25 @@ export class ViewportMain {
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
 
-  constructor(width: number = 950, height: number = 640) {
+  constructor() {
     this.canvas = document.createElement('canvas');
-    this.canvas.width = width;
-    this.canvas.height = height;
     this.canvas.id = 'viewportMain';
-
+    document.body.appendChild(this.canvas);
+  
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
     });
-    this.renderer.setSize(width, height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setClearColor(0x000000);
+  
+    requestAnimationFrame(() => this.updateSize());
+  
+    window.addEventListener('resize', () => {
+      this.updateSize();
+    });
   }
-
+  
   public getElement(): HTMLCanvasElement {
     return this.canvas;
   }
@@ -30,9 +35,18 @@ export class ViewportMain {
     this.renderer.render(scene, camera);
   }
 
-  public resize(width: number, height: number): void {
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.renderer.setSize(width, height);
+  private updateSize(): void {
+    const width = this.canvas.clientWidth;
+    const height = this.canvas.clientHeight;
+    const pixelRatio = window.devicePixelRatio || 1;
+  
+    const displayWidth = Math.floor(width * pixelRatio);
+    const displayHeight = Math.floor(height * pixelRatio);
+  
+    if (this.canvas.width !== displayWidth || this.canvas.height !== displayHeight) {
+      this.renderer.setSize(width, height, false);
+      this.canvas.width = displayWidth;
+      this.canvas.height = displayHeight;
+    }
   }
 }
