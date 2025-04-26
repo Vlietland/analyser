@@ -2,33 +2,31 @@ export class Toolbar {
   private selectedTool: string = '';
   private onToolChangeCallback: (tool: string) => void;
   private tools: string[] = ['Analyse', 'Rotate', 'Shift', 'Zoom', 'Zfactor', 'Configure'];
+  private toolbarContainer: HTMLElement;
 
   constructor(onToolChange: (tool: string) => void) {
     this.onToolChangeCallback = onToolChange;
+    this.toolbarContainer = this.buildToolbar();
   }
 
-  public getElement(): HTMLElement {
-    const toolbarContainer = document.createElement('div');
-    toolbarContainer.style.marginTop = '5px';
-    toolbarContainer.style.display = 'flex';
-    toolbarContainer.style.flexDirection = 'column';
-    toolbarContainer.style.gap = '5px';
+  private buildToolbar(): HTMLElement {
+    const container = document.createElement('div');
+    container.className = 'toolbar'; // only class, no styles
 
     this.tools.forEach(tool => {
       const button = document.createElement('button');
       button.textContent = tool;
       button.title = tool;
-      button.style.padding = '5px 10px';
-      button.style.border = '1px solid #ccc';
-      button.style.borderRadius = '4px';
-      button.style.cursor = 'pointer';
-      button.style.backgroundColor = this.selectedTool === tool ? '#4a90e2' : '#f0f0f0';
-      button.style.color = this.selectedTool === tool ? 'white' : 'black';
+      button.className = ''; // Reset to empty string
       button.addEventListener('click', () => this.handleToolChange(tool));
-
-      toolbarContainer.appendChild(button);
+      container.appendChild(button);
     });
-    return toolbarContainer;
+
+    return container;
+  }
+
+  public getElement(): HTMLElement {
+    return this.toolbarContainer;
   }
 
   public getSelection(): string {
@@ -48,14 +46,12 @@ export class Toolbar {
   }
 
   private updateButtonStyles() {
-    const buttons = document.querySelectorAll('button');
+    const buttons = this.toolbarContainer.querySelectorAll('button');
     buttons.forEach((button: HTMLButtonElement) => {
       if (button.textContent === this.selectedTool) {
-        button.style.backgroundColor = '#4a90e2';
-        button.style.color = 'white';
+        button.classList.add('selected');
       } else {
-        button.style.backgroundColor = '#f0f0f0';
-        button.style.color = 'black';
+        button.classList.remove('selected');
       }
     });
   }
