@@ -8,13 +8,7 @@ export class ViewportMain {
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
     this.canvas.height = height;
-    this.canvas.style.position = 'fixed';
-    this.canvas.style.left = '16';
-    this.canvas.style.top = '16';
-    this.canvas.style.width = 'calc(100% - 300px)';
-    this.canvas.style.height = '100%';
-    this.canvas.style.backgroundColor = '#000000';
-    this.canvas.style.zIndex = '0';
+    this.canvas.id = 'viewportMain';
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,

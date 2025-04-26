@@ -18,13 +18,7 @@ export class ViewportGizmo {
     this.rotationMatrix = new THREE.Matrix4();    
     this.cameraController = cameraController;
     this.element = document.createElement('div');
-    this.element.style.top = '10px';
-    this.element.style.right = '10px';
-    this.element.style.width = `${ViewportGizmo.GIZMO_SIZE}px`;
-    this.element.style.height = `${ViewportGizmo.GIZMO_SIZE}px`;
-    this.element.style.backgroundColor = '#000000';
-    this.element.style.borderRadius = '4px';
-    this.element.style.zIndex = '0';
+    this.element.id = 'viewportGizmo';
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(ViewportGizmo.GIZMO_SIZE, ViewportGizmo.GIZMO_SIZE);
