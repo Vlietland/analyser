@@ -1,3 +1,16 @@
+:root {
+  --primary-color: #4a90e2;
+  --background-color: #bbbbbb;
+  --button-bg: #f5f5f5;
+  --button-hover: #e0e0e0;
+  --button-active: #4a90e2;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+  --shadow-md: 0 1px 2px rgba(0,0,0,0.2);
+  --spacing-unit: 8px;
+  --border-radius: 4px;
+  --transition: all 0.1s ease;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -7,43 +20,46 @@ html, body {
 }
 
 body {
-  background-color: #bbbbbb;
-  margin: 0;
-  padding: 0;
+  background-color: var(--background-color);
   height: 100vh;
-  overflow: hidden;
 }
 
+/* Toolbar Styles */
 .toolbar {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 8px;
-}
-.toolbar button {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f5f5f5;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: all 0.1s ease;
-}
-.toolbar button:hover {
-  background-color: #e0e0e0;
-}
-.toolbar button:active {
-  transform: translateY(1px);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-.toolbar button.selected {
-  background-color: #4a90e2;
-  color: white;
-  transform: translateY(1px);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  gap: var(--spacing-unit);
+  padding: var(--spacing-unit);
 }
 
+.toolbar__button {
+  width: 220px;
+  padding: var(--spacing-unit);
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  background-color: var(--button-bg);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.toolbar__button:hover {
+  background-color: var(--button-hover);
+}
+
+.toolbar__button:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-md);
+}
+
+.toolbar__button--selected, .toolbar button.selected {
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateY(1px);
+  box-shadow: inset var(--shadow-sm);
+}
+
+/* Viewport Styles */
 #viewportMain {
   position: absolute;
   top: 20px;
@@ -54,10 +70,11 @@ body {
   z-index: 0;
 }
 
+/* Right Panel Styles */
 .right-panel {
   position: fixed;
   right: 10px;
-  top: 10px;
+  top: 20px;
   width: 240px;
   display: flex;
   flex-direction: column;
@@ -65,22 +82,11 @@ body {
 }
 
 #viewportGizmo {
-  top: 10px;
+  top: 30px;
   right: 10px;
   width: 100px;
   height: 100px;
   background-color: #000000;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   z-index: 0;
-}
-
-.toolbar button {
-  width: 220px;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f5f5f5;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  transition: all 0.1s ease;
 }
