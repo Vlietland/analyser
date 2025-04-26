@@ -15,9 +15,9 @@ export class GridGenerator {
   private readonly MIN_SAMPLES = 2;
   private readonly MAX_SAMPLES = 200;
   private readonly DEFAULT_SAMPLES = 50;
-  private samples = this.DEFAULT_SAMPLES
-  private validatedSamples = this.DEFAULT_SAMPLES;
   private readonly DEFAULT_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4, zMin: 0, zMax: 0};
+  private validatedSamples;
+  
   private range = this.DEFAULT_RANGE;
   private MAX_RANGE = 99;  
   private zFactor = 1;
@@ -25,6 +25,7 @@ export class GridGenerator {
 
   constructor(expressionParser: ExpressionParser) {
     this.expressionParser = expressionParser;
+    this.validatedSamples = this.DEFAULT_SAMPLES;
   }
 
   public generateGrid() {
@@ -35,12 +36,7 @@ export class GridGenerator {
       console.error("generateGrid received an invalid range.", this.range);
       return null;
     }
-    
-    this.validatedSamples = Math.max(this.MIN_SAMPLES, Math.min(this.MAX_SAMPLES, Math.floor(this.samples)));
-    if (this.validatedSamples !== this.samples) {
-      console.warn(`Samples adjusted from ${this.samples} to ${this.validatedSamples} (min: ${this.MIN_SAMPLES}, max: ${this.MAX_SAMPLES})`);
-    }
-    
+        
     const samplesX = this.validatedSamples;
     const samplesY = this.validatedSamples;
     const points = [];
@@ -166,5 +162,13 @@ export class GridGenerator {
 
   public getZFactor(): number {
     return this.zFactor;
+  }
+
+  public setSamples(samples: number) {
+    this.validatedSamples = Math.max(this.MIN_SAMPLES, Math.min(this.MAX_SAMPLES, Math.floor(samples)));
+    if (this.validatedSamples !== samples) {
+      console.warn(`Samples adjusted`);
+    }
+    console.log(this.validatedSamples)
   }
 }

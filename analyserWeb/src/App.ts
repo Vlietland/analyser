@@ -56,7 +56,7 @@ export class App {
    
     this.sceneBuilder.addObject(this.marker.getMesh());
     this.ui.triggerFormulaChange();
-    this.ui.getToolbar().setTool('Analyse')
+    this.ui.getToolbar().setTool('Configure')
     this.analyseController.setTool(this.ui.getToolbar().getSelection())
   }
 
@@ -72,6 +72,7 @@ export class App {
 
   private handleSampleChange(newValue: number): void {
     if (this.expressionParser.hasCompiledExpression()) { 
+       this.gridGenerator.setSamples(newValue)
        this.updateSurface(newValue); 
     } else {
         console.log("App: No valid formula compiled yet, ignoring sample change.")

@@ -38,12 +38,12 @@ export class RightPanel {
     this.analyseDashboard = analyseDashboard;
     this.viewportGizmo = viewportGizmo;
 
+    this.container.appendChild(this.viewportGizmo.getElement());
     this.container.appendChild(this.formulaPane.getElement());
     this.container.appendChild(this.sampleSelector.getElement());
+    this.container.appendChild(this.analyseDashboard.getElement());    
     this.container.appendChild(this.dashboard.getElement());
-    this.container.appendChild(this.analyseDashboard.getElement());
     this.container.appendChild(this.toolbar.getElement());
-    this.container.appendChild(this.viewportGizmo.getElement());
   }
 
   public getElement(): HTMLDivElement {

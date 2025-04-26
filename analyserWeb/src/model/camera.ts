@@ -1,11 +1,11 @@
 import * as THREE from 'three';
-import { CanvasViewport } from '@src/ui/canvasViewport';
+import { ViewportMain } from '@src/ui/viewportMain';
 
 export class Camera {
   private camera: THREE.OrthographicCamera;
 
-  constructor(canvasViewport: CanvasViewport) {
-    const aspect = canvasViewport.getElement().width / canvasViewport.getElement().height;
+  constructor(viewPortMain: ViewportMain) {
+    const aspect = viewPortMain.getElement().width / viewPortMain.getElement().height;
     const frustumSize = 10;
 
     this.camera = new THREE.OrthographicCamera(

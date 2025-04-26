@@ -1,14 +1,20 @@
 import * as THREE from 'three';
 
-export class CanvasViewport {
+export class ViewportMain {
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
 
-  constructor(width: number = 800, height: number = 600) {
+  constructor(width: number = 950, height: number = 640) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = width;
     this.canvas.height = height;
-    this.canvas.style.display = 'block'; // Prevent extra space below canvas
+    this.canvas.style.position = 'fixed';
+    this.canvas.style.left = '16';
+    this.canvas.style.top = '16';
+    this.canvas.style.width = 'calc(100% - 300px)';
+    this.canvas.style.height = '100%';
+    this.canvas.style.backgroundColor = '#000000';
+    this.canvas.style.zIndex = '0';
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -34,7 +40,5 @@ export class CanvasViewport {
     this.canvas.width = width;
     this.canvas.height = height;
     this.renderer.setSize(width, height);
-    // Note: Camera aspect ratio might need updating here as well, 
-    // but camera logic is handled separately for now.
   }
 }

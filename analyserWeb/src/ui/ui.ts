@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { FormulaPane } from '@src/ui/rightpanel/formulaPane';
 import { SampleSelector } from '@src/ui/rightpanel/sampleSelector';
 import { Toolbar } from '@src/ui/rightpanel/toolbar';
-import { CanvasViewport } from '@src/ui/canvasViewport';
+import { ViewportMain } from '@src/ui/viewportMain';
 import { Dashboard } from '@src/ui/rightpanel/dashboard';
 import { AnalyseDashboard } from '@src/ui/rightpanel/analyseDashboard';
 import { GridGenerator } from '@src/model/gridGenerator';
@@ -21,7 +21,7 @@ export class UI {
   private formulaPane: FormulaPane;
   private sampleSelector: SampleSelector;
   private toolbar: Toolbar;
-  private canvasViewport: CanvasViewport;
+  private viewPortMain: ViewportMain;
   private dashboard: Dashboard;
   private viewportGizmo: ViewportGizmo;
   private analyseDashboard: AnalyseDashboard;
@@ -37,7 +37,7 @@ export class UI {
     this.formulaPane = new FormulaPane();
     this.sampleSelector = new SampleSelector(this.handleSampleChange.bind(this));
     this.toolbar = new Toolbar(this.handleToolChange.bind(this));
-    this.canvasViewport = new CanvasViewport();
+    this.viewPortMain = new ViewportMain();
     this.dashboard = new Dashboard(gridGenerator, cameraController);
     this.viewportGizmo = new ViewportGizmo(cameraController);
     this.analyseDashboard = new AnalyseDashboard(analyseController);
@@ -52,19 +52,19 @@ export class UI {
 
     this.formulaPane.onChange(this.handleFormulaChange.bind(this));
     document.body.appendChild(rightPanel.getElement());
-    document.body.appendChild(this.canvasViewport.getElement());
+    document.body.appendChild(this.viewPortMain.getElement());
   }
 
   public getFormulaPane(): FormulaPane {
     return this.formulaPane;
   }
 
-  public getCanvasViewport(): CanvasViewport {
-    return this.canvasViewport;
+  public getCanvasViewport(): ViewportMain {
+    return this.viewPortMain;
   }
 
   public getRenderer(): THREE.WebGLRenderer {
-      return this.canvasViewport.getRenderer();
+      return this.viewPortMain.getRenderer();
   }
   
   public getDashboard(): Dashboard {
