@@ -31,8 +31,7 @@ export class SampleSelector {
     inputElement.min = String(this.MIN_SAMPLES);
     inputElement.max = String(this.MAX_SAMPLES);
     inputElement.step = '1';
-    inputElement.style.width = '80px';
-    inputElement.style.padding = '5px';
+    inputElement.classList.add('sample-selector');
 
     inputElement.addEventListener('input', this.handleChange.bind(this));
 

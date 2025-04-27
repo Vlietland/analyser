@@ -23,7 +23,7 @@ export class ExpressionParser {
     if (!input || input.trim() === '') {
       return {
         input,
-        message: 'Expression cannot be empty.',
+        message: '',
         type: 'ValidationError'
       };
     }

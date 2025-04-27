@@ -107,3 +107,46 @@ body {
   border-radius: var(--border-radius);
   z-index: 0;
 }
+
+.sample-selector {
+  width: 80px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  background-color: var(--button-bg);
+  font-family: monospace;
+  transition: var(--transition);
+}
+
+.sample-selector:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.formula-pane {
+  width: 100%;
+}
+
+.formula-input {
+  width: 100%;
+  padding: var(--spacing-unit);
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  background-color: var(--button-bg);
+  font-family: monospace;
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.formula-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.formula-message {
+  color: #ff4444;
+  margin-top: calc(var(--spacing-unit) / 2);
+  font-size: 12px;
+}

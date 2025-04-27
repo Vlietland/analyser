@@ -9,13 +9,10 @@ export class FormulaPane {
     this.inputElement.type = 'text';
     this.inputElement.placeholder = this.INITIAL_FORMULA;
     this.inputElement.value = initialValue;
-    this.inputElement.style.marginRight = '10px';
-    this.inputElement.style.padding = '5px';
+    this.inputElement.classList.add('formula-input');
 
     this.messageBox = document.createElement('div');
-    this.messageBox.style.color = 'red';
-    this.messageBox.style.marginTop = '5px';
-    this.messageBox.style.fontSize = '12px';
+    this.messageBox.classList.add('formula-message');
     this.messageBox.style.display = 'none';
 
     this.inputElement.addEventListener('input', () => {
