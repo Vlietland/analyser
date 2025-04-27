@@ -235,3 +235,28 @@ body {
   transform: translate(-50%, -50%);
   cursor: pointer;
 }
+
+.angle-slider {
+  position: relative;
+  height: 8px;
+  margin: var(--spacing-unit) 0;
+}
+
+.angle-track {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: #ddd;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.angle-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

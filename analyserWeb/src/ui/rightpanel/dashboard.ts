@@ -50,8 +50,22 @@ export class Dashboard {
         <div class="range-values">${zFactor.toFixed(2)}</div>
         </div>
       </div>
-      <div>theta: ${theta.toFixed(2)}</div>
-      <div>phi: ${phi.toFixed(2)}</div>
+      <div class="range-group">
+        <div class="range-label">X-axis</div>
+        <div class="angle-slider">
+          <div class="angle-track"></div>
+          <div class="angle-dot" style="left: ${(phi / (2 * Math.PI)) * 100}%"></div>
+          <div class="range-values">${phi.toFixed(2)} rad</div>
+        </div>
+      </div>
+      <div class="range-group">
+        <div class="range-label">Z-axis</div>
+        <div class="angle-slider">
+          <div class="angle-track"></div>
+          <div class="angle-dot" style="left: ${(theta / (2 * Math.PI)) * 100}%"></div>
+          <div class="range-values">${theta.toFixed(2)} rad</div>
+        </div>
+      </div>
     `;
   }
 }
