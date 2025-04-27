@@ -36,8 +36,11 @@ export class RightPanel {
     this.viewportGizmo = viewportGizmo;
     this.imageElement = imageElement;
 
-    this.container.appendChild(this.imageElement.getElement());
-    this.container.appendChild(this.viewportGizmo.getElement());
+    const topContainer = document.createElement('div');
+    topContainer.className = 'right-panel-top';
+    topContainer.appendChild(this.viewportGizmo.getElement());
+    topContainer.appendChild(this.imageElement.getElement());
+    this.container.appendChild(topContainer);
     this.container.appendChild(this.formulaPane.getElement());
     this.container.appendChild(this.sampleSelector.getElement());
     this.container.appendChild(this.analyseDashboard.getElement());    

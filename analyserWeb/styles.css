@@ -1,6 +1,6 @@
 :root {
   --primary-color: #4a90e2;
-  --background-color: #bbbbbb;
+  --background-color: #aaaaaa;
   --button-bg: #f5f5f5;
   --button-hover: #e0e0e0;
   --button-active: #4a90e2;
@@ -40,7 +40,7 @@ body {
 .right-panel {
   position: fixed;
   right: 10px;
-  top: 140px; /* Adjusted to account for gizmo and logo height */
+  top: 20px;
   width: 240px;
   display: flex;
   flex-direction: column;
@@ -49,24 +49,22 @@ body {
   z-index: 5; /* Lower than gizmo and logo */
 }
 
+.right-panel-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
 #viewportGizmo {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   width: 100px;
   height: 100px;
   background-color: #000;
   border-radius: var(--border-radius);
-  z-index: 10;
 }
 
 .image-element {
-  position: absolute;
-  top: 20px;
-  right: 20px;
   width: 100px;
   height: 100px;
-  z-index: 10;
 }
 
 .formula-pane {
