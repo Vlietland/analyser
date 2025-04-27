@@ -4,6 +4,7 @@ import { CameraController } from '@src/controller/cameraController';
 export class Dashboard {
   private gridGenerator: GridGenerator;
   private cameraOrbitController: CameraController;
+  private TWO_PI = 2 * Math.PI ;  
 
   private dashboardContainer: HTMLElement;
 
@@ -24,7 +25,7 @@ export class Dashboard {
   public updateDashboard(): void {
     const currentRange = this.gridGenerator.getCurrentRange();
     const zFactor = this.gridGenerator.getZFactor();
-    const theta = this.cameraOrbitController.getTheta();
+    const theta = this.TWO_PI - this.cameraOrbitController.getTheta();
     const phi = this.cameraOrbitController.getPhi();
 
     this.dashboardContainer.innerHTML = `

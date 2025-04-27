@@ -40,7 +40,8 @@ export class App {
       {
         onFormulaChange: this.handleFormulaChange.bind(this),
         onSampleChange: this.handleSampleChange.bind(this), 
-        onToolChange: this.handleToolChange.bind(this)
+        onToolChange: this.handleToolChange.bind(this),
+        onUIChange: this.handleRender.bind(this)
       },
       this.gridGenerator,
       this.cameraController,
@@ -56,8 +57,9 @@ export class App {
    
     this.sceneBuilder.addObject(this.marker.getMesh());
     this.ui.triggerFormulaChange();
-    this.ui.getToolbar().setTool('')
+    this.ui.getToolbar().setTool('Rotate')
     this.analyseController.setTool(this.ui.getToolbar().getSelection())
+    requestAnimationFrame(() => {this.handleRender()});
   }
 
   private handleFormulaChange(value: string): void {

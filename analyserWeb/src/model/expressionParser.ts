@@ -12,7 +12,7 @@ export class ExpressionParser {
   private math = create(all);
   private PARSE_OPTIONS: ParseOptions = {};
   private compiledNode: any = null;
-  private readonly DEFAULT_EXPRESSION = '';  
+  private readonly DEFAULT_EXPRESSION = 'sin(2*sqrt(x^2+y^2))*exp(-0.1*(x^2+y^2))';  
   private compiledInput: string;
 
   constructor() {

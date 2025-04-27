@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 
 export class ViewportMain {
+  private onUIChangeCallback: () => void;  
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
 
-  constructor() {
+  constructor(onUIChange: () => void) {
+    this.onUIChangeCallback = onUIChange;
     this.canvas = document.createElement('canvas');
     this.canvas.id = 'viewportMain';
     document.body.appendChild(this.canvas);
@@ -47,6 +49,7 @@ export class ViewportMain {
       this.renderer.setSize(width, height, false);
       this.canvas.width = displayWidth;
       this.canvas.height = displayHeight;
+    this.onUIChangeCallback();      
     }
   }
 }

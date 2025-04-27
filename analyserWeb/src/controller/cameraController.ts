@@ -7,14 +7,14 @@ export class CameraController implements MouseTool{
   private phi: number;
   private target: THREE.Vector3;
   private rotationSpeed: number = 0.003; // Adjust sensitivity  
-  private TWO_PI = Math.PI * 2;
+  private TWO_PI = 2 * Math.PI ;
   private onUpdateCallback: () => void;
   private camera: Camera | undefined;
 
   constructor(onUpdateCallback: () => void) { // Added callback parameter
     this.onUpdateCallback = onUpdateCallback; // Store callback
-    this.theta = 0.1;
-    this.phi = 0.1;
+    this.theta = 2.36;
+    this.phi = 1.26;
     this.target = new THREE.Vector3(0, 0, 0);
   }
 

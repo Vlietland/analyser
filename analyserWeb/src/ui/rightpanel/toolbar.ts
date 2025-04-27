@@ -1,7 +1,7 @@
 export class Toolbar {
   private selectedTool: string = '';
   private onToolChangeCallback: (tool: string) => void;
-  private tools: string[] = ['Analyse', 'Rotate', 'Shift', 'Zoom', 'Zfactor', 'Configure'];
+  private tools: string[] = ['Analyse', 'Rotate', 'Shift', 'Zoom', 'Zfactor'];
   private toolbarContainer: HTMLElement;
 
   constructor(onToolChange: (tool: string) => void) {

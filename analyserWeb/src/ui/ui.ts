@@ -15,6 +15,7 @@ interface UICallbacks {
   onFormulaChange: (value: string) => void;
   onSampleChange: (value: number) => void;
   onToolChange: (value: string) => void;
+  onUIChange: () => void;
 }
 
 export class UI {
@@ -37,7 +38,7 @@ export class UI {
     this.formulaPane = new FormulaPane();
     this.sampleSelector = new SampleSelector(this.handleSampleChange.bind(this));
     this.toolbar = new Toolbar(this.handleToolChange.bind(this));
-    this.viewPortMain = new ViewportMain();
+    this.viewPortMain = new ViewportMain(this.handleUIChange.bind(this));
     this.dashboard = new Dashboard(gridGenerator, cameraController);
     this.viewportGizmo = new ViewportGizmo(cameraController);
     this.analyseDashboard = new AnalyseDashboard(analyseController);
@@ -97,5 +98,9 @@ export class UI {
 
   private handleToolChange(value: string): void {
     this.callbacks.onToolChange(value);
+  }
+
+  private handleUIChange(): void {
+    this.callbacks.onUIChange();
   }
 }
