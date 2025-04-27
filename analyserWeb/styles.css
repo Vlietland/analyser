@@ -98,6 +98,44 @@ body {
   text-align: left;
 }
 
+.range-group {
+  margin-bottom: var(--spacing-unit);
+}
+
+.range-label {
+  font-weight: bold;
+  margin-bottom: calc(var(--spacing-unit) / 2);
+}
+
+.range-visual {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-unit);
+}
+
+.range-bar {
+  flex: 1;
+  height: 8px;
+  background: #ddd;
+  border-radius: 4px;
+  position: relative;
+}
+
+.range-bar::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  background: var(--primary-color);
+  border-radius: 4px;
+  left: calc((var(--min) + 10) * 5%);
+  right: calc(100% - (var(--max) + 10) * 5%);
+}
+
+.range-values {
+  font-family: monospace;
+  white-space: nowrap;
+}
+
 #viewportGizmo {
   top: 30px;
   right: 10px;
