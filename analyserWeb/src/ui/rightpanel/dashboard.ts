@@ -42,7 +42,13 @@ export class Dashboard {
           <div class="range-values">${currentRange.yMin.toFixed(2)} to ${currentRange.yMax.toFixed(2)}</div>
         </div>
       </div>
-      <div>zfactor: ${zFactor.toFixed(2)}</div>
+      <div class="range-group">
+        <div class="range-label">Z Factor</div>
+        <div class="range-visual">
+          <div class="range-bar" style="--min: 0; --max: ${zFactor}"></div>
+          <div class="range-values">${zFactor.toFixed(2)}</div>
+        </div>
+      </div>
       <div>theta: ${theta.toFixed(2)}</div>
       <div>phi: ${phi.toFixed(2)}</div>
     `;
