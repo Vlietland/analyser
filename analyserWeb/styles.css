@@ -214,23 +214,24 @@ body {
   display: flex;
   align-items: center;
   gap: var(--spacing-unit);
-  width: calc(100%);
+  width: 100%;
 }
 
 .exponential-track {
   position: relative;
   flex: 1;
-  height: 2px;
+  height: 8px;
   background: #ddd;
+  border-radius: 4px;
 }
 
 .exponential-thumb {
   position: absolute;
   top: 50%;
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
   background: var(--primary-color);
-  border-radius: 50%;
+  border-radius: 4px;
   transform: translate(-50%, -50%);
   cursor: pointer;
 }
