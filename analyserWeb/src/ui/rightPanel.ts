@@ -4,6 +4,7 @@ import { Toolbar } from '@src/ui/rightpanel/toolbar';
 import { Dashboard } from '@src/ui/rightpanel/dashboard';
 import { AnalyseDashboard } from '@src/ui/rightpanel/analyseDashboard';
 import { ViewportGizmo } from '@src/ui/rightpanel/viewportGizmo';
+import { ImageElement } from '@src/ui/rightpanel/imageElement';
 
 export class RightPanel {
   private container: HTMLDivElement;
@@ -13,6 +14,7 @@ export class RightPanel {
   private dashboard: Dashboard;
   private analyseDashboard: AnalyseDashboard;
   private viewportGizmo: ViewportGizmo;
+  private imageElement: ImageElement;
 
   constructor(
     formulaPane: FormulaPane,
@@ -20,7 +22,8 @@ export class RightPanel {
     toolbar: Toolbar,
     dashboard: Dashboard,
     analyseDashboard: AnalyseDashboard,
-    viewportGizmo: ViewportGizmo
+    viewportGizmo: ViewportGizmo,
+    imageElement: ImageElement
   ) {
     this.container = document.createElement('div');
     this.container.className = 'right-panel';
@@ -31,7 +34,9 @@ export class RightPanel {
     this.dashboard = dashboard;
     this.analyseDashboard = analyseDashboard;
     this.viewportGizmo = viewportGizmo;
+    this.imageElement = imageElement;
 
+    this.container.appendChild(this.imageElement.getElement());
     this.container.appendChild(this.viewportGizmo.getElement());
     this.container.appendChild(this.formulaPane.getElement());
     this.container.appendChild(this.sampleSelector.getElement());

@@ -6,7 +6,7 @@ export class Camera {
 
   constructor(viewPortMain: ViewportMain) {
     const aspect = viewPortMain.getElement().width / viewPortMain.getElement().height;
-    const frustumSize = 6;
+    const frustumSize = 8;
 
     this.camera = new THREE.OrthographicCamera(
       -frustumSize * aspect / 2,

@@ -10,6 +10,7 @@ import { CameraController } from '@src/controller/cameraController';
 import { AnalyseController } from '@src/controller/analyseController';
 import { ViewportGizmo } from '@src/ui/rightpanel/viewportGizmo';
 import { RightPanel } from '@src/ui/rightPanel';
+import { ImageElement } from '@src/ui/rightpanel/imageElement';
 
 interface UICallbacks {
   onFormulaChange: (value: string) => void;
@@ -25,6 +26,7 @@ export class UI {
   private viewPortMain: ViewportMain;
   private dashboard: Dashboard;
   private viewportGizmo: ViewportGizmo;
+  private imageElement: ImageElement;
   private analyseDashboard: AnalyseDashboard;
   private callbacks: UICallbacks;
 
@@ -42,13 +44,15 @@ export class UI {
     this.dashboard = new Dashboard(gridGenerator, cameraController);
     this.viewportGizmo = new ViewportGizmo(cameraController);
     this.analyseDashboard = new AnalyseDashboard(analyseController);
+    this.imageElement = new ImageElement('Logo.png');
     const rightPanel = new RightPanel(
       this.formulaPane,
       this.sampleSelector,
       this.toolbar,
       this.dashboard,
       this.analyseDashboard,
-      this.viewportGizmo
+      this.viewportGizmo,
+      this.imageElement
     );
 
     this.formulaPane.onChange(this.handleFormulaChange.bind(this));
