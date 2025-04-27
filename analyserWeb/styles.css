@@ -9,6 +9,7 @@
   --spacing-unit: 8px;
   --border-radius: 2px;
   --transition: all 0.1s ease;
+  --max-range: 10;  
 }
 
 html, body {
@@ -17,6 +18,8 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  font: monospace;
+  font-size: 14px;
 }
 
 body {
@@ -24,7 +27,6 @@ body {
   height: 100vh;
 }
 
-/* Viewport Styles */
 #viewportMain {
   position: absolute;
   top: 20px;
@@ -63,12 +65,14 @@ body {
 
 .formula-input {
   width: 100%;
+  height: 24px;  
   padding: 5px;
   border: 1px solid #ccc;  
   border-radius: var(--border-radius);
   background-color: var(--button-bg);
-  font-family: monospace;
   box-sizing: border-box;
+  font-family: monospace;
+  font-size: 11px;  
 }
 
 .formula-input:focus {
@@ -80,18 +84,32 @@ body {
 .formula-message {
   color: #ff4444;
   margin-top: calc(var(--spacing-unit) / 2);
-  font-size: 12px;
 }
 
+.sample-selector-container {
+  display: grid;
+  grid-template-columns: auto 80px;
+  align-items: center;
+  gap: var(--spacing-unit);
+  margin: 8px 0;
+}
+
+.sample-selector-label {
+  text-align: left;
+  font-weight: bold;
+}
 
 .sample-selector {
-  width: 20%;
+  width: 100%;
+  height: 24px;
   padding: 5px;
+  text-align: right;
   border: 1px solid #ccc;
   border-radius: var(--border-radius);
   background-color: var(--button-bg);
-  font-family: monospace;
   transition: var(--transition);
+  box-sizing: border-box;
+  font-family: monospace;  
 }
 
 .sample-selector:focus {
@@ -103,7 +121,6 @@ body {
 .dashboard-container {
   display: grid;
   grid-template-columns: max-content 1fr;
-  font-family: monospace;
 }
 
 .dashboard-container div:nth-child(odd) {
@@ -124,7 +141,6 @@ body {
 
 .range-label {
   font-weight: bold;
-  font-size: 0.9rem;
 }
 
 .range-visual {
@@ -142,10 +158,6 @@ body {
   position: relative;
 }
 
-:root {
-  --max-range: 10;
-}
-
 .range-bar::before {
   content: '';
   position: absolute;
@@ -157,7 +169,6 @@ body {
 }
 
 .range-values {
-  font-family: monospace;
   white-space: nowrap;
 }
 

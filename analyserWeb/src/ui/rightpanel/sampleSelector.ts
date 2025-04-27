@@ -4,6 +4,7 @@ export class SampleSelector {
   public readonly DEFAULT_SAMPLES = 50;
   private value: number = this.DEFAULT_SAMPLES;
   private onChangeCallback: (newValue: number) => void;
+  private inputElement: HTMLInputElement | null = null;
 
   constructor(onChange: (newValue: number) => void) {
     this.onChangeCallback = onChange;
@@ -38,15 +39,24 @@ export class SampleSelector {
     }
   }
 
-  public getElement(): HTMLInputElement {
-    const inputElement = document.createElement('input');
-    inputElement.type = 'text';
-    inputElement.title = `Samples (${this.MIN_SAMPLES}-${this.MAX_SAMPLES})`;
-    inputElement.value = String(this.value);
-    inputElement.classList.add('sample-selector');
-    inputElement.addEventListener('keydown', this.handleKeyDown.bind(this));
-    inputElement.addEventListener('blur', this.handleBlur.bind(this));
-    return inputElement;
+  public getElement(): HTMLElement {
+    const container = document.createElement('div');
+    container.className = 'sample-selector-container';
+    const label = document.createElement('div');
+    label.className = 'sample-selector-label';
+    label.textContent = 'Samples (x,y): ';
+    
+    this.inputElement = document.createElement('input');
+    this.inputElement.type = 'text';
+    this.inputElement.title = `Samples (${this.MIN_SAMPLES}-${this.MAX_SAMPLES})`;
+    this.inputElement.value = String(this.value);
+    this.inputElement.classList.add('sample-selector');
+    this.inputElement.addEventListener('keydown', this.handleKeyDown.bind(this));
+    this.inputElement.addEventListener('blur', this.handleBlur.bind(this));
+    
+    container.appendChild(label);
+    container.appendChild(this.inputElement);
+    return container;
   }
 
   public setValue(value: number): void {
