@@ -9,36 +9,47 @@ export class SampleSelector {
     this.onChangeCallback = onChange;
   }
 
-  handleChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const numValue = parseInt(target.value, 10);
+  private validateAndUpdate(target: HTMLInputElement): void {
+    const cleaned = target.value.replace(/[^0-9]/g, '');
+    const numValue = parseInt(cleaned, 10);
 
     if (!isNaN(numValue)) {
       const clampedValue = Math.max(this.MIN_SAMPLES, Math.min(this.MAX_SAMPLES, numValue));
+      target.value = String(clampedValue);
       this.value = clampedValue;
       this.onChangeCallback(clampedValue);
-    } else if (target.value === '') {
+    } else {
+      target.value = String(this.MIN_SAMPLES);
       this.value = this.MIN_SAMPLES;
       this.onChangeCallback(this.MIN_SAMPLES);
     }
   }
 
-  getElement(): HTMLInputElement {
+  private handleBlur(event: FocusEvent): void {
+    const target = event.target as HTMLInputElement;
+    this.validateAndUpdate(target);
+  }
+
+  private handleKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      const target = event.target as HTMLInputElement;
+      this.validateAndUpdate(target);
+      target.blur(); // Optional: move focus away after Enter
+    }
+  }
+
+  public getElement(): HTMLInputElement {
     const inputElement = document.createElement('input');
-    inputElement.type = 'number';
-    inputElement.title = `Samples (${this.MIN_SAMPLES}-${this.MAX_SAMPLES})`; // Use title for hint
+    inputElement.type = 'text';
+    inputElement.title = `Samples (${this.MIN_SAMPLES}-${this.MAX_SAMPLES})`;
     inputElement.value = String(this.value);
-    inputElement.min = String(this.MIN_SAMPLES);
-    inputElement.max = String(this.MAX_SAMPLES);
-    inputElement.step = '1';
     inputElement.classList.add('sample-selector');
-
-    inputElement.addEventListener('input', this.handleChange.bind(this));
-
+    inputElement.addEventListener('keydown', this.handleKeyDown.bind(this));
+    inputElement.addEventListener('blur', this.handleBlur.bind(this));
     return inputElement;
   }
 
-  setValue(value: number): void {
+  public setValue(value: number): void {
     this.value = value;
   }
 }
