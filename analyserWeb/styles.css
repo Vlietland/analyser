@@ -82,6 +82,22 @@ body {
   padding-left: 0;
 }
 
+.dashboard-container {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 8px;
+  font-family: monospace;
+}
+
+.dashboard-container div:nth-child(odd) {
+  text-align: right;
+  color: #666;
+}
+
+.dashboard-container div:nth-child(even) {
+  text-align: left;
+}
+
 #viewportGizmo {
   top: 30px;
   right: 10px;
