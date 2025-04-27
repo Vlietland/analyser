@@ -46,7 +46,7 @@ export class Dashboard {
         <div class="range-label">Z Factor</div>
         <div class="exponential-slider">
           <div class="exponential-track"></div>
-          <div class="exponential-thumb" style="left: ${(Math.log10(zFactor) + 1) * 33.33}%"></div>
+          <div class="exponential-thumb" style="left: ${((Math.log10(zFactor) + 1) / 3) * 75}%"></div>
         <div class="range-values">${zFactor.toFixed(2)}</div>
         </div>
       </div>

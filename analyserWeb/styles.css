@@ -209,11 +209,12 @@ body {
 
 .exponential-slider {
   position: relative;
-  height: 12px;
+  height: 8px;
   margin: var(--spacing-unit) 0;
   display: flex;
   align-items: center;
   gap: var(--spacing-unit);
+  width: calc(100%);
 }
 
 .exponential-track {
