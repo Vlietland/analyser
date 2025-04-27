@@ -7,7 +7,7 @@
   --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
   --shadow-md: 0 1px 2px rgba(0,0,0,0.2);
   --spacing-unit: 8px;
-  --border-radius: 4px;
+  --border-radius: 2px;
   --transition: all 0.1s ease;
 }
 
@@ -46,20 +46,15 @@ body {
   padding-left: 0;
 }
 
-.sample-selector {
-  width: 80px;
-  padding: 5px;
-  border: 1px solid #ccc;
+#viewportGizmo {
+  position: flex;
+  top: 20px;
+  right: 20px;
+  width: 100px;
+  height: 100px;
+  background-color: #000;
   border-radius: var(--border-radius);
-  background-color: var(--button-bg);
-  font-family: monospace;
-  transition: var(--transition);
-}
-
-.sample-selector:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  z-index: 10;
 }
 
 .formula-pane {
@@ -68,12 +63,11 @@ body {
 
 .formula-input {
   width: 100%;
-  padding: var(--spacing-unit);
-  border: 1px solid #ccc;
+  padding: 5px;
+  border: 1px solid #ccc;  
   border-radius: var(--border-radius);
   background-color: var(--button-bg);
   font-family: monospace;
-  transition: var(--transition);
   box-sizing: border-box;
 }
 
@@ -87,6 +81,23 @@ body {
   color: #ff4444;
   margin-top: calc(var(--spacing-unit) / 2);
   font-size: 12px;
+}
+
+
+.sample-selector {
+  width: 20%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  background-color: var(--button-bg);
+  font-family: monospace;
+  transition: var(--transition);
+}
+
+.sample-selector:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
 .dashboard-container {
@@ -236,14 +247,11 @@ body {
   background-color: var(--button-hover);
 }
 
-.toolbar__button:active {
-  transform: translateY(1px);
-  box-shadow: var(--shadow-md);
-}
-
 .toolbar__button--selected {
   background-color: var(--primary-color);
   color: white;
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
   transform: translateY(1px);
-  box-shadow: inset var(--shadow-sm);
 }

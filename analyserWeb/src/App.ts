@@ -56,7 +56,7 @@ export class App {
    
     this.sceneBuilder.addObject(this.marker.getMesh());
     this.ui.triggerFormulaChange();
-    this.ui.getToolbar().setTool('Configure')
+    this.ui.getToolbar().setTool('')
     this.analyseController.setTool(this.ui.getToolbar().getSelection())
   }
 

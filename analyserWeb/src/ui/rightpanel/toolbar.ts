@@ -48,10 +48,9 @@ export class Toolbar {
   private updateButtonStyles() {
     const buttons = this.toolbarContainer.querySelectorAll('button');
     buttons.forEach((button: HTMLButtonElement) => {
+      button.classList.remove('toolbar__button--selected'); // <<< Clear selection class
       if (button.textContent === this.selectedTool) {
-        button.classList.add('selected');
-      } else {
-        button.classList.remove('selected');
+        button.classList.add('toolbar__button--selected'); // <<< Add selection class
       }
     });
   }
