@@ -240,23 +240,27 @@ body {
   position: relative;
   height: 8px;
   margin: var(--spacing-unit) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-unit);
+  width: calc(100% - 60px);
 }
 
 .angle-track {
-  position: absolute;
-  width: 100%;
-  height: 2px;
+  position: relative;
+  flex: 1;
+  height: 8px;
   background: #ddd;
-  top: 50%;
-  transform: translateY(-50%);
+  border-radius: 4px;
 }
 
 .angle-dot {
   position: absolute;
+  top: 50%;
   width: 8px;
   height: 8px;
   background: var(--primary-color);
-  border-radius: 50%;
-  top: 50%;
+  border-radius: 4px;
   transform: translate(-50%, -50%);
+  cursor: pointer;
 }
