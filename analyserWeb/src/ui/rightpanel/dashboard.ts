@@ -54,7 +54,7 @@ export class Dashboard {
         <div class="range-label">X-axis</div>
         <div class="angle-slider">
           <div class="angle-track"></div>
-          <div class="angle-dot" style="left: ${(phi / (2 * Math.PI)) * 100}%"></div>
+          <div class="angle-dot" style="left: ${(phi / (2 * Math.PI)) * 70}%"></div>
           <div class="range-values">${phi.toFixed(2)} rad</div>
         </div>
       </div>
@@ -62,7 +62,7 @@ export class Dashboard {
         <div class="range-label">Z-axis</div>
         <div class="angle-slider">
           <div class="angle-track"></div>
-          <div class="angle-dot" style="left: ${(theta / (2 * Math.PI)) * 100}%"></div>
+          <div class="angle-dot" style="left: ${(theta / (2 * Math.PI)) * 70}%"></div>
           <div class="range-values">${theta.toFixed(2)} rad</div>
         </div>
       </div>
