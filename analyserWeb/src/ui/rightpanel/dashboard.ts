@@ -44,9 +44,10 @@ export class Dashboard {
       </div>
       <div class="range-group">
         <div class="range-label">Z Factor</div>
-        <div class="range-visual">
-          <div class="range-bar" style="--min: 0; --max: ${zFactor}"></div>
-          <div class="range-values">${zFactor.toFixed(2)}</div>
+        <div class="exponential-slider">
+          <div class="exponential-track"></div>
+          <div class="exponential-thumb" style="left: ${(Math.log10(zFactor) + 1) * 33.33}%"></div>
+        <div class="range-values">${zFactor.toFixed(2)}</div>
         </div>
       </div>
       <div>theta: ${theta.toFixed(2)}</div>

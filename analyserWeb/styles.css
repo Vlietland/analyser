@@ -121,14 +121,32 @@ body {
   position: relative;
 }
 
+:root {
+  --max-range: 10;
+}
+
+.range-bar {
+  overflow: hidden;
+  position: relative;
+}
+
 .range-bar::before {
   content: '';
   position: absolute;
   height: 100%;
   background: var(--primary-color);
   border-radius: 4px;
-  left: calc((var(--min) + 10) * 5%);
-  right: calc(100% - (var(--max) + 10) * 5%);
+  left: calc((min(var(--min), var(--max-range)) + var(--max-range)) * (100% / (2 * var(--max-range))));
+  right: calc(100% - (min(var(--max), var(--max-range)) + var(--max-range)) * (100% / (2 * var(--max-range))));
+}
+
+.range-bar::after {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 2px;
+  background: #ff4444;
+  left: calc((var(--max-range) + var(--max-range)) * (100% / (2 * var(--max-range))));
 }
 
 .range-values {
@@ -187,4 +205,31 @@ body {
   color: #ff4444;
   margin-top: calc(var(--spacing-unit) / 2);
   font-size: 12px;
+}
+
+.exponential-slider {
+  position: relative;
+  height: 12px;
+  margin: var(--spacing-unit) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-unit);
+}
+
+.exponential-track {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: #ddd;
+}
+
+.exponential-thumb {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
 }
