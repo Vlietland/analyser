@@ -8,9 +8,9 @@ Ultimately, I purged the AI-generated code and redesigned the UI and rendering l
 
 ## Usage
 
-The application is hosted on GitHub Pages and can be accessed [here](https://vlietland.github.io/analyser/. It can be used freely and may be beneficial for teachers and students.
+The application is hosted on GitHub Pages and can be accessed [here](https://vlietland.github.io/analyser/) It can be used freely and may be beneficial for teachers and students.
 
-To use the application, simply type in a mathematical formula, and it will be rendered in 3D. Here are some example formulas to try:
+To use the application, copy-paste a mathematical formula, and it will be rendered in 3D. Here are some example formulas to try:
 - sin(sqrt(x^2 + y^2))
 - sin(x) * cos(y)
 - sin(5 * sqrt(x^2 + y^2)) / sqrt(x^2 + y^2)
@@ -19,11 +19,13 @@ To use the application, simply type in a mathematical formula, and it will be re
 - sin(x^2 - y^2)
 - sqrt(1 - (x/2)^2 - (y/2)^2)
 
+After rendering you can rotate, shift the range, zoom the range and limit use Zfactor to cushion the z-axis.
+
 ## Documentation
 
-For more information about the old Analyser application, see the [legacy code documentation](./analyserWeb/docs/legacyCode).
-
 For details on the architecture of the new Analyser Web application, see the [analyserWeb documentation](./analyserWeb/docs/analyserWeb).
+
+For more information about the old Analyser application, see the [legacy code documentation](./analyserWeb/docs/legacyCode).
 
 ## EyeCandy
 Analyser:
