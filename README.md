@@ -30,7 +30,7 @@ Analyser:
 
 
 Legacy Analyser:
-<img src="../../legacyCode/Documents/Screens/Zooming.png" alt="Zooming Screenshot">
+<img src="./legacyCode/Documents/Screens/Zooming.png" alt="Screenshot">
 
 
 ## License
