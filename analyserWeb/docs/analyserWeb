@@ -1,67 +1,31 @@
+The analyserWeb application is structured into several key components:
 
+1. Model:
+   - ExpressionParser: Responsible for parsing and compiling mathematical expressions.
+   - GridGenerator: Generates the grid for the surface based on the parsed expression and user settings.
+   - Camera: Manages the camera's state and provides it to the renderer.
 
-# analyser-web
+2. Controller:
+   - AnalyseController: Handles analysis mode interactions.
+   - CameraController: Manages camera movements and updates.
+   - ShiftController, ZoomController, ZFactorController: Handle respective user interactions.
 
-A modern, browser-based 3D graphing tool that visualizes functions of the form `z = f(x, y)` using React, TypeScript, math.js, and Three.js.
+3. Renderer:
+   - SurfaceRenderer: Creates the mesh for the surface grid.
+   - SceneBuilder: Manages the scene objects, including adding and removing the surface mesh.
+   - Marker: Represents a marker object in the scene.
 
-This project is a complete refactoring of a legacy DOS-based function analysis tool into a modular, web-native application.
+4. UI:
+   - UI: The main user interface component, handling formula input, sample changes, tool changes, and rendering updates.
+   - MouseHandler: Processes mouse events and directs them to the appropriate controller based on the selected tool.
+   - Various right panel components (e.g., FormulaPane, Dashboard, AnalyseDashboard, Toolbar): Handle specific parts of the user interface.
 
----
+The App class orchestrates the interactions between these components. It initializes the necessary objects, sets up event handlers, and manages the rendering loop.
 
-## 🚀 Features
+Key Interactions:
+- User input (formula, samples, tool selection) is handled by the UI component and propagated to the appropriate controllers or model components.
+- Controllers update the model or trigger rendering updates based on user interactions.
+- The renderer (SurfaceRenderer and SceneBuilder) creates and updates the graphical representation of the surface.
+- The Camera and its controller manage the viewpoint and projection.
 
-- Live input of mathematical expressions
-- Real-time surface rendering with Three.js
-- Dynamic sampling grid resolution
-- Interactive view controls (zoom, rotate, shift, z-scale)
-- Modular core for formula evaluation and transformation
-- Fully written in TypeScript
-- Tested with Vitest
-
----
-
-## 📦 Tech Stack
-
-- **Frontend**: React + TypeScript
-- **Rendering**: Three.js
-- **Math Engine**: math.js
-- **Build Tool**: Vite
-- **Testing**: Vitest
-- **Linting/Formatting**: ESLint + Prettier
-
----
-
-## 📂 Project Structure
-
-```
-src/
-├── core/         # Math evaluation, sampling, transforms
-├── renderer/     # 3D scene and surface rendering
-├── ui/           # React components and layout
-├── styles/       # Tailwind or global styles
-└── main.tsx      # Entry point
-```
-
----
-
-## 🛠️ Setup
-
-./setup.sh
-
----
-
-## 🧪 Testing
-
-- Tests are located in `/tests` and inside `/src/**/__tests__/`
-- Use Vitest for fast unit and integration testing
-- Run `npm run test:watch` for watch mode
-
-./run.sh
-
-
-## 📘 Documentation
-
-- See `coding_conventions.md` for coding guidelines
-- See `analyser_implementation_plan.txt` for project architecture and module responsibilities
-
----
+This architecture allows for a modular and maintainable implementation, separating concerns into different components.
