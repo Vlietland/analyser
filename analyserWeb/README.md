@@ -16,6 +16,7 @@ My first experience was 'wow' with a working 80% version. However the last 20% r
 Finally, I removed the UI completely and rebuilt the UI and rendering layer by small instructive prompts. It would probably been possible within one week by starting with that instructive way from the start.
 
 The application hosted on github pages and available here:
+Impression of the old Analyser application: <link to legacyCode>
 
 The application is easy to use. Just type in the formula and let the magic to its work. A few nice 3D f(x,y) expressions:
 sin(sqrt(x^2 + y^2))
@@ -25,3 +26,4 @@ x^2 - y^2
 (x^2 + y^2) * cos(x^2 + y^2)
 sin(x^2 - y^2)
 sqrt(1 - (x/2)^2 - (y/2)^2)
+
