@@ -19,7 +19,7 @@ To use the application, copy-paste a mathematical formula, and it will be render
 - sin(x^2 - y^2)
 - sqrt(1 - (x/2)^2 - (y/2)^2)
 
-After rendering you can rotate, shift the range, zoom the range and limit use Zfactor to cushion the z-axis.
+After rendering you can Rotate, Shift the range, Zoom the range and limit the z-axis with Zfactor.
 
 ## Documentation
 
