@@ -5,6 +5,9 @@ set -e
 echo "Building project..."
 npm run build
 
+echo "Copying Logo.png to dist/..."
+cp analyserWeb/Logo.png dist/analyserWeb/Logo.png
+
 echo "Removing old docs folder..."
 rm -rf docs
 
