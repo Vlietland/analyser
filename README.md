@@ -8,7 +8,7 @@ Ultimately, I purged the AI-generated code and redesigned the UI and rendering l
 
 ## Usage
 
-The application is hosted on GitHub Pages and can be accessed [here](https://your-github-pages-url.com). It can be used freely and may be beneficial for teachers and students.
+The application is hosted on GitHub Pages and can be accessed [here](https://vlietland.github.io/analyser/. It can be used freely and may be beneficial for teachers and students.
 
 To use the application, simply type in a mathematical formula, and it will be rendered in 3D. Here are some example formulas to try:
 - sin(sqrt(x^2 + y^2))
@@ -21,12 +21,20 @@ To use the application, simply type in a mathematical formula, and it will be re
 
 ## Documentation
 
-For more information about the old Analyser application, see the [legacy code documentation](./docs/legacyCode).
+For more information about the old Analyser application, see the [legacy code documentation](./analyserWeb/docs/legacyCode).
 
-For details on the architecture of the new Analyser Web application, see the [analyserWeb documentation](./docs/analyserWeb).
+For details on the architecture of the new Analyser Web application, see the [analyserWeb documentation](./analyserWeb/docs/analyserWeb).
+
+## EyeCandy
+Analyser:
+
+
+Legacy Analyser:
+<img src="../../legacyCode/Documents/Screens/Zooming.png" alt="Zooming Screenshot">
+
 
 ## License
 
 This project is licensed under the GNU General Public License Version 3. See the [LICENSE](./LICENSE) file for details.
 
-Copyright (C) 2025 YOUR_NAME
+Copyright (C) 2025 Jan Vlietland

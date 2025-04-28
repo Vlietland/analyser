@@ -1,4 +1,4 @@
-The old project, located in the legacyCode directory, was a graphical application for analyzing and visualizing mathematical functions, particularly 3D surfaces defined by equations of the form F(x,y). The application allowed users to input equations, perform various transformations (such as rotation, zooming, and shifting), and adjust parameters like Z-factor.
+The old project, located in the legacyCode directory, is a graphical application for analyzing and visualizing mathematical functions, particularly 3D surfaces defined by equations of the form F(x,y). The application allowed users to input equations, perform various transformations (such as rotation, zooming, and shifting), and adjust parameters like Z-factor.
 
 Key Components:
 1. Equation Input and Processing: The FORMULE.CPP module handled user input for equations, converted the input into a machine-readable format, and checked for errors. The INVOER.CPP file handled the custom input handling system, processing user input character by character. The CONVERT.CPP file converted the input into a more usable format by:
@@ -24,7 +24,16 @@ Key Components:
    - Zfactorprepare: Handling Z-factor adjustments.
 
 4. Mathematical Calculations: Various modules performed mathematical calculations. The COORSYS.CPP file updated the coordinate system based on rotation angles, calculating and drawing the X, Y, and Z axes.
-
 The application used a combination of mouse and keyboard input for user interactions. Mouse events were handled by the MOUSE.CPP module, while keyboard input was processed character by character, as seen in the INVOER.CPP file.
-
 The application implemented rotation, zooming, and shifting transformations. The COORSYS.CPP file showed how rotation was handled by updating the coordinate system based on rotation angles. Other transformations were handled by similar mathematical calculations in other modules, as seen in the PREPARE.CPP file.
+
+<h2>Screenshots of the Legacy Application</h2>
+<p>The following screenshots illustrate the functionality of the legacy application:</p>
+<img src="../../legacyCode/Documents/Screens/Analyser.png" alt="Analyser Screenshot">
+<img src="../../legacyCode/Documents/Screens/Expression.png" alt="Expression Screenshot">
+<img src="../../legacyCode/Documents/Screens/Rendering.png" alt="Rendering Screenshot">
+<img src="../../legacyCode/Documents/Screens/Shifting.png" alt="Shifting Screenshot">
+<img src="../../legacyCode/Documents/Screens/Transforming.png" alt="Transforming Screenshot">
+<img src="../../legacyCode/Documents/Screens/Zooming.png" alt="Zooming Screenshot">
+
+Impression of the legacyAnalyser:
