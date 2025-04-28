@@ -14,7 +14,7 @@ export class CameraController implements MouseTool{
   constructor(onUpdateCallback: () => void) { // Added callback parameter
     this.onUpdateCallback = onUpdateCallback; // Store callback
     this.theta = 2.36;
-    this.phi = 1.26;
+    this.phi = 1.15;
     this.target = new THREE.Vector3(0, 0, 0);
   }
 

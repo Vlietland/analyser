@@ -40,16 +40,10 @@ export class ViewportMain {
   private updateSize(): void {
     const width = this.canvas.clientWidth;
     const height = this.canvas.clientHeight;
-    const pixelRatio = window.devicePixelRatio || 1;
-  
-    const displayWidth = Math.floor(width * pixelRatio);
-    const displayHeight = Math.floor(height * pixelRatio);
-  
-    if (this.canvas.width !== displayWidth || this.canvas.height !== displayHeight) {
+    const needResize = this.canvas.width !== width * window.devicePixelRatio || this.canvas.height !== height * window.devicePixelRatio;
+    if (needResize) {
       this.renderer.setSize(width, height, false);
-      this.canvas.width = displayWidth;
-      this.canvas.height = displayHeight;
-    this.onUIChangeCallback();      
+      this.onUIChangeCallback();
     }
   }
 }

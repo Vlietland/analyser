@@ -19,16 +19,4 @@ export class SceneBuilder {
   public getScene(): THREE.Scene {
     return this.scene;
   }
-
-  public createRenderer(): THREE.WebGLRenderer {
-    const renderer = new THREE.WebGLRenderer({ 
-      canvas: this.canvas, 
-      antialias: true 
-    });
-    
-    renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    
-    return renderer;
-  }
 }

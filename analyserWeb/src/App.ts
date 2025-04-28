@@ -35,7 +35,6 @@ export class App {
     this.shiftController = new ShiftController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.zoomController = new ZoomController(this.gridGenerator, this.updateSurface.bind(this)); 
     this.cameraController = new CameraController(this.handleRender.bind(this));     
-    
     this.ui = new UI(
       {
         onFormulaChange: this.handleFormulaChange.bind(this),
@@ -48,13 +47,11 @@ export class App {
       this.analyseController
     );
     this.ui.getFormulaPane().setValue(this.expressionParser.getCompiledInput());  
-    
     this.camera = new Camera(this.ui.getCanvasViewport()); 
     this.cameraController.setCamera(this.camera);
     this.zoomController.setCameraController(this.cameraController);
     this.mouseHandler = new MouseHandler(this.ui.getCanvasViewport().getElement());    
     this.sceneBuilder = new SceneBuilder(this.ui.getCanvasViewport().getElement());
-   
     this.sceneBuilder.addObject(this.marker.getMesh());
     this.ui.triggerFormulaChange();
     this.ui.getToolbar().setTool('Rotate')
