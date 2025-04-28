@@ -1,0 +1,30 @@
+The old project, located in the legacyCode directory, was a graphical application for analyzing and visualizing mathematical functions, particularly 3D surfaces defined by equations of the form F(x,y). The application allowed users to input equations, perform various transformations (such as rotation, zooming, and shifting), and adjust parameters like Z-factor.
+
+Key Components:
+1. Equation Input and Processing: The FORMULE.CPP module handled user input for equations, converted the input into a machine-readable format, and checked for errors. The INVOER.CPP file handled the custom input handling system, processing user input character by character. The CONVERT.CPP file converted the input into a more usable format by:
+   - Inserting multiplication signs between numbers and variables or parentheses.
+   - Standardizing different types of brackets to uniform parentheses.
+   - Distinguishing between minus signs for negative numbers and subtraction operations.
+
+   The conversion process involved multiple steps:
+   - Copying the input and inserting multiplication signs where necessary.
+   - Standardizing brackets to simplify parsing.
+   - Handling minus signs to differentiate between negative numbers and subtraction.
+
+2. Graphical Rendering: The ANALYSER.CPP file was the main program file, responsible for initializing the graphics environment using the Borland Graphics Interface (BGI) and setting up various viewports for different parts of the user interface. The graphical rendering pipeline involved:
+   - Initializing the graphics environment and detecting the graphics driver.
+   - Setting up multiple viewports for graphical output, formula input, and other information.
+   - Using functions like Create3Dfield and Createcustombutton to render 3D fields and custom buttons.
+
+3. User Interface: The application had a button-based interface with options for analysis, rotation, zooming, shifting, and configuration. The MOUSE.CPP file handled mouse events, determining the user's choice based on mouse position and button clicks. The PREPARE.CPP file handled the preparation steps for various operations, including:
+   - Analyseprepare: Handling analysis mode, where users could interact with the graph.
+   - Deltaphiprepare: Handling rotation based on mouse input.
+   - Zoomprepare: Handling zooming based on mouse input.
+   - Verplaatsprepare: Handling shifting based on mouse input.
+   - Zfactorprepare: Handling Z-factor adjustments.
+
+4. Mathematical Calculations: Various modules performed mathematical calculations. The COORSYS.CPP file updated the coordinate system based on rotation angles, calculating and drawing the X, Y, and Z axes.
+
+The application used a combination of mouse and keyboard input for user interactions. Mouse events were handled by the MOUSE.CPP module, while keyboard input was processed character by character, as seen in the INVOER.CPP file.
+
+The application implemented rotation, zooming, and shifting transformations. The COORSYS.CPP file showed how rotation was handled by updating the coordinate system based on rotation angles. Other transformations were handled by similar mathematical calculations in other modules, as seen in the PREPARE.CPP file.
