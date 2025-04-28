@@ -27,10 +27,12 @@ For details on the architecture of the new Analyser Web application, see the [an
 
 ## EyeCandy
 Analyser:
-
+<img src="./analyserWeb/docs/images/sin(2*sqrt(x^2+y^2))*exp(-0.1*(x^2+y^2)).png" alt="Screenshot1">
+<img src="./analyserWeb/docs/images/x^2+y^2.png" alt="Screenshot1">
 
 Legacy Analyser:
-<img src="./legacyCode/Documents/Screens/Zooming.png" alt="Screenshot">
+
+<img src="./legacyCode/Documents/Screens/Zooming.png" alt="Screenshot3">
 
 
 ## License
