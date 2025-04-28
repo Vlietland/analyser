@@ -1,3 +1,15 @@
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2025 YOUR_NAME
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+...
+
+
 # analyser-web
 
 A modern, browser-based 3D graphing tool that visualizes functions of the form `z = f(x, y)` using React, TypeScript, math.js, and Three.js.
