@@ -6,7 +6,7 @@ export default defineConfig({
   resolve: {
     alias: {
       // You can also manually define the alias here if needed
-      '@src': '/src'
+      '@src': '/analyserWeb/src'
     }
   }
 });

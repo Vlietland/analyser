@@ -44,7 +44,7 @@ export class UI {
     this.dashboard = new Dashboard(gridGenerator, cameraController);
     this.viewportGizmo = new ViewportGizmo(cameraController);
     this.analyseDashboard = new AnalyseDashboard(analyseController);
-    this.imageElement = new ImageElement('Logo.png');
+    this.imageElement = new ImageElement('analyserWeb/Logo.png');
     const rightPanel = new RightPanel(
       this.formulaPane,
       this.sampleSelector,

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 #set -e
-
 run_tests=false
 open_browser=false
 start_server=true
