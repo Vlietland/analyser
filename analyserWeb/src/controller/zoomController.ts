@@ -3,8 +3,8 @@ import { MouseTool } from '@src/controller/mouseTool';
 import { CameraController } from '@src/controller/cameraController';
 
 export class ZoomController implements MouseTool {
+  private SENSITIVITY: number = 0.01;  
   private gridGenerator: GridGenerator;
-  private static readonly SENSITIVITY: number = 0.01;
   private onUpdateCallback: () => void;
   private cameraController: CameraController | undefined;
 
@@ -16,10 +16,10 @@ export class ZoomController implements MouseTool {
   public handleMouseDrag(deltaX: number = 0, deltaY: number = 0): void {
     let factor: number;
     if (deltaY > 0) {
-      factor = 1 / (1 + deltaY * ZoomController.SENSITIVITY);
+      factor = 1 / (1 + deltaY * this.SENSITIVITY);
     } else {
       const absY = Math.abs(deltaY);      
-      factor = 1 + absY * ZoomController.SENSITIVITY;
+      factor = 1 + absY * this.SENSITIVITY;
     }
     if (this.gridGenerator.scaleRange(factor)) {
       this.cameraController?.scaleZoom(factor);

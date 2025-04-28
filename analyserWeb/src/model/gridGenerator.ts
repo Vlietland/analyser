@@ -11,16 +11,16 @@ export interface SampleRange {
 }
 
 export class GridGenerator {
-  private readonly expressionParser: ExpressionParser;
-  private readonly MIN_SAMPLES = 2;
-  private readonly MAX_SAMPLES = 200;
-  private readonly DEFAULT_SAMPLES = 50;
-  private readonly DEFAULT_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4, zMin: 0, zMax: 0};
+  private MAX_RANGE = 99;
+  private MIN_SAMPLES = 2;
+  private MAX_SAMPLES = 200;
+  private DEFAULT_SAMPLES = 50;
+  private DEFAULT_ZFACTOR = 1;
+  private DEFAULT_RANGE = {xMin: -4, xMax: 4, yMin: -4, yMax: 4, zMin: 0, zMax: 0};
+  private expressionParser: ExpressionParser;  
   private validatedSamples;
-  
   private range = this.DEFAULT_RANGE;
-  private MAX_RANGE = 99;  
-  private zFactor = 1;
+  private zFactor = this.DEFAULT_ZFACTOR;
   private currentGrid: { points: { x: number, y: number, z: number }[][], samplesX: number, samplesY: number } | null = null;
 
   constructor(expressionParser: ExpressionParser) {

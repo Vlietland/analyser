@@ -5,11 +5,7 @@ export class Marker {
   
   constructor() {
     const geometry = new THREE.SphereGeometry(0.1, 16, 16);
-    const material = new THREE.MeshBasicMaterial({ 
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.8
-    });
+    const material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.8});
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.visible = false;
   }

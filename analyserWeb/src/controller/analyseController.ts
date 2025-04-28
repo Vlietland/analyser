@@ -4,8 +4,8 @@ import { MouseTool } from '@src/controller/mouseTool';
 import { Marker } from '@src/renderer/marker';
 
 export class AnalyseController implements MouseTool {
+  private SENSITIVITY: number = 0.1;
   private gridGenerator: GridGenerator;
-  private static readonly SENSITIVITY: number = 0.1;
   private onUpdateCallback: () => void;
   private currentSampleX: number;
   private currentSampleY: number;
@@ -27,11 +27,11 @@ export class AnalyseController implements MouseTool {
     if (!grid) return;
     this.currentSampleX = Math.min(
       grid.samplesX - 1,
-      Math.max(0, this.currentSampleX + Math.round(deltaX * AnalyseController.SENSITIVITY))
+      Math.max(0, this.currentSampleX + Math.round(deltaX * this.SENSITIVITY))
     );    
     this.currentSampleY = Math.min(
       grid.samplesY - 1,
-      Math.max(0, this.currentSampleY - Math.round(deltaY * AnalyseController.SENSITIVITY))
+      Math.max(0, this.currentSampleY - Math.round(deltaY * this.SENSITIVITY))
     );
     const points = grid.points;
     const point = points[this.currentSampleY][this.currentSampleX];

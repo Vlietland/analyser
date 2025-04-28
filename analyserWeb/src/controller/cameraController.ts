@@ -3,18 +3,22 @@ import { MouseTool } from '@src/controller/mouseTool';
 import { Camera } from '@src/model/camera';
 
 export class CameraController implements MouseTool{
+  private TWO_PI = 2 * Math.PI ;
+  private ROTATION_SPEED: number = 0.003; // Adjust sensitivity  
+  private DEFAULT_THETA = 2.36;
+  private DEFAULT_PHI = 1.15;
   private theta: number;
   private phi: number;
   private target: THREE.Vector3;
-  private rotationSpeed: number = 0.003; // Adjust sensitivity  
-  private TWO_PI = 2 * Math.PI ;
+
   private onUpdateCallback: () => void;
   private camera: Camera | undefined;
 
+
   constructor(onUpdateCallback: () => void) { // Added callback parameter
     this.onUpdateCallback = onUpdateCallback; // Store callback
-    this.theta = 2.36;
-    this.phi = 1.15;
+    this.theta = this.DEFAULT_THETA;
+    this.phi = this.DEFAULT_PHI;
     this.target = new THREE.Vector3(0, 0, 0);
   }
 
@@ -24,9 +28,9 @@ export class CameraController implements MouseTool{
   }
 
   public handleMouseDrag(deltaX: number = 0, deltaY: number = 0): void {
-    const newPhi = (this.phi - deltaY * this.rotationSpeed);    
+    const newPhi = (this.phi - deltaY * this.ROTATION_SPEED);    
     this.phi = ((newPhi % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
-    const newTheta = (this.theta - deltaX * this.rotationSpeed);
+    const newTheta = (this.theta - deltaX * this.ROTATION_SPEED);
     this.theta = ((newTheta % this.TWO_PI) + this.TWO_PI) % this.TWO_PI;
 
     this.setRotation(this.phi, this.theta);
